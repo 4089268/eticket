@@ -26,7 +26,7 @@ namespace eticket.Controllers
             {
                 var claims = new List<Claim>
                 {
-                    new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
                     new(ClaimTypes.Name, user.Usuario),
                     new(ClaimTypes.Role, user.Rol ?? "Usuario"),
                 };

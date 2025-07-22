@@ -51,7 +51,7 @@ public class ReporteRequest
 
     [Display(Name = "Estatus")]
     [Range(1, 10)]
-    public decimal? IdEstatus { get; set; }
+    public int? IdEstatus { get; set; }
 
     [StringLength(4000)]
     public string? Referencias { get; set; }
