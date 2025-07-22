@@ -38,6 +38,7 @@ namespace eticket.Controllers
                 this.ticketsDBContext.OprReportes.Add(reporte);
                 await ticketsDBContext.SaveChangesAsync();
                 TempData["Success"] = "Reporte guardado correctamente";
+                TempData["SwalMessage"] = $"Reporte generado exitosamente con folio: {reporte.Folio}";
                 logger.LogInformation("Nuevo reporte creado con ID {ReporteId} por usuario {Usuario}", reporte.IdReporte, User.Identity?.Name ?? "Desconocido");
                 return RedirectToAction("Nuevo");
             }

@@ -97,3 +97,19 @@
         </div>
     </div>
 </form>
+
+
+@section Scripts
+{
+    @if (TempData["SwalMessage"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: '@TempData["SwalMessage"]',
+                confirmButtonText: 'Aceptar'
+            });
+        </script>
+    }
+}
