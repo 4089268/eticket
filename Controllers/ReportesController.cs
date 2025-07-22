@@ -1,3 +1,4 @@
+using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using eticket.Adapters;
@@ -13,6 +14,26 @@ namespace eticket.Controllers
     {
         private readonly ILogger<ReportesController> logger = logger;
         private readonly TicketsDBContext ticketsDBContext = context;
+
+        private readonly int pageSize = 25;
+
+
+        [HttpGet]
+        public IActionResult Index(int page = 1 )
+        {
+            var totalItems = ticketsDBContext.OprReportes.Count();
+
+            var reportes = ticketsDBContext.OprReportes
+                .OrderByDescending(r => r.FechaRegistro)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            ViewBag.CurrentPage = page;
+
+            return View("Reportes", reportes);
+        }
 
         [HttpGet("nuevo")]
         public ActionResult Nuevo()
@@ -33,7 +54,7 @@ namespace eticket.Controllers
                 {
                     throw new Exception("No se pudo obtener el identificador del usuario.");
                 }
-                reporte.IdGenero = Convert.ToDecimal(_userId);
+                reporte.IdGenero = Convert.ToInt32(_userId);
 
                 this.ticketsDBContext.OprReportes.Add(reporte);
                 await ticketsDBContext.SaveChangesAsync();
