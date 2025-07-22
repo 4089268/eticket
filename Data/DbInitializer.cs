@@ -12,15 +12,15 @@ public partial class DbInitializer
         // Ensure DB is created/migrated
         await context.Database.EnsureCreatedAsync();
 
-        if (!context.Usuarios.Any())
+        if (!context.SysUsuarios.Any())
         {
 
             string plainPassword = "admin123";
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(plainPassword);
 
-            context.Usuarios.Add(new Usuario
+            context.SysUsuarios.Add(new SysUsuario
             {
-                Usuario1 = "admin",
+                Usuario = "admin",
                 Contraseña = hashedPassword,
                 Correo = "admin@example.com",
                 Nombre = "Admin",

@@ -16,89 +16,106 @@ public partial class TicketsDBContext : DbContext
     {
     }
 
-    public virtual DbSet<Opr_Reporte> Opr_Reportes { get; set; }
+    public virtual DbSet<OprReporte> OprReportes { get; set; }
 
-    public virtual DbSet<Usuario> Usuarios { get; set; }
+    public virtual DbSet<SysUsuario> SysUsuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=TicketDB");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Opr_Reporte>(entity =>
+        modelBuilder.Entity<OprReporte>(entity =>
         {
-            entity.HasKey(e => e.folio);
+            entity.HasKey(e => e.Folio);
 
             entity.ToTable("Opr_Reportes", "Reportes");
 
-            entity.Property(e => e.folio)
+            entity.Property(e => e.Folio)
                 .HasDefaultValueSql("([reportes].[Generar_Folio]())")
-                .HasColumnType("numeric(12, 0)");
-            entity.Property(e => e.calle)
+                .HasColumnType("numeric(12, 0)")
+                .HasColumnName("folio");
+            entity.Property(e => e.Calle)
                 .HasMaxLength(85)
                 .IsUnicode(false)
-                .HasDefaultValue("");
-            entity.Property(e => e.celular)
+                .HasDefaultValue("")
+                .HasColumnName("calle");
+            entity.Property(e => e.Celular)
                 .HasMaxLength(15)
                 .IsUnicode(false)
-                .HasDefaultValue("");
-            entity.Property(e => e.colonia)
+                .HasDefaultValue("")
+                .HasColumnName("celular");
+            entity.Property(e => e.Colonia)
                 .HasMaxLength(65)
                 .IsUnicode(false)
-                .HasDefaultValue("");
-            entity.Property(e => e.correo)
+                .HasDefaultValue("")
+                .HasColumnName("colonia");
+            entity.Property(e => e.Correo)
                 .HasMaxLength(65)
                 .IsUnicode(false)
-                .HasDefaultValue("");
-            entity.Property(e => e.entre_calles)
+                .HasDefaultValue("")
+                .HasColumnName("correo");
+            entity.Property(e => e.EntreCalles)
                 .HasMaxLength(85)
                 .IsUnicode(false)
-                .HasDefaultValue("");
-            entity.Property(e => e.fecha_registro)
+                .HasDefaultValue("")
+                .HasColumnName("entre_calles");
+            entity.Property(e => e.FechaRegistro)
                 .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.gps_lat)
+                .HasColumnType("datetime")
+                .HasColumnName("fecha_registro");
+            entity.Property(e => e.GpsLat)
                 .HasDefaultValue(0m)
-                .HasColumnType("numeric(13, 6)");
-            entity.Property(e => e.gps_lon)
+                .HasColumnType("numeric(13, 6)")
+                .HasColumnName("gps_lat");
+            entity.Property(e => e.GpsLon)
                 .HasDefaultValue(0m)
-                .HasColumnType("numeric(13, 6)");
-            entity.Property(e => e.id_estatus).HasColumnType("numeric(10, 0)");
-            entity.Property(e => e.id_genero).HasColumnType("numeric(10, 0)");
-            entity.Property(e => e.id_reporte)
+                .HasColumnType("numeric(13, 6)")
+                .HasColumnName("gps_lon");
+            entity.Property(e => e.IdEstatus)
+                .HasColumnType("numeric(10, 0)")
+                .HasColumnName("id_estatus");
+            entity.Property(e => e.IdGenero)
+                .HasColumnType("numeric(10, 0)")
+                .HasColumnName("id_genero");
+            entity.Property(e => e.IdReporte)
                 .HasDefaultValue(0m)
-                .HasColumnType("numeric(10, 0)");
-            entity.Property(e => e.localidad)
+                .HasColumnType("numeric(10, 0)")
+                .HasColumnName("id_reporte");
+            entity.Property(e => e.Localidad)
                 .HasMaxLength(65)
                 .IsUnicode(false)
-                .HasDefaultValue("");
-            entity.Property(e => e.municipio)
+                .HasDefaultValue("")
+                .HasColumnName("localidad");
+            entity.Property(e => e.Municipio)
                 .HasMaxLength(65)
                 .IsUnicode(false)
-                .HasDefaultValue("");
-            entity.Property(e => e.nombre)
+                .HasDefaultValue("")
+                .HasColumnName("municipio");
+            entity.Property(e => e.Nombre)
                 .HasMaxLength(85)
-                .IsUnicode(false);
-            entity.Property(e => e.referencias)
                 .IsUnicode(false)
-                .HasDefaultValue("");
-            entity.Property(e => e.telefono)
+                .HasColumnName("nombre");
+            entity.Property(e => e.Referencias)
+                .IsUnicode(false)
+                .HasDefaultValue("")
+                .HasColumnName("referencias");
+            entity.Property(e => e.Telefono)
                 .HasMaxLength(15)
                 .IsUnicode(false)
-                .HasDefaultValue("");
+                .HasDefaultValue("")
+                .HasColumnName("telefono");
         });
 
-        modelBuilder.Entity<Usuario>(entity =>
+        modelBuilder.Entity<SysUsuario>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Usuarios__3214EC075AF0E02D");
+            entity.HasKey(e => e.Id).HasName("PK__Sys_Usua__3214EC07E44ED9AE");
 
-            entity.HasIndex(e => e.Correo, "IX_Usuarios_Correo");
+            entity.ToTable("Sys_Usuarios", "Global");
 
-            entity.HasIndex(e => e.Usuario1, "IX_Usuarios_NombreUsuario");
+            entity.HasIndex(e => e.Correo, "UQ__Sys_Usua__60695A19CCEACA44").IsUnique();
 
-            entity.HasIndex(e => e.Correo, "UQ__Usuarios__60695A19E0480A9A").IsUnique();
-
-            entity.HasIndex(e => e.Usuario1, "UQ__Usuarios__E3237CF744B3F542").IsUnique();
+            entity.HasIndex(e => e.Usuario, "UQ__Sys_Usua__E3237CF71C8706E8").IsUnique();
 
             entity.Property(e => e.Activo).HasDefaultValue(true);
             entity.Property(e => e.Apellido).HasMaxLength(50);
@@ -112,9 +129,7 @@ public partial class TicketsDBContext : DbContext
                 .HasMaxLength(30)
                 .HasDefaultValue("Usuario");
             entity.Property(e => e.UltimoInicioSesion).HasColumnType("datetime");
-            entity.Property(e => e.Usuario1)
-                .HasMaxLength(50)
-                .HasColumnName("Usuario");
+            entity.Property(e => e.Usuario).HasMaxLength(50);
         });
 
         OnModelCreatingPartial(modelBuilder);

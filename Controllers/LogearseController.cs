@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace eticket.Controllers
 {
-    public class LogearseController(TicketsDBContext context) : Controller
+    public class LogearseController(ILogger<LogearseController> logger, TicketsDBContext context) : Controller
     {
+        private readonly ILogger<LogearseController> logger = logger;
         private readonly TicketsDBContext context = context;
 
         [HttpGet("/logearse")]
@@ -19,14 +20,14 @@ namespace eticket.Controllers
         [HttpPost("/logearse")]
         public async Task<IActionResult> Logearse(string usuario, string contraseña)
         {
-            var user = context.Usuarios.FirstOrDefault(u => u.Usuario1 == usuario && u.Activo == true);
+            var user = context.SysUsuarios.FirstOrDefault(u => u.Usuario == usuario && u.Activo == true);
 
             if (user != null && BCrypt.Net.BCrypt.Verify(contraseña, user.Contraseña))
             {
                 var claims = new List<Claim>
                 {
                     new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new(ClaimTypes.Name, user.Usuario1),
+                    new(ClaimTypes.Name, user.Usuario),
                     new(ClaimTypes.Role, user.Rol ?? "Usuario"),
                 };
 
@@ -37,6 +38,7 @@ namespace eticket.Controllers
                 };
 
                 await HttpContext.SignInAsync("NerusTicketCookieAuth", new ClaimsPrincipal(claimIdentity), authProperties);
+                logger.LogInformation("Usuario {Usuario} inició sesión correctamente.", user.Usuario);
                 return RedirectToAction("Index", "Home");
             }
 
