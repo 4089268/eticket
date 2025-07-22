@@ -32,10 +32,12 @@
     <thead class="table-dark">
         <tr>
             <th>Folio</th>
+            <th>Estatus</th>
             <th>Nombre</th>
             <th>Correo</th>
             <th>Municipio</th>
             <th>Fecha Registro</th>
+            <th>Genero</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -44,10 +46,12 @@
         {
             <tr>
                 <td>@r.Folio</td>
+                <td>@r.IdEstatusNavigation?.Descripcion</td>
                 <td>@r.Nombre</td>
                 <td>@r.Correo</td>
                 <td>@r.Municipio</td>
                 <td>@r.FechaRegistro?.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@r.IdGeneroNavigation?.Usuario</td>
                 <td>
                     <!-- Optional: View or Edit links -->
                     <a asp-action="Detalle" asp-route-id="@r.Folio" class="btn btn-sm btn-primary">Ver</a>

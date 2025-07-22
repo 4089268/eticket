@@ -6,6 +6,7 @@ using eticket.Data;
 using eticket.Models;
 using eticket.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace eticket.Controllers
@@ -25,6 +26,8 @@ namespace eticket.Controllers
 
             var reportes = ticketsDBContext.OprReportes
                 .OrderByDescending(r => r.FechaRegistro)
+                .Include(r => r.IdEstatusNavigation)
+                .Include(r => r.IdGeneroNavigation)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -38,6 +41,16 @@ namespace eticket.Controllers
         [HttpGet("nuevo")]
         public ActionResult Nuevo()
         {
+            var estatusList = this.ticketsDBContext.CatEstatuses
+                .OrderBy(e => e.Descripcion)
+                .Select(e => new SelectListItem
+                {
+                    Value = e.IdEstatus.ToString(),
+                    Text = e.Descripcion
+                }).ToList();
+
+            ViewBag.EstatusList = estatusList;
+
             return View(new ReporteRequest());
         }
 

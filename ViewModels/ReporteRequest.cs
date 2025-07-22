@@ -51,7 +51,7 @@ public class ReporteRequest
 
     [Display(Name = "Estatus")]
     [Range(1, 10)]
-    public int? IdEstatus { get; set; }
+    public int? IdEstatus { get; set; } = 1;
 
     [StringLength(4000)]
     public string? Referencias { get; set; }

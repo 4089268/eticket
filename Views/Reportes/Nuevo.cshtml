@@ -82,7 +82,9 @@
 
         <div class="col-md-3">
             <label asp-for="IdEstatus" class="form-label"></label>
-            <input asp-for="IdEstatus" class="form-control" />
+            <select asp-for="IdEstatus" asp-items="ViewBag.EstatusList" class="form-select">
+                <option value="">-- Selecciona un estatus --</option>
+            </select>
             <span asp-validation-for="IdEstatus" class="text-danger"></span>
         </div>
 
