@@ -1,0 +1,30 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "scaffold-database",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "ef",
+                "dbcontext",
+                "scaffold",
+                "Name=TicketDB",
+                "Microsoft.EntityFrameworkCore.SqlServer",
+                "--output-dir",
+                "Models",
+                "--context-dir",
+                "Data",
+                "--context",
+                "TicketsDBContext",
+                "--use-database-names",
+                "--force"
+            ],
+            "presentation": {
+                "reveal": "always"
+            }
+        }
+    ]
+}
