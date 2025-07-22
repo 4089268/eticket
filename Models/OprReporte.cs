@@ -29,13 +29,17 @@ public partial class OprReporte
 
     public decimal? IdReporte { get; set; }
 
-    public decimal? IdGenero { get; set; }
+    public int? IdGenero { get; set; }
 
     public DateTime? FechaRegistro { get; set; }
 
-    public decimal? IdEstatus { get; set; }
+    public int? IdEstatus { get; set; }
 
     public string? Referencias { get; set; }
 
-    public decimal Folio { get; set; }
+    public long Folio { get; set; }
+
+    public virtual CatEstatus? IdEstatusNavigation { get; set; }
+
+    public virtual SysUsuario? IdGeneroNavigation { get; set; }
 }

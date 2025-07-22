@@ -5,7 +5,7 @@ namespace eticket.Models;
 
 public partial class SysUsuario
 {
-    public int Id { get; set; }
+    public int IdUsuario { get; set; }
 
     public string Usuario { get; set; } = null!;
 
@@ -24,4 +24,6 @@ public partial class SysUsuario
     public bool? Activo { get; set; }
 
     public string? Rol { get; set; }
+
+    public virtual ICollection<OprReporte> OprReportes { get; set; } = new List<OprReporte>();
 }

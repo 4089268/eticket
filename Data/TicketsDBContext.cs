@@ -16,6 +16,8 @@ public partial class TicketsDBContext : DbContext
     {
     }
 
+    public virtual DbSet<CatEstatus> CatEstatuses { get; set; }
+
     public virtual DbSet<OprReporte> OprReportes { get; set; }
 
     public virtual DbSet<SysUsuario> SysUsuarios { get; set; }
@@ -25,6 +27,24 @@ public partial class TicketsDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<CatEstatus>(entity =>
+        {
+            entity.HasKey(e => e.IdEstatus);
+
+            entity.ToTable("Cat_Estatus", "Global");
+
+            entity.Property(e => e.IdEstatus).HasColumnName("id_estatus");
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("descripcion");
+            entity.Property(e => e.Inactivo).HasColumnName("inactivo");
+            entity.Property(e => e.Tabla)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("tabla");
+        });
+
         modelBuilder.Entity<OprReporte>(entity =>
         {
             entity.HasKey(e => e.Folio);
@@ -33,7 +53,6 @@ public partial class TicketsDBContext : DbContext
 
             entity.Property(e => e.Folio)
                 .HasDefaultValueSql("([reportes].[Generar_Folio]())")
-                .HasColumnType("numeric(12, 0)")
                 .HasColumnName("folio");
             entity.Property(e => e.Calle)
                 .HasMaxLength(85)
@@ -73,11 +92,9 @@ public partial class TicketsDBContext : DbContext
                 .HasColumnType("numeric(13, 6)")
                 .HasColumnName("gps_lon");
             entity.Property(e => e.IdEstatus)
-                .HasColumnType("numeric(10, 0)")
+                .HasDefaultValue(1)
                 .HasColumnName("id_estatus");
-            entity.Property(e => e.IdGenero)
-                .HasColumnType("numeric(10, 0)")
-                .HasColumnName("id_genero");
+            entity.Property(e => e.IdGenero).HasColumnName("id_genero");
             entity.Property(e => e.IdReporte)
                 .HasDefaultValue(0m)
                 .HasColumnType("numeric(10, 0)")
@@ -105,11 +122,19 @@ public partial class TicketsDBContext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValue("")
                 .HasColumnName("telefono");
+
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.OprReportes)
+                .HasForeignKey(d => d.IdEstatus)
+                .HasConstraintName("FK_Opr_Reportes_Cat_Estatus");
+
+            entity.HasOne(d => d.IdGeneroNavigation).WithMany(p => p.OprReportes)
+                .HasForeignKey(d => d.IdGenero)
+                .HasConstraintName("FK_Opr_Reportes_Sys_Usuarios");
         });
 
         modelBuilder.Entity<SysUsuario>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Sys_Usua__3214EC07E44ED9AE");
+            entity.HasKey(e => e.IdUsuario).HasName("PK__Sys_Usua__3214EC07E44ED9AE");
 
             entity.ToTable("Sys_Usuarios", "Global");
 
@@ -117,6 +142,7 @@ public partial class TicketsDBContext : DbContext
 
             entity.HasIndex(e => e.Usuario, "UQ__Sys_Usua__E3237CF71C8706E8").IsUnique();
 
+            entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
             entity.Property(e => e.Activo).HasDefaultValue(true);
             entity.Property(e => e.Apellido).HasMaxLength(50);
             entity.Property(e => e.Contraseña).HasMaxLength(255);

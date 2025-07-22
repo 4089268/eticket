@@ -1,0 +1,58 @@
+﻿@model List<eticket.Models.OprReporte>
+
+@{
+    ViewData["Title"] = "Últimos Reportes";
+    var currentPage = (int)ViewBag.CurrentPage;
+    var totalPages = (int)ViewBag.TotalPages;
+}
+
+<h2>Últimos Reportes</h2>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+
+        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+            <a class="page-link" asp-action="UltimosReportes" asp-route-page="@(currentPage - 1)">Anterior</a>
+        </li>
+
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == currentPage ? "active" : "")">
+                <a class="page-link" asp-action="UltimosReportes" asp-route-page="@i">@i</a>
+            </li>
+        }
+
+        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+            <a class="page-link" asp-action="UltimosReportes" asp-route-page="@(currentPage + 1)">Siguiente</a>
+        </li>
+    </ul>
+</nav>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Folio</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Municipio</th>
+            <th>Fecha Registro</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Folio</td>
+                <td>@r.Nombre</td>
+                <td>@r.Correo</td>
+                <td>@r.Municipio</td>
+                <td>@r.FechaRegistro?.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    <!-- Optional: View or Edit links -->
+                    <a asp-action="Detalle" asp-route-id="@r.Folio" class="btn btn-sm btn-primary">Ver</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
