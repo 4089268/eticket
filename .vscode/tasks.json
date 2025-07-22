@@ -19,7 +19,6 @@
                 "Data",
                 "--context",
                 "TicketsDBContext",
-                "--use-database-names",
                 "--force"
             ],
             "presentation": {
