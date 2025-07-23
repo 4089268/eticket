@@ -1,10 +1,14 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using eticket.Models;
 
 namespace eticket.ViewModels;
 
 public class ReporteRequest
 {
+
+    public CatReporte TipoReporte { get; set; } = default!;
+
     [Required]
     [StringLength(85)]
     public string Nombre { get; set; } = null!;

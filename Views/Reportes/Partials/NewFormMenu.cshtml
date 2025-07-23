@@ -1,0 +1,20 @@
+﻿@model IEnumerable<eticket.Models.CatReporte>
+
+<div class="container">
+    <div class="row">
+        @foreach(var catReporte in Model)
+        {
+            <div class="col-3 p-1">
+                <div class="menu-item p-2 border text-white rounded d-flex flex-column align-content-center justify-content-center report-card"
+                    style="height: 6rem; background-color: #759CC2; cursor:pointer;"
+                    onclick="displayForm(@catReporte.IdReporte)"
+                >
+                    <div>Nuevo reporte</div>
+                    <div class="h5 h-100 d-flex flex-column align-content-center justify-content-center text-center">
+                        @catReporte.Descripcion
+                    </div>
+                </div>
+            </div>
+        }
+    </div
+</div>

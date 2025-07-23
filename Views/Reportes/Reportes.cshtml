@@ -6,57 +6,134 @@
     var totalPages = (int)ViewBag.TotalPages;
 }
 
-<h2>Últimos Reportes</h2>
+<h1>Reportes</h1>
 
-<nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
+<section id="form-section">
+    @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "Cargando...")
+</section>
 
-        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-            <a class="page-link" asp-action="UltimosReportes" asp-route-page="@(currentPage - 1)">Anterior</a>
-        </li>
 
-        @for (int i = 1; i <= totalPages; i++)
-        {
-            <li class="page-item @(i == currentPage ? "active" : "")">
-                <a class="page-link" asp-action="UltimosReportes" asp-route-page="@i">@i</a>
+<section id="table-section" class="mt-4">
+    <h2>Ultimos Reportes</h2>
+
+    @* <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="UltimosReportes" asp-route-page="@(currentPage - 1)">Anterior</a>
             </li>
-        }
 
-        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-            <a class="page-link" asp-action="UltimosReportes" asp-route-page="@(currentPage + 1)">Siguiente</a>
-        </li>
-    </ul>
-</nav>
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link" asp-action="UltimosReportes" asp-route-page="@i">@i</a>
+                </li>
+            }
 
-<table class="table table-bordered table-striped">
-    <thead class="table-dark">
-        <tr>
-            <th>Folio</th>
-            <th>Estatus</th>
-            <th>Nombre</th>
-            <th>Correo</th>
-            <th>Municipio</th>
-            <th>Fecha Registro</th>
-            <th>Genero</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var r in Model)
-        {
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="UltimosReportes" asp-route-page="@(currentPage + 1)">Siguiente</a>
+            </li>
+        </ul>
+    </nav> *@
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
             <tr>
-                <td>@r.Folio</td>
-                <td>@r.IdEstatusNavigation?.Descripcion</td>
-                <td>@r.Nombre</td>
-                <td>@r.Correo</td>
-                <td>@r.Municipio</td>
-                <td>@r.FechaRegistro?.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>@r.IdGeneroNavigation?.Usuario</td>
-                <td>
-                    <!-- Optional: View or Edit links -->
-                    <a asp-action="Detalle" asp-route-id="@r.Folio" class="btn btn-sm btn-primary">Ver</a>
-                </td>
+                <th>Folio</th>
+                <th>Estatus</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Municipio</th>
+                <th>Fecha Registro</th>
+                <th>Genero</th>
+                <th>Acciones</th>
             </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.Folio</td>
+                    <td>@r.IdEstatusNavigation?.Descripcion</td>
+                    <td>@r.Nombre</td>
+                    <td>@r.Correo</td>
+                    <td>@r.Municipio</td>
+                    <td>@r.FechaRegistro?.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@r.IdGeneroNavigation?.Usuario</td>
+                    <td>
+                        <!-- Optional: View or Edit links -->
+                        <a asp-action="Detalle" asp-route-id="@r.Folio" class="btn btn-sm btn-primary">Ver</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+<style>
+    #form-section .menu-item:hover {
+        background-color: #5076a1 !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transition: background 0.2s, box-shadow 0.2s;
+    }
+</style>
+
+@section scripts
+{
+    <script>
+        function displayMenu()
+        {
+            $("#form-section").load('@Url.Action("NuevoReporteMenuPartialView")');
         }
-    </tbody>
-</table>
+
+        function displayForm(reporteTipeId)
+        {
+            const url = '@Url.Action("NuevoReporteFormPartialView", "Reportes", new { tipoReporteId = "__PLACEHOLDER__" })'
+            .replace("__PLACEHOLDER__", reporteTipeId);
+            $("#form-section").load(url);
+
+            $("#nuevoReporteForm").on('submit', submitNuevoReporte);
+        }
+
+        function submitNuevoReporte(event)
+        {
+            event.preventDefault();
+
+            const url = "/reportes";
+            const method = 'POST';
+            const form = $(event.target);
+
+            $.ajax({
+                url: url,
+                type: method,
+                data: form.serialize(),
+                success: function(response) {
+                    var {folio} = response;
+                    Swal.fire({
+                        title: "Reporte almacenado",
+                        text: `Folio: ${folio}`,
+                        icon: "success",
+                        confirmButtonText: 'Aceptar'
+                    }).then((result) => {
+                        window.location.reload();
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: "Error al registrar el reporte",
+                        icon: "error"
+                    });
+                }
+            });
+        }
+    
+        jQuery(document).ready(function()
+        {
+            setTimeout( function()
+            {
+                displayMenu();
+            }, 500);
+        });
+    </script>
+}
