@@ -18,6 +18,12 @@ public partial class TicketsDBContext : DbContext
 
     public virtual DbSet<CatEstatus> CatEstatuses { get; set; }
 
+    public virtual DbSet<CatReporte> CatReportes { get; set; }
+
+    public virtual DbSet<CatTipoEntradum> CatTipoEntrada { get; set; }
+
+    public virtual DbSet<OprDetReporte> OprDetReportes { get; set; }
+
     public virtual DbSet<OprReporte> OprReportes { get; set; }
 
     public virtual DbSet<SysUsuario> SysUsuarios { get; set; }
@@ -43,6 +49,52 @@ public partial class TicketsDBContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("tabla");
+        });
+
+        modelBuilder.Entity<CatReporte>(entity =>
+        {
+            entity.HasKey(e => e.IdReporte);
+
+            entity.ToTable("Cat_Reportes", "Reportes");
+
+            entity.Property(e => e.IdReporte).HasColumnName("id_reporte");
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("descripcion");
+            entity.Property(e => e.Inactivo).HasColumnName("inactivo");
+        });
+
+        modelBuilder.Entity<CatTipoEntradum>(entity =>
+        {
+            entity.HasKey(e => e.IdTipoentrada);
+
+            entity.ToTable("Cat_TipoEntrada", "Reportes");
+
+            entity.Property(e => e.IdTipoentrada).HasColumnName("id_tipoentrada");
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("descripcion");
+            entity.Property(e => e.Inactivo).HasColumnName("inactivo");
+        });
+
+        modelBuilder.Entity<OprDetReporte>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("Opr_DetReportes", "Reportes");
+
+            entity.Property(e => e.Fecha)
+                .HasColumnType("datetime")
+                .HasColumnName("fecha");
+            entity.Property(e => e.Folio).HasColumnName("folio");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.IdEstatus).HasColumnName("id_estatus");
+            entity.Property(e => e.IdOperador).HasColumnName("id_operador");
+            entity.Property(e => e.Observaciones)
+                .IsUnicode(false)
+                .HasColumnName("observaciones");
         });
 
         modelBuilder.Entity<OprReporte>(entity =>
@@ -96,9 +148,11 @@ public partial class TicketsDBContext : DbContext
                 .HasColumnName("id_estatus");
             entity.Property(e => e.IdGenero).HasColumnName("id_genero");
             entity.Property(e => e.IdReporte)
-                .HasDefaultValue(0m)
-                .HasColumnType("numeric(10, 0)")
+                .HasDefaultValue(0)
                 .HasColumnName("id_reporte");
+            entity.Property(e => e.IdTipoentrada)
+                .HasDefaultValue(1)
+                .HasColumnName("id_tipoentrada");
             entity.Property(e => e.Localidad)
                 .HasMaxLength(65)
                 .IsUnicode(false)
@@ -113,10 +167,6 @@ public partial class TicketsDBContext : DbContext
                 .HasMaxLength(85)
                 .IsUnicode(false)
                 .HasColumnName("nombre");
-            entity.Property(e => e.Referencias)
-                .IsUnicode(false)
-                .HasDefaultValue("")
-                .HasColumnName("referencias");
             entity.Property(e => e.Telefono)
                 .HasMaxLength(15)
                 .IsUnicode(false)
@@ -130,6 +180,14 @@ public partial class TicketsDBContext : DbContext
             entity.HasOne(d => d.IdGeneroNavigation).WithMany(p => p.OprReportes)
                 .HasForeignKey(d => d.IdGenero)
                 .HasConstraintName("FK_Opr_Reportes_Sys_Usuarios");
+
+            entity.HasOne(d => d.IdReporteNavigation).WithMany(p => p.OprReportes)
+                .HasForeignKey(d => d.IdReporte)
+                .HasConstraintName("FK_Opr_Reportes_Cat_Reportes");
+
+            entity.HasOne(d => d.IdTipoentradaNavigation).WithMany(p => p.OprReportes)
+                .HasForeignKey(d => d.IdTipoentrada)
+                .HasConstraintName("FK_Opr_Reportes_Cat_TipoEntrada");
         });
 
         modelBuilder.Entity<SysUsuario>(entity =>

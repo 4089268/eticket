@@ -22,7 +22,8 @@ public class ReporteAdapter
             GpsLat = request.GpsLat,
             GpsLon = request.GpsLon,
             IdEstatus = request.IdEstatus,
-            Referencias = request.Referencias,
+            IdTipoentrada = request.IdTipoEntrada,
+            IdReporte = request.IdTipoReporte,
             FechaRegistro = DateTime.UtcNow
         };
     }

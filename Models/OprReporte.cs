@@ -27,7 +27,7 @@ public partial class OprReporte
 
     public decimal? GpsLon { get; set; }
 
-    public decimal? IdReporte { get; set; }
+    public int? IdReporte { get; set; }
 
     public int? IdGenero { get; set; }
 
@@ -35,11 +35,15 @@ public partial class OprReporte
 
     public int? IdEstatus { get; set; }
 
-    public string? Referencias { get; set; }
+    public int? IdTipoentrada { get; set; }
 
     public long Folio { get; set; }
 
     public virtual CatEstatus? IdEstatusNavigation { get; set; }
 
     public virtual SysUsuario? IdGeneroNavigation { get; set; }
+
+    public virtual CatReporte? IdReporteNavigation { get; set; }
+
+    public virtual CatTipoEntradum? IdTipoentradaNavigation { get; set; }
 }

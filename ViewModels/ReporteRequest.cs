@@ -54,5 +54,13 @@ public class ReporteRequest
     public int? IdEstatus { get; set; } = 1;
 
     [StringLength(4000)]
-    public string? Referencias { get; set; }
+    public string? Observaciones { get; set; }
+
+    [Range(1, 12)]
+    [Display(Name = "Tipo de reporte")]
+    public int IdTipoReporte { get; set; }
+
+    [Range(1, 12)]
+    [Display(Name = "Tipo de entrada")]
+    public int IdTipoEntrada { get; set; }
 }
