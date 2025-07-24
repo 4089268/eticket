@@ -2,21 +2,22 @@ using System.Data.Entity;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using eticket.Adapters;
 using eticket.Data;
 using eticket.Models;
 using eticket.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using FluentValidation;
 
 namespace eticket.Controllers
 {
     [Route("/{Controller}")]
-    public class ReportesController(ILogger<ReportesController> logger, TicketsDBContext context) : Controller
+    public class ReportesController(ILogger<ReportesController> logger, TicketsDBContext context, IValidator<ReporteRequest> validator) : Controller
     {
         private readonly ILogger<ReportesController> logger = logger;
         private readonly TicketsDBContext ticketsDBContext = context;
+        private readonly IValidator<ReporteRequest> reportValidator = validator;
         private readonly int pageSize = 10;
 
 
@@ -41,16 +42,20 @@ namespace eticket.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> AlmacenarReporte([FromForm] ReporteRequest model)
+        public async Task<IActionResult> AlmacenarReporte([FromForm] ReporteRequest model)
         {
-            // TODO: Add some validations using a external Package
-            // if (!ModelState.IsValid)
-            // {
-            //     return UnprocessableEntity(new
-            //     {
-            //         Message = "Hola mundo"
-            //     });
-            // }
+            // Validate the request
+            var validation = this.reportValidator.Validate(model);
+            if (!validation.IsValid)
+            {
+                return UnprocessableEntity(new
+                {
+                    errors = validation.Errors.Select(e => new {
+                        field = e.PropertyName,
+                        message = e.ErrorMessage
+                    })
+                });
+            }
 
             var reporte = ReporteAdapter.ToEntity(model);
             reporte.FechaRegistro = DateTime.UtcNow;
@@ -64,7 +69,7 @@ namespace eticket.Controllers
             this.ticketsDBContext.OprReportes.Add(reporte);
             await ticketsDBContext.SaveChangesAsync();
             logger.LogInformation("Nuevo reporte creado con ID {ReporteId} por usuario {Usuario}", reporte.IdReporte, User.Identity?.Name ?? "Desconocido");
-            return Json(new {
+            return Ok(new {
                 success = true,
                 message = "Reporte guardado correctamente",
                 folio = reporte.Folio
@@ -136,7 +141,6 @@ namespace eticket.Controllers
                 return PartialView("~/Views/Shared/_ErrorAlert.cshtml");
             }
         }
-
         #endregion
     }
 }

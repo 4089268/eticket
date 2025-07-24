@@ -103,6 +103,9 @@
             const method = 'POST';
             const form = $(event.target);
 
+            // clear errors messags
+            $("span.text-danger").text("");
+
             $.ajax({
                 url: url,
                 type: method,
@@ -119,11 +122,22 @@
                     });
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        title: "Error al registrar el reporte",
-                        icon: "error"
-                    });
+                    if(xhr.status == 422)
+                    {
+                        const {errors} = xhr.responseJSON;
+                        errors.forEach(err => {
+                            const errorSpan = $(`span[data-valmsg-for="${err.field}"]`);
+                            errorSpan.text(err.message);
+                        });
+                    }
+                    else
+                    {
+                        Swal.fire({
+                            title: "Error no controlado al registrar el reporte",
+                            icon: "error"
+                        });
+                        console.error(xhr, error);
+                    }
                 }
             });
         }
