@@ -46,4 +46,6 @@ public partial class OprReporte
     public virtual CatReporte? IdReporteNavigation { get; set; }
 
     public virtual CatTipoEntradum? IdTipoentradaNavigation { get; set; }
+
+    public virtual ICollection<OprDetReporte> OprDetReportes { get; set; } = new List<OprDetReporte>();
 }

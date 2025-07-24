@@ -24,7 +24,8 @@ public class ReporteAdapter
             IdEstatus = request.IdEstatus,
             IdTipoentrada = request.IdTipoEntrada,
             IdReporte = request.IdTipoReporte,
-            FechaRegistro = DateTime.UtcNow
+            FechaRegistro = DateTime.UtcNow,
+            IdGenero = request.IdGenero
         };
     }
 }

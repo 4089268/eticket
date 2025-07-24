@@ -4,20 +4,22 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using FluentValidation;
 using eticket.Adapters;
 using eticket.Data;
 using eticket.Models;
 using eticket.ViewModels;
-using FluentValidation;
+using eticket.Services;
 
 namespace eticket.Controllers
 {
     [Route("/{Controller}")]
-    public class ReportesController(ILogger<ReportesController> logger, TicketsDBContext context, IValidator<ReporteRequest> validator) : Controller
+    public class ReportesController(ILogger<ReportesController> logger, TicketsDBContext context, IValidator<ReporteRequest> validator, ReportService rpservice) : Controller
     {
         private readonly ILogger<ReportesController> logger = logger;
         private readonly TicketsDBContext ticketsDBContext = context;
         private readonly IValidator<ReporteRequest> reportValidator = validator;
+        private readonly ReportService reportService = rpservice;
         private readonly int pageSize = 10;
 
 
@@ -42,42 +44,52 @@ namespace eticket.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AlmacenarReporte([FromForm] ReporteRequest model)
+        public async Task<IActionResult> AlmacenarReporte([FromForm] ReporteRequest request)
         {
             // Validate the request
-            var validation = this.reportValidator.Validate(model);
+            var validation = this.reportValidator.Validate(request);
             if (!validation.IsValid)
             {
                 return UnprocessableEntity(new
                 {
-                    errors = validation.Errors.Select(e => new {
+                    errors = validation.Errors.Select(e => new
+                    {
                         field = e.PropertyName,
                         message = e.ErrorMessage
                     })
                 });
             }
 
-            var reporte = ReporteAdapter.ToEntity(model);
-            reporte.FechaRegistro = DateTime.UtcNow;
+            // * ontener el usuairo de quien lo genera
             var _userId = HttpContext.User.Claims?.FirstOrDefault(item => item.Type == ClaimTypes.NameIdentifier)?.Value;
             if (_userId == null)
             {
                 throw new Exception("No se pudo obtener el identificador del usuario.");
             }
-            reporte.IdGenero = Convert.ToInt32(_userId);
+            request.IdGenero = Convert.ToInt32(_userId);
 
-            this.ticketsDBContext.OprReportes.Add(reporte);
-            await ticketsDBContext.SaveChangesAsync();
-            logger.LogInformation("Nuevo reporte creado con ID {ReporteId} por usuario {Usuario}", reporte.IdReporte, User.Identity?.Name ?? "Desconocido");
-            return Ok(new {
-                success = true,
-                message = "Reporte guardado correctamente",
-                folio = reporte.Folio
-            });
+            // * almacenar el reporte
+            try
+            {
+                var folioReporte = await this.reportService.AlmacenarReporteInicial(request);
+                return StatusCode(201, new {
+                    success = true,
+                    message = "Reporte guardado correctamente",
+                    folio = folioReporte
+                } );
+            }
+            catch (System.Exception e)
+            {
+                return Conflict(new
+                {
+                    Title = "Error al almacenar el reporte",
+                    Message = "Error al almacenar el reporte: " + e.Message
+                });
+            }
         }
 
         [HttpGet("{folioReporteArg}")]
-        public IActionResult MostrarReporte([FromRoute] string folioReporteArg)
+        public async Task<IActionResult> MostrarReporte([FromRoute] string folioReporteArg)
         {
             var folioReporte = long.TryParse(folioReporteArg, out long f) ? f : -1;
             if (folioReporte == -1)
@@ -87,17 +99,19 @@ namespace eticket.Controllers
                 return View("NotFound");
             }
 
-            this.logger.LogInformation("Mostrando reporte con folio: {folio}", folioReporte);
-
-            var reporte = this.ticketsDBContext.OprReportes.FirstOrDefault(item => item.Folio == folioReporte);
-            if (reporte == null)
+            try
             {
+                var reporte = await this.reportService.ObtenerReportePorFolio(folioReporte);
+                return View(reporte);
+            }
+            catch (InvalidOperationException ioe)
+            {
+                this.logger.LogError(ioe, "Error al obtener el reporte");
                 ViewBag.ErrorMessage = $"No existe el reporte con folio : {folioReporte}";
                 return View("NotFound");
             }
-
-            return View(reporte);
         }
+
 
         #region PartialViews
         [HttpGet("partial-view/menu")]
@@ -149,8 +163,9 @@ namespace eticket.Controllers
                 var reporteRequest = new ReporteRequest()
                 {
                     TipoReporte = _tipoReporte,
-                    IdTipoEntrada = 1,
-                    IdEstatus = 1
+                    IdTipoReporte = _tipoReporte.IdReporte,
+                    IdTipoEntrada = 1, // Call center
+                    IdEstatus = 1 // Abierto
                 };
 
                 return PartialView("~/Views/Reportes/Partials/NuevoReporteForm.cshtml", reporteRequest);

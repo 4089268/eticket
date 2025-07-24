@@ -13,5 +13,7 @@ public partial class CatEstatus
 
     public bool Inactivo { get; set; }
 
+    public virtual ICollection<OprDetReporte> OprDetReportes { get; set; } = new List<OprDetReporte>();
+
     public virtual ICollection<OprReporte> OprReportes { get; set; } = new List<OprReporte>();
 }

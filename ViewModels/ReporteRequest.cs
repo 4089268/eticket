@@ -33,8 +33,6 @@ public class ReporteRequest
     [Display(Name = "Longitud GPS")]
     public decimal? GpsLon { get; set; }
 
-    public decimal? IdReporte { get; set; }
-
     [Display(Name = "Estatus")]
     public int? IdEstatus { get; set; } = 1;
 
@@ -45,4 +43,9 @@ public class ReporteRequest
 
     [Display(Name = "Tipo de entrada")]
     public int IdTipoEntrada { get; set; }
+
+    /// <summary>
+    /// Usuario quien genera inicialmente el reporte
+    /// </summary>
+    public int IdGenero { get; set; }
 }

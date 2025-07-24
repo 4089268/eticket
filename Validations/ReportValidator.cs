@@ -56,7 +56,7 @@ public class ReportValidator : AbstractValidator<ReporteRequest>
             .MaximumLength(400)
             .When(x => !string.IsNullOrEmpty(x.Observaciones));
 
-        RuleFor(req => req.IdReporte)
+        RuleFor(req => req.IdTipoReporte)
             .InclusiveBetween(1, 12)
             .WithMessage("El tipo de reporte no es valido");
 

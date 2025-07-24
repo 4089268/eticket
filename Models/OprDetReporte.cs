@@ -16,4 +16,10 @@ public partial class OprDetReporte
     public DateTime Fecha { get; set; }
 
     public string? Observaciones { get; set; }
+
+    public virtual OprReporte FolioNavigation { get; set; } = null!;
+
+    public virtual CatEstatus IdEstatusNavigation { get; set; } = null!;
+
+    public virtual SysUsuario IdOperadorNavigation { get; set; } = null!;
 }

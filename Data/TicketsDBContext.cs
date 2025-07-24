@@ -81,20 +81,33 @@ public partial class TicketsDBContext : DbContext
 
         modelBuilder.Entity<OprDetReporte>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("Opr_DetReportes", "Reportes");
+            entity.ToTable("Opr_DetReportes", "Reportes");
 
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Fecha)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha");
             entity.Property(e => e.Folio).HasColumnName("folio");
-            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.IdEstatus).HasColumnName("id_estatus");
             entity.Property(e => e.IdOperador).HasColumnName("id_operador");
             entity.Property(e => e.Observaciones)
                 .IsUnicode(false)
                 .HasColumnName("observaciones");
+
+            entity.HasOne(d => d.FolioNavigation).WithMany(p => p.OprDetReportes)
+                .HasForeignKey(d => d.Folio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetReportes_Repore");
+
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.OprDetReportes)
+                .HasForeignKey(d => d.IdEstatus)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetReportes_Estatus");
+
+            entity.HasOne(d => d.IdOperadorNavigation).WithMany(p => p.OprDetReportes)
+                .HasForeignKey(d => d.IdOperador)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetReportes_Usuarios");
         });
 
         modelBuilder.Entity<OprReporte>(entity =>
@@ -104,7 +117,7 @@ public partial class TicketsDBContext : DbContext
             entity.ToTable("Opr_Reportes", "Reportes");
 
             entity.Property(e => e.Folio)
-                .HasDefaultValueSql("([reportes].[Generar_Folio]())")
+                .HasDefaultValueSql("([Reportes].[Generar_Folio]())")
                 .HasColumnName("folio");
             entity.Property(e => e.Calle)
                 .HasMaxLength(85)

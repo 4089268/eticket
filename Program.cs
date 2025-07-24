@@ -1,4 +1,5 @@
 using eticket.Data;
+using eticket.Services;
 using eticket.Validations;
 using eticket.ViewModels;
 using FluentValidation;
@@ -21,7 +22,11 @@ builder.Services.AddAuthentication("NerusTicketCookieAuth")
     options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
 });
 
+// Validaciones
 builder.Services.AddScoped<IValidator<ReporteRequest>, ReportValidator>();
+
+// Servicios
+builder.Services.AddScoped<ReportService>();
 
 var app = builder.Build();
 
