@@ -1,0 +1,385 @@
+﻿@model OprReporte
+@{
+    ViewData["Title"] = $"Reporte #{Model.Folio}";
+}
+
+<nav class="breadcrumb">
+    <a class="breadcrumb-item" href='@Url.Action("Index", "Reportes")'>Reportes</a>
+    <span class="breadcrumb-item active" aria-current="page">Reporte</span>
+</nav>
+
+<div class="contents mb-4">
+    <div class="support-details mt-xl-20">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="mb-2">
+                        <a asp-action="Index" class="text-decoration-none text-black">
+                            <img src="~/img/svg/arrow-left.svg" alt="arrow-left" class="svg" />
+                            <span>Regresar</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-8 col-sm-12 mb-4">
+                    <div class="p-4 border rounded bg-white">
+                        <h4>Reporte: @Model.Folio</h4>
+
+                        <div class="p-2 my-1 d-flex align-items-center">
+                            <div class="">
+                                <label class="fw-bolder">Tipo Reporte</label>
+                                <div class="dm-select" style="width: 180px;">
+                                    <select name="select-search" class="select-search form-control">
+                                    <option value="01">All</option>
+                                    <option value="02">Easy</option>
+                                    <option value="03" selected>Meduim</option>
+                                    <option value="04">Option 4</option>
+                                    <option value="05">Option 5</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="ml-2 ms-2">
+                                <label class="fw-bolder">Tipo Ingreso</label>
+                                <div class="dm-select" style="width: 180px;">
+                                    <select name="select-search" class="select-search form-control">
+                                    <option value="01">All</option>
+                                    <option value="02">Easy</option>
+                                    <option value="03" selected>Meduim</option>
+                                    <option value="04">Option 4</option>
+                                    <option value="05">Option 5</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="ml-2 ms-2">
+                                <label class="fw-bolder">Estado</label>
+                                <div class="dm-select" style="width: 180px;">
+                                    <select name="select-search" class="select-search form-control">
+                                        <option value="01">All</option>
+                                        <option value="02">deactivate</option>
+                                        <option value="03" selected>open</option>
+                                        <option value="04">close</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row p-2 my-1">
+                            <div class="col-4">
+                                <span class="fw-bolder">Solicitado por:</span>
+                                <div class="d-flex align-items-center">
+                                    <img height="24" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=@(Model.Nombre.Trim().Replace(" ", "+"))' alt="tdi.png">
+                                    <div class="mx-1">@Model.Nombre</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <span class="fw-bolder">Fecha Registro:</span>
+                                <div class="d-flex align-items-center">
+                                    <div class="mx-1 text-uppercase">@Model.FechaRegistro?.ToString("dd MMMM yyyy")</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <span class="fw-bolder">Ultima Actualizacion:</span>
+                                <div class="d-flex align-items-center">
+                                    <div class="mx-1 text-uppercase">@Model.FechaRegistro?.ToString("dd MMMM yyyy")</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-2 my-1">
+                            <div class="col-4">
+                                <span class="fw-bolder">Correo:</span>
+                                <div class="d-flex align-items-center">
+                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.Correo) ? Model.Correo : "*No registrado")</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <span class="fw-bolder">Celular:</span>
+                                <div class="d-flex align-items-center">
+                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.Celular) ? Model.Celular : "*No registrado")</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <span class="fw-bolder">Telefono:</span>
+                                <div class="d-flex align-items-center">
+                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.Telefono) ? Model.Telefono : "*No registrado")</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-2 my-1">
+                            <div class="col-4">
+                                <span class="fw-bolder">Municipio:</span>
+                                <div class="d-flex align-items-center">
+                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.Municipio) ? Model.Municipio : "*No registrado")</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <span class="fw-bolder">Localidad:</span>
+                                <div class="d-flex align-items-center">
+                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.Localidad) ? Model.Localidad : "*No registrado")</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <span class="fw-bolder">Colonia:</span>
+                                <div class="d-flex align-items-center">
+                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.Colonia) ? Model.Colonia : "*No registrado")</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-2 my-1">
+                            <div class="col-4">
+                                <span class="fw-bolder">Calle:</span>
+                                <div class="d-flex align-items-center">
+                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.Calle) ? Model.Calle : "*No registrado")</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <span class="fw-bolder">Entre Calles:</span>
+                                <div class="d-flex align-items-center">
+                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.EntreCalles) ? Model.EntreCalles : "*No registrado")</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-2 my-1 ticket-details-contact__overview">
+                            <h4 class="ticket-details-contact__overview-title">Overview :</h4>
+                            <p>There are have a many variations of passages of Lorem Ipsum available, but the randomised
+                                words which don't look even slightly believable. If you are going to sdsss embarrassing
+                                hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-4">
+                    <div class="p-4 border rounded bg-white">
+                        <h4>Documentos Adjuntos:</h4>
+                        <div class="ticket-file-attach__wrapper">
+                            <div class="ticket-file-attach__items">
+                                <div class="ticket-file-attach__items_detail">
+                                    <img src="~/img/pdf.png" alt="pdf.png">
+                                    <div class="div">
+                                    <h6>Product-guidelines.pdf</h6>
+                                    <span>7.05 MB</span>
+                                    </div>
+                                </div>
+                                <div class="ticket-file-attach__items_download">
+                                    <a href="#">
+                                        <img src="~/img/svg/download.svg" alt="download" class="svg">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ticket-file-attach__items">
+                                <div class="ticket-file-attach__items_detail">
+                                    <img src="~/img/zip.png" alt="zip.png">
+                                    <div class="div">
+                                    <h6>Main-admin-design.zip</h6>
+                                    <span>522 KB</span>
+                                    </div>
+                                </div>
+                                <div class="ticket-file-attach__items_download">
+                                    <a href="#">
+                                        <img src="~/img/svg/download.svg" alt="download" class="svg">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ticket-file-attach__items">
+                                <div class="ticket-file-attach__items_detail">
+                                    <img src="~/img/psd.png" alt="psd">
+                                    <div class="div">
+                                    <h6>Admin-wireframe.psd</h6>
+                                    <span>5 MB</span>
+                                    </div>
+                                </div>
+                                <div class="ticket-file-attach__items_download">
+                                    <a href="#">
+                                        <img src="~/img/svg/download.svg" alt="download" class="svg">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8 mb-4">
+                    <div class="p-4 border rounded bg-white ticket-chat-wrapper pt-25 pb-30">
+                        <h4>Entradas</h4>
+                        <div class="ticket-search-body">
+                            <ul class="ticket-user-list pe-15">
+                                <li class="ticket-user-list-item">
+                                    <div class="ticket-user-list-item__wrapper">
+                                        <div class="avatar avatar-circle ms-0">
+                                            <img height="32" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=Nombre+Prueba' alt="avatar">
+                                        </div>
+                                        <div class="ticket-users-list-body">
+                                            <div class="ticket-users-list-body-title">
+                                                <h6>Kellie Marquot</h6>
+                                                <div class="text-limit" data-maxlength="10">
+                                                    <p class="mb-0">There are have a many variations of passages.</p>
+                                                </div>
+                                            </div>
+                                            <div class="last-chat-time unread">
+                                                <small>1 hour ago</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="ticket-user-list-item">
+                                    <div class="ticket-user-list-item__wrapper">
+                                        <div class="avatar avatar-circle ms-0">
+                                            <img height="32" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=Nombre+Prueba' alt="avatar">
+                                        </div>
+                                        <div class="ticket-users-list-body">
+                                            <div class="ticket-users-list-body-title">
+                                                <h6>Daniel Pink</h6>
+                                                <div class="text-limit" data-maxlength="10">
+                                                    <p class="mb-0">There are have a many.</p>
+                                                </div>
+                                            </div>
+                                            <div class="last-chat-time unread">
+                                                <small>7 hour ago</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="ticket-user-list-item">
+                                    <div class="ticket-user-list-item__wrapper">
+                                        <div class="avatar avatar-circle ms-0">
+                                            <img height="32" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=Nombre+Prueba' alt="avatar">
+                                        </div>
+                                        <div class="ticket-users-list-body">
+                                            <div class="ticket-users-list-body-title">
+                                                <h6>Kellie Marquot</h6>
+                                                <div class="text-limit" data-maxlength="10">
+                                                    <p class="mb-0">All the Lorem Ipsum generators on the Internet tend There are have a many variations of passages.</p>
+                                                </div>
+                                            </div>
+                                            <div class="last-chat-time unread">
+                                                <small>1 hour ago</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="ticket-user-list-item">
+                                    <div class="ticket-user-list-item__wrapper">
+                                        <div class="avatar avatar-circle ms-0">
+                                            <img height="32" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=Nombre+Prueba' alt="avatar">
+                                        </div>
+                                        <div class="ticket-users-list-body">
+                                            <div class="ticket-users-list-body-title">
+                                                <h6>Meyri Carles</h6>
+                                                <div class="text-limit" data-maxlength="10">
+                                                    <p class="mb-0"><span>Lorem ipsum dolor us was they amet</span>...</p>
+                                                </div>
+                                            </div>
+                                            <div class="last-chat-time unread">
+                                                <small>1 hour ago</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ticket-search-header">
+                            <form action="/" class="d-flex align-items-center p-2 mb-2 border rounded-0">
+                                <img class="svg" src="~/img/svg/message-square.svg" alt="mensaje">
+                                <input class="form-control me-sm-2 border-0 box-shadow-none" type="search" placeholder="Escribe tu mensaje..." aria-label="Search"/>
+                            </form>
+                            <button type="button" class="border btn-primary wh-50 px-4 py-1 bg-success">
+                                Enviar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body
+    {
+        background-color: whitesmoke !important;
+    }
+
+    .ticket-file-attach__items:not(:last-child) {
+        margin-bottom: 20px;
+    }
+
+    .ticket-file-attach__items {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .ticket-file-attach__items_detail {
+        display: inline-flex;
+        align-items: center;
+    }
+
+
+
+    .ticket-user-list .ticket-user-list-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+    }
+
+    .ticket-user-list .ticket-user-list-item .ticket-user-list-item__wrapper
+    {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    .ticket-user-list .ticket-user-list-item .ticket-user-list-item__wrapper .avatar
+    {
+        margin-right: 0.75rem;
+    }
+
+    .ticket-user-list .ticket-user-list-item .ticket-users-list-body {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .ticket-user-list .ticket-user-list-item .ticket-user-list-item__wrapper .ticket-users-list-body-title {
+        width: calc(100% - 6.5rem);
+    }
+
+    .ticket-user-list .ticket-user-list-item .ticket-user-list-item__wrapper .ticket-users-list-body-title h6 {
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.4285714286;
+        color: var(--color-dark);
+    }
+
+    .ticket-user-list .ticket-user-list-item .ticket-user-list-item__wrapper .ticket-users-list-body .last-chat-time {
+        width: 6rem;
+        text-align: end;
+    }
+
+</style>
+
+@section scripts
+{
+    @* <script>
+        jQuery(document).ready(function()
+        {
+            setTimeout( function()
+            {
+                Swal.fire({
+                    title: "Hola mundo",
+                    icon: "success",
+                    confirmButtonText: 'Aceptar'
+                });
+            }, 500);
+        });
+    </script> *@
+}

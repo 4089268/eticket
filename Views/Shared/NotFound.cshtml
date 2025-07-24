@@ -1,0 +1,23 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Page Not Found";
+}
+
+<div class="contents">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="min-vh-100 content-center">
+                    <div class="error-page text-center">
+                        <img src="~/img/svg/404.svg" alt="404" class="svg">
+                        <div class="h2 m-2">@(ViewBag.ErrorTitle ?? "Elemento no encontrado")</div>
+                        <h5 class="fw-500">@(ViewBag.ErrorMessage ?? "Sorry! the page you are looking for doesn't exist.")</h5>
+                        <div class="content-center mt-30">
+                            <a href="@Url.Action("Index", "Home")">Regresar a Inicio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

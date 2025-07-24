@@ -76,6 +76,28 @@ namespace eticket.Controllers
             });
         }
 
+        [HttpGet("{folioReporteArg}")]
+        public IActionResult MostrarReporte([FromRoute] string folioReporteArg)
+        {
+            var folioReporte = long.TryParse(folioReporteArg, out long f) ? f : -1;
+            if (folioReporte == -1)
+            {
+                ViewBag.ErrorTitle = "Folio invalido";
+                ViewBag.ErrorMessage = "El formato del folio no es valido";
+                return View("NotFound");
+            }
+
+            this.logger.LogInformation("Mostrando reporte con folio: {folio}", folioReporte);
+
+            var reporte = this.ticketsDBContext.OprReportes.FirstOrDefault(item => item.Folio == folioReporte);
+            if (reporte == null)
+            {
+                ViewBag.ErrorMessage = $"No existe el reporte con folio : {folioReporte}";
+                return View("NotFound");
+            }
+
+            return View(reporte);
+        }
 
         #region PartialViews
         [HttpGet("partial-view/menu")]

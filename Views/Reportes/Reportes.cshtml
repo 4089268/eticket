@@ -61,8 +61,7 @@
                     <td>@r.FechaRegistro?.ToString("dd/MM/yyyy HH:mm")</td>
                     <td>@r.IdGeneroNavigation?.Usuario</td>
                     <td>
-                        <!-- Optional: View or Edit links -->
-                        <a asp-action="Detalle" asp-route-id="@r.Folio" class="btn btn-sm btn-primary">Ver</a>
+                        <a asp-action="MostrarReporte" asp-route-folioReporteArg="@r.Folio" class="btn btn-sm btn-primary">Mostrar</a>
                     </td>
                 </tr>
             }
