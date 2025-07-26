@@ -1,4 +1,5 @@
-﻿@model OprReporte
+﻿@using eticket.ViewModels
+@model OprReporte
 @{
     ViewData["Title"] = $"Reporte #{Model.Folio}";
 }
@@ -19,18 +20,27 @@
     <span class="breadcrumb-item active" aria-current="page">Reporte</span>
 </nav>
 
-<section class="contents mb-4">
-    <div class="support-details mt-xl-20">
+<section class="mb-2">
+    <div class="support-details">
         <div class="container-fluid">
-            <div class="row">
-                @* <div class="col-lg-12">
-                    <div class="mb-2">
-                        <a asp-action="Index" class="text-decoration-none text-black">
-                            <img src="~/img/svg/arrow-left.svg" alt="arrow-left" class="svg" />
-                            <span>Regresar</span>
-                        </a>
+            <div class="row g-2">
+                <div class="col-12">
+                    <div class="p-2 border rounded bg-white d-flex align-items-center justify-content-between">
+                        <div>
+                            <a asp-action="Index" class="text-decoration-none text-black">
+                                <i class="las la-angle-left"></i>
+                                <span>Regresar</span>
+                            </a>
+                        </div>
+
+                        <div>
+                            <a href="#" class="btn px-15 btn-primary" data-bs-toggle="modal" data-bs-target="#nueva-entrada-modal">
+                                <i class="las la-plus fs-16"></i>
+                                <span>Nueva Entrada</span>
+                            </a>
+                        </div>
                     </div>
-                </div> *@
+                </div>
 
                 <div class="col-lg-8 col-sm-12 mb-4">
                     <div class="p-4 border rounded bg-white">
@@ -164,7 +174,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4 mb-4">
+                <div class="col-lg-4 col-sm-12 mb-4">
                     <div class="p-4 border rounded bg-white">
                         <h4>Documentos Adjuntos:</h4>
                         <div class="ticket-file-attach__wrapper">
@@ -218,13 +228,10 @@
     </div>
 </section>
 
-<section id="table-detaills" class="container mt-4">
+<section id="table-detaills" class="container mt-2">
     <div class="row justify-content-center align-items-center g-2 p-2 border rounded bg-white">
         <div class="col-12 d-flex align-items-center justify-content-between my-2">
             <div class="h4">Entradas</div>
-            <a asp-action="Create" class="btn btn-success">
-                <i class="bi bi-plus-circle"></i> Create New
-            </a>
         </div>
 
         <div class="table-responsive col-12">
@@ -246,9 +253,9 @@
                         <tr>
                             <td>@i</td>
                             <td>@Html.DisplayFor(item => detReporte.IdEstatus)</td>
-                            <td>@Html.DisplayFor(item => detReporte.IdOperador)</td>
+                            <td>@detReporte.IdOperadorNavigation?.FullName</td>
                             <td>@Html.DisplayFor(item => detReporte.Fecha)</td>
-                            <td>@Html.DisplayFor(item => detReporte.Observaciones)</td>
+                            <td>@Html.Raw(detReporte.Observaciones)</td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <a asp-action="Details" asp-route-id="@detReporte.Id" class="btn btn-info btn-sm">
@@ -265,88 +272,38 @@
     </div>
 </section>
 
-<section class="container mt-4">
+<section class="container mt-2">
     <div class="row">
         <div class="col-12 mb-4">
             <div class="p-4 border rounded bg-white ticket-chat-wrapper">
                 <h4>Entradas</h4>
                 <div class="ticket-search-body">
-                    <ul class="ticket-user-list pe-15">
-                        <li class="ticket-user-list-item">
-                            <div class="ticket-user-list-item__wrapper">
-                                <div class="avatar avatar-circle ms-0">
-                                    <img height="32" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=Nombre+Prueba' alt="avatar">
-                                </div>
-                                <div class="ticket-users-list-body">
-                                    <div class="ticket-users-list-body-title">
-                                        <h6>Kellie Marquot</h6>
-                                        <div class="text-limit" data-maxlength="10">
-                                            <p class="mb-0">There are have a many variations of passages.</p>
+                    <ul class="ticket-user-list pe-15 p-4">
+                        @foreach (var detReporte in DetalleReporte())
+                        {
+                            var _nombreOperador = detReporte.IdOperadorNavigation?.FullName ?? "*Desconocido";
+                            <li class="ticket-user-list-item">
+                                <div class="ticket-user-list-item__wrapper">
+                                    <div class="avatar avatar-circle ms-0">
+                                        <img height="32" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=@(_nombreOperador.Replace(" ", "+"))' alt="avatar">
+                                    </div>
+                                    <div class="ticket-users-list-body">
+                                        <div class="ticket-users-list-body-title">
+                                            <h6>@_nombreOperador</h6>
+                                            <div class="text-limit" data-maxlength="10">
+                                                <p class="mb-0">@Html.Raw(detReporte.Observaciones)</p>
+                                            </div>
+                                        </div>
+                                        <div class="last-chat-time unread">
+                                            <small class="time">@detReporte.Fecha.ToLongDateString()</small>
                                         </div>
                                     </div>
-                                    <div class="last-chat-time unread">
-                                        <small>1 hour ago</small>
-                                    </div>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="ticket-user-list-item">
-                            <div class="ticket-user-list-item__wrapper">
-                                <div class="avatar avatar-circle ms-0">
-                                    <img height="32" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=Nombre+Prueba' alt="avatar">
-                                </div>
-                                <div class="ticket-users-list-body">
-                                    <div class="ticket-users-list-body-title">
-                                        <h6>Daniel Pink</h6>
-                                        <div class="text-limit" data-maxlength="10">
-                                            <p class="mb-0">There are have a many.</p>
-                                        </div>
-                                    </div>
-                                    <div class="last-chat-time unread">
-                                        <small>7 hour ago</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="ticket-user-list-item">
-                            <div class="ticket-user-list-item__wrapper">
-                                <div class="avatar avatar-circle ms-0">
-                                    <img height="32" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=Nombre+Prueba' alt="avatar">
-                                </div>
-                                <div class="ticket-users-list-body">
-                                    <div class="ticket-users-list-body-title">
-                                        <h6>Kellie Marquot</h6>
-                                        <div class="text-limit" data-maxlength="10">
-                                            <p class="mb-0">All the Lorem Ipsum generators on the Internet tend There are have a many variations of passages.</p>
-                                        </div>
-                                    </div>
-                                    <div class="last-chat-time unread">
-                                        <small>1 hour ago</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="ticket-user-list-item">
-                            <div class="ticket-user-list-item__wrapper">
-                                <div class="avatar avatar-circle ms-0">
-                                    <img height="32" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=Nombre+Prueba' alt="avatar">
-                                </div>
-                                <div class="ticket-users-list-body">
-                                    <div class="ticket-users-list-body-title">
-                                        <h6>Meyri Carles</h6>
-                                        <div class="text-limit" data-maxlength="10">
-                                            <p class="mb-0"><span>Lorem ipsum dolor us was they amet</span>...</p>
-                                        </div>
-                                    </div>
-                                    <div class="last-chat-time unread">
-                                        <small>1 hour ago</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
+                            </li>
+                        }
                     </ul>
                 </div>
-                <div class="ticket-search-header">
+                @* <div class="ticket-search-header">
                     <form action="/" class="d-flex align-items-center p-2 mb-2 border rounded-0">
                         <img class="svg" src="~/img/svg/message-square.svg" alt="mensaje">
                         <input class="form-control me-sm-2 border-0 box-shadow-none" type="search" placeholder="Escribe tu mensaje..." aria-label="Search"/>
@@ -354,12 +311,30 @@
                     <button type="button" class="border btn-primary wh-50 px-4 py-1 bg-success">
                         Enviar
                     </button>
-                </div>
+                </div> *@
             </div>
         </div>
     </div>
 </section>
 
+
+<!-- Modal Nuevo Det Reporte-->
+<div class="modal fade new-member nueva-entrada-modal" id="nueva-entrada-modal" role="dialog" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content radius-xl">
+            <div class="modal-header">
+                <h4 class="modal-title fw-500" id="staticBackdropLabel">Nueva Entrada</h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <img src="~/img/svg/x.svg" alt="x" class="svg">
+                </button>
+            </div>
+            <div class="modal-body" id="body-modal">
+                @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "")
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
 
 
 <style>
@@ -435,17 +410,95 @@
 
 @section scripts
 {
-    @* <script>
+    <script>
+        let modal = undefined;
+        const folioReporte = '@Html.Raw(Model.Folio)';
+
+        function cargarFormulario()
+        {
+            $("#body-modal").load('@Url.Action("FormularioNuevoDetReporte")', null, onFormularioCompleted);
+        }
+
+        function onFormularioCompleted(resp, status, request)
+        {
+            $('#observaciones').trumbowyg({
+                svgPath: '../img/svg/icons.svg',
+                btns: [
+                    ['formatting'],
+                    ['strong', 'em', 'del'],
+                    ['superscript', 'subscript'],
+                    ['link'],
+                    ['base64'],
+                    ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+                    ['unorderedList', 'orderedList'],
+                    ['emoji']
+                ]
+            });
+        }
+
+        function submitReporteForm(event)
+        {
+            event.preventDefault();
+
+            const url = `/reportes/${folioReporte}/entrada`;
+            const method = 'POST';
+            const form = $(event.target);
+
+            // clear errors messags
+            $("span.text-danger").text("");
+
+            $.ajax({
+                url: url,
+                type: method,
+                data: form.serialize(),
+                success: function(response) {
+                    modal.hide();
+                    Swal.fire({
+                        title: "Entrada registrada",
+                        icon: "success",
+                        confirmButtonText: 'Aceptar'
+                    }).then((result) => {
+                        window.location.reload();
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr, error);
+                    if(xhr.status == 422)
+                    {
+                        const {errors} = xhr.responseJSON;
+                        errors.forEach(err => {
+                            const errorSpan = $(`span[data-valmsg-for="${err.field}"]`);
+                            errorSpan.text(err.message);
+                        });
+                    }
+                    else
+                    {
+                        let titleMessage = "Error no controlado al registrar la entrada";
+                        if(xhr.responseJSON)
+                        {
+                            const { title } = xhr.responseJSON;
+                            if(title)
+                            {
+                                titleMessage = title;
+                            }
+
+                        }
+                        Swal.fire({
+                            title: titleMessage,
+                            icon: "error"
+                        });
+                    }
+                }
+            });
+        }
+
         jQuery(document).ready(function()
         {
-            setTimeout( function()
+            if (document.getElementsByClassName("nueva-entrada-modal").length)
             {
-                Swal.fire({
-                    title: "Hola mundo",
-                    icon: "success",
-                    confirmButtonText: 'Aceptar'
-                });
-            }, 500);
+                modal = new bootstrap.Modal(document.getElementById("nueva-entrada-modal"));
+            }
+            cargarFormulario();
         });
-    </script> *@
+    </script>
 }

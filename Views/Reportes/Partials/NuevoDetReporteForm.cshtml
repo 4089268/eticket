@@ -1,0 +1,28 @@
+﻿@model DetReporteRequest
+@using eticket.ViewModels;
+
+<div class="fluid-container">
+    <form onsubmit="submitReporteForm(event)">
+        <div class="row">
+            <div class="col-4">
+                <label asp-for="IdEstatus" class="form-label"></label>
+                <select asp-for="IdEstatus" asp-items="ViewBag.EstatusList" class="form-select">
+                    <option value="">-- Selecciona un estatus --</option>
+                </select>
+                <span asp-validation-for="IdEstatus" class="text-danger"></span>
+            </div>
+            <div class="col-12 mt-4">
+                <label asp-for="Observaciones" class="form-label"></label>
+                <textarea asp-for="Observaciones" id="observaciones" class="form-control" style="min-width: 12rem;" required></textarea>
+                <span asp-validation-for="Observaciones" class="text-danger"></span>
+            </div>
+
+            <div class="col-12 d-flex flex-column align-items-center">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i>
+                    <span class="h-5">Guardar</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

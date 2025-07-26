@@ -25,6 +25,11 @@ public partial class SysUsuario
 
     public string? Rol { get; set; }
 
+    public string FullName
+    {
+        get => string.Join(" ", [Nombre, Apellido]);
+    }
+
     public virtual ICollection<OprDetReporte> OprDetReportes { get; set; } = new List<OprDetReporte>();
 
     public virtual ICollection<OprReporte> OprReportes { get; set; } = new List<OprReporte>();

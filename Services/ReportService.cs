@@ -79,4 +79,16 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
         }
     }
 
+    public async Task<OprDetReporte> AlmacenarEntradaReporte(DetReporteRequest request)
+    {
+        // * validar folio
+        var reporte = await this.ObtenerReportePorFolio(request.Folio);
+
+        var oprDetReporte = DetReporteAdapter.ToEntity(request);
+
+        this.context.OprDetReportes.Add(oprDetReporte);
+        await this.context.SaveChangesAsync();
+
+        return oprDetReporte;
+    }
 }
