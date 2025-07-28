@@ -79,16 +79,15 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
         }
     }
 
-    public async Task<OprDetReporte> AlmacenarEntradaReporte(DetReporteRequest request)
+    public async Task<OprDetReporte> AlmacenarEntradaReporte(DetReporteRequest detReportRequest)
     {
-        // * validar folio
-        var reporte = await this.ObtenerReportePorFolio(request.Folio);
+        // * validar folio existe
+        var _ = this.context.OprReportes.FirstOrDefault(r => r.Folio == detReportRequest.Folio)
+            ?? throw new InvalidOperationException($"No se encontro reporte con folio: {detReportRequest.Folio}.");
 
-        var oprDetReporte = DetReporteAdapter.ToEntity(request);
-
-        this.context.OprDetReportes.Add(oprDetReporte);
+        var reporte = this.context.OprDetReportes.Add(detReportRequest.ToEntity());
         await this.context.SaveChangesAsync();
 
-        return oprDetReporte;
+        return reporte.Entity;
     }
 }

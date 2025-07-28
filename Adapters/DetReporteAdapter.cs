@@ -1,14 +1,12 @@
 using System;
-using Azure.Core;
 using eticket.Models;
 using eticket.ViewModels;
 
 namespace eticket.Adapters;
 
-public class DetReporteAdapter
+public static class DetReporteAdapter
 {
-
-    public static OprDetReporte ToEntity(DetReporteRequest request)
+    public static OprDetReporte ToEntity(this DetReporteRequest request)
     {
         var oprDetReporte = new OprDetReporte
         {
