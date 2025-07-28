@@ -1,3 +1,8 @@
+*, :root
+{
+  --color-primary: #759cc2 !important;
+  --bg-primary-hover: #6085aa !important;
+}
 html {
   font-size: 14px;
 }

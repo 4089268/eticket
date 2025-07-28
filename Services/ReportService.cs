@@ -46,7 +46,7 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
     /// <returns>folio del reporte</returns>
     public async Task<long> AlmacenarReporteInicial(ReporteRequest reporteRequest)
     {
-        var reporte = ReporteAdapter.ToEntity(reporteRequest);
+        var reporte = reporteRequest.ToEntity();
         reporte.FechaRegistro = DateTime.UtcNow;
 
         using (var transaction = await this.context.Database.BeginTransactionAsync())

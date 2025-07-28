@@ -4,9 +4,9 @@ using eticket.ViewModels;
 
 namespace eticket.Adapters;
 
-public class ReporteAdapter
+public static class ReporteAdapter
 {
-    public static OprReporte ToEntity(ReporteRequest request)
+    public static OprReporte ToEntity(this ReporteRequest request)
     {
         return new OprReporte
         {

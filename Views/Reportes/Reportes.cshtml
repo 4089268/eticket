@@ -49,17 +49,37 @@
     </table>
 </section>
 
+<!-- Modal Nuevo Det Reporte-->
+<div class="modal fade new-member nuevo-reporte-modal" id="nuevo-reporte-modal" role="dialog" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content radius-xl">
+            <div class="modal-header">
+                <h4 class="modal-title fw-500" id="staticBackdropLabel">Nuevo Reporte</h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <img src="~/img/svg/x.svg" alt="x" class="svg">
+                </button>
+            </div>
+            <div class="modal-body" id="body-modal">
+                @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "")
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+
 <style>
-    #form-section .menu-item:hover {
-        background-color: #5076a1 !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        transition: background 0.2s, box-shadow 0.2s;
+    .trumbowyg-editor, .trumbowyg-textarea, .trumbowyg-box
+    {
+        min-height: 200px !important;
     }
 </style>
 
 @section scripts
 {
     <script>
+        let modal = undefined;
+        let currentReportTypeId = undefined;
+
         function displayMenu()
         {
             $("#form-section").load('@Url.Action("NuevoReporteMenuPartialView")');
@@ -67,11 +87,11 @@
 
         function displayForm(reporteTipeId)
         {
+            currentReportTypeId = reporteTipeId;
+
             const url = '@Url.Action("NuevoReporteFormPartialView", "Reportes", new { tipoReporteId = "__PLACEHOLDER__" })'
             .replace("__PLACEHOLDER__", reporteTipeId);
-            $("#form-section").load(url);
-
-            $("#nuevoReporteForm").on('submit', submitNuevoReporte);
+            $("#body-modal").load(url, null, onFormularioLoadedCompleted);
         }
 
         function submitNuevoReporte(event)
@@ -90,6 +110,8 @@
                 type: method,
                 data: form.serialize(),
                 success: function(response) {
+                    modal.hide();
+                    
                     var {folio} = response;
                     Swal.fire({
                         title: "Reporte almacenado",
@@ -97,10 +119,12 @@
                         icon: "success",
                         confirmButtonText: 'Aceptar'
                     }).then((result) => {
+                        // TODO: Reload the table
                         window.location.reload();
                     });
                 },
                 error: function(xhr, status, error) {
+                    console.error(xhr, error);
                     if(xhr.status == 422)
                     {
                         const {errors} = xhr.responseJSON;
@@ -111,22 +135,56 @@
                     }
                     else
                     {
+                        let titleMessage = "Error no controlado al registrar la entrada";
+                        if(xhr.responseJSON)
+                        {
+                            const { title } = xhr.responseJSON;
+                            if(title)
+                            {
+                                titleMessage = title;
+                            }
+
+                        }
                         Swal.fire({
-                            title: "Error no controlado al registrar el reporte",
+                            title: titleMessage,
                             icon: "error"
                         });
-                        console.error(xhr, error);
                     }
                 }
             });
         }
-    
+
+        function onFormularioLoadedCompleted(resp, status, request)
+        {
+            $('#Observaciones').trumbowyg({
+                svgPath: '../img/svg/icons.svg',
+                btns: [
+                    ['formatting'],
+                    ['strong', 'em', 'del'],
+                    ['superscript', 'subscript'],
+                    ['link'],
+                    ['base64'],
+                    ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+                    ['unorderedList', 'orderedList'],
+                    ['emoji']
+                ]
+            });
+
+            $("#nuevoReporteForm").on('submit', submitNuevoReporte);
+
+            modal.show();
+        }
+
         jQuery(document).ready(function()
         {
-            setTimeout( function()
+            displayMenu();
+
+            // * init the modal
+            if (document.getElementsByClassName("nuevo-reporte-modal").length)
             {
-                displayMenu();
-            }, 500);
+                modal = new bootstrap.Modal(document.getElementById("nuevo-reporte-modal"));
+            }
         });
     </script>
+    @* <script src="~/js/reportes.js"></script> *@
 }

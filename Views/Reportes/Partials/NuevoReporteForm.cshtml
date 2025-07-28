@@ -1,121 +1,115 @@
 ﻿@model eticket.ViewModels.ReporteRequest
 
-<div class="container col-12 border rounded p-4 bg-white shadow-sm">
-    <div class="row my-1">
-        <div class="col-12 d-flex align-items-center">
-            
-            <div class="mb-2">
-                <div class="text-decoration-none text-black" onclick="displayMenu()" style="cursor: pointer;">
-                    <img src="~/img/svg/arrow-left.svg" alt="arrow-left" class="svg" />
-                    <span>Regresar</span>
-                </div>
-            </div>
-
-            <h3 class="mx-3">Nuevo Reporte: @Model.TipoReporte?.Descripcion</h3>
-        </div>
-    </div>
-
-    <div class="row my-1 pt-2">
-        <form id="nuevoReporteForm" class="col-12" onsubmit="submitNuevoReporte(event)">
-            <div id="form-error" class="alert alert-danger d-none">Esto es error</div>
-
+<div class="fluid-container">
+    <form id="nuevoReporteForm" onsubmit="submitNuevoReporte(event)">
+        <div class="row">
+            @* <div class="col-12">
+                <h4 class="text-opacity-50">Reporte @Model.TipoReporte?.Descripcion</h4>
+            </div> *@
+            <div id="form-error" class="col-12 alert alert-danger d-none">Esto es error</div>
             @Html.AntiForgeryToken()
-            <div class="row">
-                <div class="col-md-6">
-                    <label asp-for="Nombre" class="form-label"></label>
-                    <input asp-for="Nombre" class="form-control" required />
-                    <span asp-validation-for="Nombre" class="text-danger"></span>
-                </div>
-        
-                <div class="col-md-6">
-                    <label asp-for="Celular" class="form-label"></label>
-                    <input type="number" asp-for="Celular" class="form-control" />
-                    <span asp-validation-for="Celular" class="text-danger"></span>
-                </div>
-        
-                <div class="col-md-6">
-                    <label asp-for="Correo" class="form-label"></label>
-                    <input asp-for="Correo" class="form-control" />
-                    <span asp-validation-for="Correo" class="text-danger"></span>
-                </div>
-        
-                <div class="col-md-6">
-                    <label asp-for="Telefono" class="form-label"></label>
-                    <input asp-for="Telefono" class="form-control" />
-                    <span asp-validation-for="Telefono" class="text-danger"></span>
-                </div>
-        
-                <div class="col-md-6">
-                    <label asp-for="Calle" class="form-label"></label>
-                    <input asp-for="Calle" class="form-control" required />
-                    <span asp-validation-for="Calle" class="text-danger"></span>
-                </div>
-        
-                <div class="col-md-6">
-                    <label asp-for="EntreCalles" class="form-label"></label>
-                    <input asp-for="EntreCalles" class="form-control" />
-                    <span asp-validation-for="EntreCalles" class="text-danger"></span>
-                </div>
-        
-                <div class="col-md-6">
-                    <label asp-for="Colonia" class="form-label"></label>
-                    <input asp-for="Colonia" class="form-control" required />
-                    <span asp-validation-for="Colonia" class="text-danger"></span>
-                </div>
-        
-                <div class="col-md-6">
-                    <label asp-for="Localidad" class="form-label"></label>
-                    <input asp-for="Localidad" class="form-control" required />
-                    <span asp-validation-for="Localidad" class="text-danger"></span>
-                </div>
-        
-                <div class="col-md-6">
-                    <label asp-for="Municipio" class="form-label"></label>
-                    <input asp-for="Municipio" class="form-control" required />
-                    <span asp-validation-for="Municipio" class="text-danger"></span>
-                </div>
-        
-                <div class="col-md-3">
-                    <label asp-for="GpsLat" class="form-label"></label>
-                    <input type="number" asp-for="GpsLat" class="form-control" />
-                    <span asp-validation-for="GpsLat" class="text-danger"></span>
-                </div>
-        
-                <div class="col-md-3">
-                    <label asp-for="GpsLon" class="form-label"></label>
-                    <input type="number" asp-for="GpsLon" class="form-control" />
-                    <span asp-validation-for="GpsLon" class="text-danger"></span>
-                </div>
-        
-                <div class="col-md-3">
-                    <label asp-for="IdEstatus" class="form-label"></label>
-                    <select asp-for="IdEstatus" asp-items="ViewBag.EstatusList" class="form-select">
-                        <option value="">-- Selecciona un estatus --</option>
-                    </select>
-                    <span asp-validation-for="IdEstatus" class="text-danger"></span>
-                </div>
+        </div>
 
-                <div class="col-md-3">
-                    <label asp-for="IdTipoEntrada" class="form-label"></label>
-                    <select asp-for="IdTipoEntrada" asp-items="ViewBag.TipoEntradaList" class="form-select">
-                        <option value="">-- Selecciona un estatus --</option>
-                    </select>
-                    <span asp-validation-for="IdTipoEntrada" class="text-danger"></span>
-                </div>
-        
-                <div class="col-md-12">
-                    <label asp-for="Observaciones" class="form-label"></label>
-                    <textarea asp-for="Observaciones" class="form-control"></textarea>
-                    <span asp-validation-for="Observaciones" class="text-danger"></span>
-                </div>
-
-                <input asp-for="IdTipoReporte" type="hidden" />
-        
-                <div class="col-12 mt-3 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-lg btn-success px-4">Guardar</button>
-                </div>
+        <div class="row g-2">
+            <div class="col-md-9">
+                <label asp-for="Nombre" class="form-label"></label>
+                <input asp-for="Nombre" class="form-control" required />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
-        </form>
-    </div>
+    
+            <div class="col-md-4">
+                <label asp-for="Celular" class="form-label"></label>
+                <input type="number" asp-for="Celular" class="form-control" />
+                <span asp-validation-for="Celular" class="text-danger"></span>
+            </div>
+    
+            <div class="col-md-4">
+                <label asp-for="Correo" class="form-label"></label>
+                <input asp-for="Correo" class="form-control" />
+                <span asp-validation-for="Correo" class="text-danger"></span>
+            </div>
+    
+            <div class="col-md-4">
+                <label asp-for="Telefono" class="form-label"></label>
+                <input type="number" asp-for="Telefono" class="form-control" />
+                <span asp-validation-for="Telefono" class="text-danger"></span>
+            </div>
+    
+            <div class="col-md-4">
+                <label asp-for="Calle" class="form-label"></label>
+                <input asp-for="Calle" class="form-control" required />
+                <span asp-validation-for="Calle" class="text-danger"></span>
+            </div>
+    
+            <div class="col-md-8">
+                <label asp-for="EntreCalles" class="form-label"></label>
+                <input asp-for="EntreCalles" class="form-control" />
+                <span asp-validation-for="EntreCalles" class="text-danger"></span>
+            </div>
+    
+            <div class="col-md-4">
+                <label asp-for="Colonia" class="form-label"></label>
+                <input asp-for="Colonia" class="form-control" required />
+                <span asp-validation-for="Colonia" class="text-danger"></span>
+            </div>
+    
+            <div class="col-md-4">
+                <label asp-for="Localidad" class="form-label"></label>
+                <input asp-for="Localidad" class="form-control" required />
+                <span asp-validation-for="Localidad" class="text-danger"></span>
+            </div>
+    
+            <div class="col-md-4">
+                <label asp-for="Municipio" class="form-label"></label>
+                <input asp-for="Municipio" class="form-control" required />
+                <span asp-validation-for="Municipio" class="text-danger"></span>
+            </div>
+    
+            @* <div class="col-md-3">
+                <label asp-for="GpsLat" class="form-label"></label>
+                <input type="number" asp-for="GpsLat" class="form-control" />
+                <span asp-validation-for="GpsLat" class="text-danger"></span>
+            </div>
+    
+            <div class="col-md-3">
+                <label asp-for="GpsLon" class="form-label"></label>
+                <input type="number" asp-for="GpsLon" class="form-control" />
+                <span asp-validation-for="GpsLon" class="text-danger"></span>
+            </div> *@
+    
+            @* <div class="col-md-3">
+                <label asp-for="IdEstatus" class="form-label"></label>
+                <select asp-for="IdEstatus" asp-items="ViewBag.EstatusList" class="form-select">
+                    <option value="">-- Selecciona un estatus --</option>
+                </select>
+                <span asp-validation-for="IdEstatus" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="IdTipoEntrada" class="form-label"></label>
+                <select asp-for="IdTipoEntrada" asp-items="ViewBag.TipoEntradaList" class="form-select">
+                    <option value="">-- Selecciona un estatus --</option>
+                </select>
+                <span asp-validation-for="IdTipoEntrada" class="text-danger"></span>
+            </div> *@
+    
+            <div class="col-md-12">
+                <label asp-for="Observaciones" class="form-label"></label>
+                <textarea asp-for="Observaciones" class="form-control"></textarea>
+                <span asp-validation-for="Observaciones" class="text-danger"></span>
+            </div>
+
+            <input asp-for="IdTipoReporte" type="hidden" />
+            <input asp-for="IdTipoEntrada" type="hidden" />
+            <input asp-for="IdEstatus" type="hidden" />
+    
+            <div class="col-12 mt-3 d-flex justify-content-center">
+                <button type="submit" class="btn btn-lg btn-success px-4">
+                    <i class="fas fa-save"></i>
+                    <span>Guardar</span>
+                </button>
+            </div>
+        </div>
+    </form>
 </div>
 

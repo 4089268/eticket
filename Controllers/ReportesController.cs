@@ -232,7 +232,6 @@ namespace eticket.Controllers
             }
         }
 
-
         [HttpGet("partial-view/for-new-det-report")]
         public IActionResult FormularioNuevoDetReporte()
         {
