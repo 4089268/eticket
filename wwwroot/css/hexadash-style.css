@@ -26798,7 +26798,7 @@ body:after {
 
 /* login page */
 .admin {
-  background-image: url("img/admin-bg-light.png");
+  background-image: url("/img/admin-bg-light.png");
   background-repeat: no-repeat;
   background-position: top;
   min-height: 630px;
@@ -28642,7 +28642,7 @@ body:after {
   display: none;
 }
 .layout-dark .admin {
-  background-image: url("img/admin-bg-dark.png");
+  background-image: url("./img/admin-bg-dark.png");
 }
 .layout-dark .admin-element {
   background-color: var(--white-10);

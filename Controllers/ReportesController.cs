@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 using FluentValidation;
 using eticket.Adapters;
 using eticket.Data;
@@ -13,6 +14,7 @@ using eticket.Services;
 
 namespace eticket.Controllers
 {
+    [Authorize]
     [Route("/{Controller}")]
     public class ReportesController(ILogger<ReportesController> logger, TicketsDBContext context, IValidator<ReporteRequest> validator, ReportService rpservice) : Controller
     {

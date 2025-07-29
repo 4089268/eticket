@@ -21,47 +21,277 @@
     <link rel="stylesheet" href="~/css/hexadash-style.css" />
 
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">eticket</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item"></li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Reportes" asp-action="Index">Reportes</a>
-                        </li>
-                    </ul>
+<body class="layout-light side-menu">
+
+    <header class="header-top">
+        <nav class="navbar navbar-light">
+            <div class="navbar-left">
+                <div class="logo-area">
+                    <a class="navbar-brand bg-info rounded uppercase text-white" style="padding: .25rem 6rem;" asp-action="Index" asp-controller="Home">
+                        <img class="dark" src="img/logo-dark.png" alt="logo">
+                        <img class="light" src="img/logo-white.png" alt="logo">
+                    </a>
+                    <a href="#" class="sidebar-toggle">
+                        <img class="svg" src="~/img/svg/align-center-alt.svg" alt="img">
+                    </a>
                 </div>
-                <div>
-                    @if (User.Identity?.IsAuthenticated == true)
-                    {
-                        <span>Usuario: @User.Identity.Name</span>
-                        <a asp-action="Logout" asp-controller="Logearse">Cerrar Sesion</a>
-                    }
+                <div class="top-menu">
+
+                    <div class="hexadash-top-menu position-relative">
+                        <ul class="d-flex align-items-center flex-wrap">
+                            <li>
+                                <a asp-action="" asp-controller="Home" class="active">
+                                    <span class="nav-icon uil uil-create-dashboard"></span>
+                                    <span class="menu-text">Inicio</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="Index" asp-controller="Reportes"class="">
+                                    <span class="nav-icon uil uil-window"></span>
+                                    <span class="menu-text">Reportes</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
+            <!-- ends: navbar-left -->
+            <div class="navbar-right">
+                <ul class="navbar-right__menu">
+                    <li class="nav-search">
+                        <a href="#" class="search-toggle">
+                            <i class="uil uil-search"></i>
+                            <i class="uil uil-times"></i>
+                        </a>
+                        <form action="/" class="search-form-topMenu">
+                            <span class="search-icon uil uil-search"></span>
+                            <input class="form-control me-sm-2 box-shadow-none" type="search" placeholder="Buscar..." aria-label="Search">
+                        </form>
+                    </li>
+                    <li class="nav-notification">
+                        <div class="dropdown-custom">
+                            <a href="javascript:;" class="nav-item-toggle icon-active">
+                            <img class="svg" src="~/img/svg/alarm.svg" alt="img">
+                            </a>
+                            <div class="dropdown-parent-wrapper">
+                            <div class="dropdown-wrapper">
+                                <h2 class="dropdown-wrapper__title">Notificaciones <span class="badge-circle badge-warning ms-1">4</span></h2>
+                                <ul>
+                                    <li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                                        <div class="nav-notification__type nav-notification__type--primary">
+                                            <img class="svg" src="~/img/svg/inbox.svg" alt="inbox">
+                                            </div>
+                                            <div class="nav-notification__details">
+                                            <p>
+                                                <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Admin</a>
+                                                <span>te envio un mensaje</span>
+                                            </p>
+                                            <p>
+                                                <span class="time-posted">5 hours ago</span>
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <li class="nav-notification__single nav-notification__single d-flex flex-wrap">
+                                        <div class="nav-notification__type nav-notification__type--danger">
+                                            <img src="~/img/svg/heart.svg" alt="heart" class="svg">
+                                            </div>
+                                            <div class="nav-notification__details">
+                                            <p>
+                                                <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Admin</a>
+                                                <span>te envio un mensaje</span>
+                                            </p>
+                                            <p>
+                                                <span class="time-posted">5 hours ago</span>
+                                            </p>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <a href="" class="dropdown-wrapper__more">Mostrar todas las notificaciones</a>
+                            </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- ends: .nav-notification -->
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        var nombreUsuario = User.Identity.Name;
+                        <li class="nav-author">
+                            <div class="dropdown-custom">
+                                <a href="javascript:;" class="nav-item-toggle">
+                                    <img src="https://ui-avatars.com/api/?color=333&rounded=true&name=@nombreUsuario" alt="" class="rounded-circle">
+                                    <span class="nav-item__title">
+                                        @nombreUsuario <i class="las la-angle-down nav-item__arrow"></i>
+                                    </span>
+                                </a>
+                                <div class="dropdown-parent-wrapper">
+                                    <div class="dropdown-wrapper">
+                                        <div class="nav-author__info">
+                                            <div class="author-img">
+                                                <img src="https://ui-avatars.com/api/?color=333&rounded=true&name=@nombreUsuario" alt="" class="rounded-circle">
+                                            </div>
+                                            <div>
+                                                <h6>@nombreUsuario</h6>
+                                                @* <span>Rol</span> *@
+                                            </div>
+                                        </div>
+                                        <div class="nav-author__options">
+                                            <ul>
+                                                <li>
+                                                    <a href="">
+                                                        <i class="uil uil-user"></i> Perfil
+                                                    </a>
+                                                </li>
+                                                @* <li>
+                                                    <a href="">
+                                                        <i class="uil uil-setting"></i>Settings
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="">
+                                                        <i class="uil uil-users-alt"></i> Activity
+                                                    </a>
+                                                </li> *@
+                                            </ul>
+                                            <a asp-action="Logout" asp-controller="Logearse" class="nav-author__signout">
+                                                <i class="uil uil-sign-out-alt"></i> Cerrar Sesion
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+                <!-- ends: .navbar-right__menu -->
+                <div class="navbar-right__mobileAction d-md-none">
+                    <a href="#" class="btn-search">
+                        <img src="img/svg/search.svg" alt="search" class="svg feather-search">
+                        <img src="img/svg/x.svg" alt="x" class="svg feather-x"></a>
+                    <a href="#" class="btn-author-action">
+                        <img class="svg" src="img/svg/more-vertical.svg" alt="more-vertical"></a>
+                </div>
+            </div>
+            <!-- ends: .navbar-right -->
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+    
+    <main class="main-content">
+
+        <div class="sidebar-wrapper">
+            <div class="sidebar sidebar-collapse" id="sidebar">
+            <div class="sidebar__menu-group">
+                <ul class="sidebar_nav">
+                    <li>
+                        <a asp-action="" asp-controller="Home" class="active">
+                            <span class="nav-icon uil uil-create-dashboard"></span>
+                            <span class="menu-text">Inicio</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-action="Index" asp-controller="Reportes"class="">
+                            <span class="nav-icon uil uil-window"></span>
+                            <span class="menu-text">Reportes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="">
+                            <span class="nav-icon uil uil-chat"></span>
+                            <span class="menu-text">Mensiones</span>
+                            <span class="badge badge-success menuItem rounded-circle">3</span>
+                        </a>
+                    </li>
+                    
+                    @* Separador *@
+                    <li class="menu-title mt-30">
+                        <span></span>
+                    </li>
+                    <li>
+                        <a href="#" class="">
+                            <span class="nav-icon uil uil-user"></span>
+                            <span class="menu-text">Usuarios</span>
+                        </a>
+                    </li>
+                    <li class="has-child open">
+                        <a href="#" class="">
+                            <span class="nav-icon uil uil-window-section"></span>
+                            <span class="menu-text">Menu</span>
+                            <span class="toggle-icon"></span>
+                        </a>
+                        <ul>
+                            <li class="l_sidebar">
+                                <a href="#" data-layout="light">subMenu 1</a>
+                            </li>
+                            <li class="l_sidebar">
+                                <a href="#" data-layout="light">subMenu 2</a>
+                            </li>
+                            <li class="l_sidebar">
+                                <a href="#" data-layout="light">subMenu 3</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            </div>
+        </div>
+        
+        <div class="contents mt-30 mb-25">
+            <div class="container-fluid" style="min-height: 90vh;">
+                @RenderBody()
+            </div>
+        </div>
+
+        <footer class="footer-wrapper">
+            <div class="footer-wrapper__inside">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="footer-copyright">
+                            <p>
+                                <span>© 2025</span>
+                                <a href="/">eTicket</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="footer-menu text-end">
+                            <ul>
+                                <li>
+                                    <a href="#">About</a>
+                                </li>
+                                <li>
+                                    <a href="#">Team</a>
+                                </li>
+                                <li>
+                                    <a href="#">Contact</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </footer>
+    </main>
+
+    @* <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2025 - eticket - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
+    </footer> *@
 
+    
+    <div id="overlayer">
+        <div class="loader-overlay">
+            <div class="dm-spin-dots spin-lg">
+                <span class="spin-dot badge-dot dot-primary"></span>
+                <span class="spin-dot badge-dot dot-primary"></span>
+                <span class="spin-dot badge-dot dot-primary"></span>
+                <span class="spin-dot badge-dot dot-primary"></span>
+            </div>
+        </div>
+    </div>
     <div class="overlay-dark-sidebar"></div>
     <div class="customizer-overlay"></div>
 

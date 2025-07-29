@@ -1,33 +1,56 @@
 ﻿@{
     Layout = "~/Views/Shared/_GuestLayout.cshtml";
 }
-
-<div class="container py-5 h-100">
-  <div class="row">
-    <div class="col-lg-6 d-flex align-items-center gradient-custom-2" style="background: url('/img/computer.jpg') center center / cover no-repeat;"></div>
-    <div class="col-lg-6">
-      <div class="card-body p-md-5 mx-md-4">
-        <h2 class="text-center">Iniciar Sesión</h2>
-        <form method="post" class="mt-4">
-          <p>Por favor, inicie sesión en su cuenta</p>
-          @if (ViewBag.Error != null)
-          {
-              <div class="alert alert-danger">@ViewBag.Error</div>
-          }
-
-          <div class="form-outline mb-4">
-            <label class="form-label">Usuario</label>
-            <input type="text" name="usuario" class="form-control" required />
+<div class="row justify-content-center">
+  <div class="col-xxl-3 col-xl-4 col-md-6 col-sm-8">
+    <div class="edit-profile">
+        <div class="edit-profile__logos">
+          <a class="bg-info rounded uppercase text-white h2" style="padding: 0.5rem 6rem;" asp-action="Index" asp-controller="Home">
+            <img class="dark" src="img/logo-dark.png" alt="LOGO">
+          </a>
+        </div>
+        <div class="card border-0">
+          <div class="card-header">
+              <div class="edit-profile__title">
+                <h6 class="uppercase">Iniciar Sesion</h6>
+              </div>
           </div>
-
-          <div class="form-outline mb-4">
-            <label class="form-label">Contraseña</label>
-            <input type="password" name="contraseña" class="form-control" required />
+          <form class="card-body" method="post">
+            <div class="edit-profile__body">
+              @if (ViewBag.Error != null)
+              {
+                <div class="form-group mb-4">
+                  <div class="alert alert-danger">@ViewBag.Error</div>
+                </div>
+              }
+              <div class="form-group mb-3">
+                <label for="username">Usuario</label>
+                <input type="text" class="form-control" id="usuario" name="usuario">
+              </div>
+              <div class="form-group mb-3">
+                  <label for="password-field">Contraseña</label>
+                  <div class="position-relative">
+                    <input id="password-field" type="password" class="form-control" name="contraseña" placeholder="Password">
+                    <div class="uil uil-eye-slash text-lighten fs-15 field-icon toggle-password2">
+                    </div>
+                  </div>
+              </div>
+              <div class="admin__button-group button-group d-flex pt-1 justify-content-md-start justify-content-center mt-4">
+                <button type="submit" class="btn btn-primary btn-default w-100 btn-squared text-capitalize lh-normal px-50 signIn-createBtn ">
+                  Entrar
+                </button>
+              </div>
+            </div>
+          </form>
+          <div class="admin-topbar">
+            <p class="mb-0">
+              ¿No tienes una cuenta?
+              <a href="#contact" class="color-primary">
+                Contactanos
+              </a>
+            </p>
           </div>
-
-          <button type="submit" class="btn btn-primary w-100">Entrar</button>
-        </form>
-      </div>
+        </div>
     </div>
   </div>
 </div>

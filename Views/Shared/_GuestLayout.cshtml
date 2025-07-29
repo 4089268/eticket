@@ -6,14 +6,97 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/eticket.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="~/css/hexadash-style.css" />
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v3.0.0/css/line.css">
 </head>
-<body class="bg-light">
-    <main class="container mt-5">
-        @RenderBody()
+<body>
+    <main class="main-content">
+        <div class="admin">
+            <div class="container-fluid">
+                @RenderBody()
+            </div>
+        </div>
     </main>
+
+    <div id="overlayer">
+        <div class="loader-overlay">
+            <div class="dm-spin-dots spin-lg">
+            <span class="spin-dot badge-dot dot-primary"></span>
+            <span class="spin-dot badge-dot dot-primary"></span>
+            <span class="spin-dot badge-dot dot-primary"></span>
+            <span class="spin-dot badge-dot dot-primary"></span>
+            </div>
+        </div>
+    </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/assets/vendor_assets/js/jquery/jquery-ui.js"></script>
+    <script src="~/assets/vendor_assets/js/loader.js"></script>
+    <script>
+        (function ($) {
+            // Preloader
+            window.addEventListener('load', function () {
+                document.querySelector('body').classList.add("loaded")
+            });
+
+            /* Replace all SVG images with inline SVG */
+            $('img.svg').each((i, e) => {
+
+                const $img = $(e);
+
+                const imgID = $img.attr('id');
+
+                const imgClass = $img.attr('class');
+
+                const imgURL = $img.attr('src');
+
+                $.get(imgURL, (data) => {
+                // Get the SVG tag, ignore the rest
+                let $svg = $(data).find('svg');
+
+                // Add replaced image's ID to the new SVG
+                if (typeof imgID !== 'undefined') {
+                    $svg = $svg.attr('id', imgID);
+                }
+                // Add replaced image's classes to the new SVG
+                if (typeof imgClass !== 'undefined') {
+                    $svg = $svg.attr('class', `${imgClass} replaced-svg`);
+                }
+
+                // Remove any invalid XML tags as per http://validator.w3.org
+                $svg = $svg.removeAttr('xmlns:a');
+
+                // Check if the viewport is set, if the viewport is not set the SVG wont't scale.
+                if (!$svg.attr('viewBox') && $svg.attr('height') && $svg.attr('width')) {
+                    $svg.attr(`viewBox 0 0  ${$svg.attr('height')} ${$svg.attr('width')}`);
+                }
+
+                // Replace image with new SVG
+                $img.replaceWith($svg);
+                }, 'xml');
+            });
+
+            /* Input password toggle */
+            function eye_pass() {
+                $(".toggle-password2").click(function () {
+                $(this).toggleClass("uil-eye");
+                input = $(this).parent().find("#password-field");
+                if (input.attr("type") == "password") {
+                    input.attr("type", "text");
+                } else {
+                    input.attr("type", "password");
+                }
+                });
+            }
+            eye_pass();
+        })(jQuery);
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

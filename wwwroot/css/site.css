@@ -2,6 +2,7 @@
 {
   --color-primary: #759cc2 !important;
   --bg-primary-hover: #6085aa !important;
+  --color-primary-rgba: 117, 156, 194 !important;
 }
 html {
   font-size: 14px;
@@ -24,4 +25,8 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+a{
+  text-decoration: none;
 }
