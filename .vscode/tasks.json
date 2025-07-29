@@ -24,6 +24,28 @@
             "presentation": {
                 "reveal": "always"
             }
+        },
+        {
+            "label": "scaffold-database-media",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "ef",
+                "dbcontext",
+                "scaffold",
+                "Name=TicketDBMedia",
+                "Microsoft.EntityFrameworkCore.SqlServer",
+                "--output-dir",
+                "Models",
+                "--context-dir",
+                "Data",
+                "--context",
+                "TicketsMediaDBContext",
+                "--force"
+            ],
+            "presentation": {
+                "reveal": "always"
+            }
         }
     ]
 }

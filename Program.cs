@@ -13,6 +13,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<TicketsDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TicketDB"))
 );
+builder.Services.AddDbContext<TicketsMediaDBContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("TicketDBMedia"))
+);
 builder.Services.AddAuthentication("NerusTicketCookieAuth")
 .AddCookie("NerusTicketCookieAuth", options =>
 {
