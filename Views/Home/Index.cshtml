@@ -2,7 +2,157 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="demo5 mt-30 mb-25">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xxl-12 mb-4">
+                <div class="card banner-feature--18 d-flex">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="card-body px-25">
+                                <h1 class="banner-feature__heading color-white">Bienvenido eTicket Dashboard</h1>
+                                <p class="banner-feature__para color-white">There are many variations of passages of
+                                    Lorem
+                                    Ipsum available, but the majority have suffered
+                                    alteration in some form
+                                </p>
+                                <div class="d-flex justify-content-sm-start justify-content-center">
+                                    <button class="banner-feature__btn btn btn-primary color-white btn-md px-20 radius-xs fs-15" type="button">Learn More</button>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6">
+                                <div class="banner-feature__shape px-md-25 px-25 py-sm-0 pt-15 pb-30 d-flex justify-content-sm-end justify-content-center">
+                                    <img src="img/demo5-banner.png" alt="img" class="svg">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xxl-8 mb-4">
+                <div class="card border-0 p-2 px-25 h-100">
+                    <div class="card-header px-0 border-0">
+                        <h6>Resumen</h6>
+                        <div class="card-extra">
+                            <ul class="card-tab-links nav-tabs nav" role="tablist">
+                                <li>
+                                <a href="#salesgrowth" data-bs-toggle="tab" id="salesgrowth-tab" role="tab" aria-selected="false">Today</a>
+                                </li>
+                                <li>
+                                <a href="#salesgrowth2" data-bs-toggle="tab" id="salesgrowth2-tab" role="tab" aria-selected="false">Week</a>
+                                </li>
+                                <li>
+                                <a class="active" href="#salesgrowth3" data-bs-toggle="tab" id="salesgrowth3-tab" role="tab" aria-selected="true">Month</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body p-0 pb-sm-25">
+                        <div class="tab-content">
+                            <div class="tab-pane" id="salesgrowth" role="tabpanel" aria-labelledby="salesgrowth-tab">
+                                <div class="label-detailed label-detailed--two">
+                                <div class="label-detailed__single">
+                                    <span class="label-detailed__type label-detailed__type--primary">Target</span>
+                                    <strong class="label-detailed__total">$8,550</strong>
+                                    <span class="label-detailed__status color-success">
+                                        <img class="svg" src="img/svg/arrow-success-up.svg" alt="">
+                                        <strong>25%</strong>
+                                    </span>
+                                </div>
+                                <div class="label-detailed__single">
+                                    <span class="label-detailed__type label-detailed__type--info">Gained</span>
+                                    <strong class="label-detailed__total">$5,550</strong>
+                                    <span class="label-detailed__status color-danger">
+                                        <img class="svg" src="img/svg/arrow-danger-down.svg" alt="">
+                                        <strong>15%</strong>
+                                    </span>
+                                </div>
+                                </div>
+                                <div class="parentContainer">
+
+
+                                <div>
+                                    <canvas id="salesGrowthNewToday"></canvas>
+                                </div>
+
+
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="salesgrowth2" role="tabpanel" aria-labelledby="salesgrowth2-tab">
+                                <div class="label-detailed label-detailed--two">
+                                <div class="label-detailed__single">
+                                    <span class="label-detailed__type label-detailed__type--primary">Target</span>
+                                    <strong class="label-detailed__total">$8,550</strong>
+                                    <span class="label-detailed__status color-success">
+                                        <img class="svg" src="img/svg/arrow-success-up.svg" alt="">
+                                        <strong>25%</strong>
+                                    </span>
+                                </div>
+                                <div class="label-detailed__single">
+                                    <span class="label-detailed__type label-detailed__type--info">Gained</span>
+                                    <strong class="label-detailed__total">$5,550</strong>
+                                    <span class="label-detailed__status color-danger">
+                                        <img class="svg" src="img/svg/arrow-danger-down.svg" alt="">
+                                        <strong>15%</strong>
+                                    </span>
+                                </div>
+                                </div>
+                                <div class="parentContainer">
+
+
+                                <div>
+                                    <canvas id="salesGrowthNewWeek"></canvas>
+                                </div>
+
+
+                                </div>
+                            </div>
+                            <div class="tab-pane  active show" id="salesgrowth3" role="tabpanel" aria-labelledby="salesgrowth3-tab">
+                                <div class="label-detailed label-detailed--two">
+                                <div class="label-detailed__single">
+                                    <span class="label-detailed__type label-detailed__type--primary">Target</span>
+                                    <strong class="label-detailed__total">$8,550</strong>
+                                    <span class="label-detailed__status color-success">
+                                        <img class="svg" src="img/svg/arrow-success-up.svg" alt="">
+                                        <strong>25%</strong>
+                                    </span>
+                                </div>
+                                <div class="label-detailed__single">
+                                    <span class="label-detailed__type label-detailed__type--info">Gained</span>
+                                    <strong class="label-detailed__total">$5,550</strong>
+                                    <span class="label-detailed__status color-danger">
+                                        <img class="svg" src="img/svg/arrow-danger-down.svg" alt="">
+                                        <strong>15%</strong>
+                                    </span>
+                                </div>
+                                </div>
+                                <div class="parentContainer">
+
+
+                                <div>
+                                    <canvas id="salesGrowthNewMonth"></canvas>
+                                </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xxl-4 col-lg-6 order-xxl-0 order-1 mb-4">
+                <div class="card card-md border-0 mb-4 date-picker__calendar-height h-100">
+                    <div class="card-body px-10 d-flex align-items-center">
+                        <div class="date-picker date-picker--demo5 w-100">
+                            <div class="date-picker__calendar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
