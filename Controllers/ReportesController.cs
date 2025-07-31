@@ -29,19 +29,10 @@ namespace eticket.Controllers
         public IActionResult Index(int page = 1)
         {
             var totalItems = ticketsDBContext.OprReportes.Count();
-
-            var reportes = ticketsDBContext.OprReportes
-                .OrderByDescending(r => r.FechaRegistro)
-                .Include(r => r.IdEstatusNavigation)
-                .Include(r => r.IdGeneroNavigation)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
             ViewBag.CurrentPage = page;
 
-            return View("Reportes", reportes);
+            return View("Reportes");
         }
 
         [HttpPost]
@@ -250,6 +241,28 @@ namespace eticket.Controllers
                 IdEstatus = 2 // En proceso
             };
             return PartialView("~/Views/Reportes/Partials/NuevoDetReporteForm.cshtml", request);
+        }
+
+        [HttpGet("partial-view/ultimos-reportes")]
+        public IActionResult TablaUltimosReportes()
+        {
+            try
+            {
+                var reportes = ticketsDBContext.OprReportes
+                    .OrderByDescending(r => r.FechaRegistro)
+                    .Include(r => r.IdEstatusNavigation)
+                    .Include(r => r.IdGeneroNavigation)
+                    .Take(pageSize)
+                    .ToList();
+                return PartialView("~/Views/Reportes/Partials/UltimosReportesTable.cshtml", reportes);
+            }
+            catch (Exception err)
+            {
+                this.logger.LogError(err, "Error al obtener los ultimos reportes");
+                ViewData["ErrorTitle"] = "Error al obtener los ultimos reportes";
+                ViewData["ErrorMessage"] = err.Message;
+                return PartialView("~/Views/Shared/_ErrorAlert.cshtml");
+            }
         }
         #endregion
 

@@ -1,0 +1,44 @@
+﻿@model eticket.Models.OprReporte
+<tr>
+    <td>
+        <div class="userDatatable-content">@Model.Folio</div>
+    </td>
+    <td>
+        <div class="d-flex">
+            <div class="userDatatable-inline-title">
+                <h6>@Model.Nombre</h6>
+            </div>
+        </div>
+    </td>
+    <td>
+        <div class="userDatatable-content">
+            @Model.Municipio
+        </div>
+    </td>
+    <td>
+        <div class="userDatatable-content">
+            @Model.IdGeneroNavigation?.Usuario
+        </div>
+    </td>
+    <td>
+        <div class="userDatatable-content">
+            @Model.FechaRegistro?.ToString("dd/MM/yyyy HH:mm")
+        </div>
+    </td>
+    <td>
+        <div class="userDatatable-content d-inline-block">
+            <span class="bg-opacity-success color-success rounded-pill userDatatable-content-status active">
+                @(Model.IdEstatusNavigation?.Descripcion ?? "Desconocido")
+            </span>
+        </div>
+    </td>
+    <td>
+        <ul class="orderDatatable_actions mb-0 d-flex flex-wrap justify-content-center">
+            <li>
+                <a asp-action="MostrarReporte" asp-route-folioReporteArg="@Model.Folio" class="view">
+                    <i class="uil uil-eye"></i>
+                </a>
+            </li>
+        </ul>
+    </td>
+</tr>
