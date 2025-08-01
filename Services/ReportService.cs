@@ -47,7 +47,7 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
     public async Task<long> AlmacenarReporteInicial(ReporteRequest reporteRequest)
     {
         var reporte = reporteRequest.ToEntity();
-        reporte.FechaRegistro = DateTime.UtcNow;
+        reporte.FechaRegistro = DateTime.Now;
 
         using (var transaction = await this.context.Database.BeginTransactionAsync())
         {
@@ -61,7 +61,7 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
                     Folio = reporte.Folio,
                     IdEstatus = reporte.IdEstatus!.Value,
                     IdOperador = reporte.IdGenero!.Value,
-                    Fecha = DateTime.UtcNow,
+                    Fecha = DateTime.Now,
                     Observaciones = reporteRequest.Observaciones
                 };
                 this.context.OprDetReportes.Add(initialDetail);

@@ -1,10 +1,11 @@
+using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using FluentValidation;
 using eticket.Data;
 using eticket.Services;
 using eticket.Validations;
 using eticket.ViewModels;
-using FluentValidation;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ builder.Services.AddAuthentication("NerusTicketCookieAuth")
     options.LogoutPath = "/cerrar-sesion";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
 });
+
+builder.Services.Configure<TempPathSettings>(builder.Configuration.GetSection("TempPath"));
 
 // Validaciones
 builder.Services.AddScoped<IValidator<ReporteRequest>, ReportValidator>();

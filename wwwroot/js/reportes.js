@@ -31,9 +31,6 @@ function onFormularioLoadedCompleted(resp, status, request)
             ['emoji']
         ]
     });
-
-    $("#nuevoReporteForm").on('submit', submitNuevoReporte);
-
     modal.show();
 }
 
@@ -95,6 +92,110 @@ function submitNuevoReporte(event)
             }
         }
     });
+}
+
+function uploadAttachFile(event)
+{
+    const url = '/reportes/upload-attach-file'
+    const fileInput = event.target;
+    if (fileInput.files.length === 0) return;
+
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (fileInput.files[0].size > maxSize) {
+        Swal.fire({
+            title: "Archivo demasiado grande",
+            text: "El archivo debe ser menor a 10MB.",
+            icon: "error"
+        });
+        fileInput.value = "";
+        return;
+    }
+
+    const label = document.getElementById('upload-label');
+    const icon = label.querySelector('.upload-icon');
+    const spinner = label.querySelector('.upload-spinner');
+
+    // Toggle to spinner
+    icon.classList.add('d-none');
+    spinner.classList.remove('d-none');
+
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response)
+        {
+            Swal.fire({
+                title: "Archivo subido",
+                text: "El archivo se ha subido correctamente.",
+                icon: "success"
+            });
+
+            appendUploadedFile(response);
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr, error);
+            if(xhr.status == 422)
+            {
+                const {errors} = xhr.responseJSON;
+                errors.forEach(err => {
+                    const errorSpan = $(`span[data-valmsg-for="${err.field}"]`);
+                    errorSpan.text(err.message);
+                });
+            }
+            else
+            {
+                Swal.fire({
+                    title: "Error al subir el archivo",
+                    text: error,
+                    icon: "error"
+                });
+            }
+        },
+        complete: function() {
+            setTimeout(() => {
+                icon.classList.remove('d-none');
+                spinner.classList.add('d-none');
+            }, 500);
+        }
+    });
+}
+
+function appendUploadedFile(response)
+{
+    const { fileName, originalFileName} = response;
+    var displayName = originalFileName.length > 120
+        ? originalFileName.slice(0, 120) + "..."
+        : originalFileName;
+
+    // display a list element with the uploaded file
+    var liElement = `<li class='list-box__item'><p><span>${displayName}</span></p></li>`;
+    const ul = document.querySelector("ul#attachFiles");
+    $("ul#attachFiles").append(liElement);
+
+
+    // append a inputs with the file uploaded metadata
+    const container = document.querySelector("#hiddenFileInputs");
+    
+    const index = ($("ul#attachFiles li").length) - 1;
+
+    const guidNameInput = document.createElement("input");
+        guidNameInput.type = "hidden";
+        guidNameInput.name = `UploadedFiles[${index}][GuidName]`;
+        guidNameInput.value = fileName;
+
+    const originalNameInput = document.createElement("input");
+        originalNameInput.type = "hidden";
+        originalNameInput.name = `UploadedFiles[${index}][OriginalName]`;
+        originalNameInput.value = originalFileName;
+
+    container.appendChild(guidNameInput);
+    container.appendChild(originalNameInput);
 }
 
 jQuery(document).ready(function()

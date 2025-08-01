@@ -13,7 +13,7 @@ public static class DetReporteAdapter
             Folio = request.Folio,
             IdEstatus = request.IdEstatus,
             IdOperador = request.IdOperador,
-            Fecha = DateTime.UtcNow,
+            Fecha = DateTime.Now,
             Observaciones = request.Observaciones
         };
         return oprDetReporte;

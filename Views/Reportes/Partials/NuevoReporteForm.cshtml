@@ -64,44 +64,35 @@
                 <input asp-for="Municipio" class="form-control" required />
                 <span asp-validation-for="Municipio" class="text-danger"></span>
             </div>
-    
-            @* <div class="col-md-3">
-                <label asp-for="GpsLat" class="form-label"></label>
-                <input type="number" asp-for="GpsLat" class="form-control" />
-                <span asp-validation-for="GpsLat" class="text-danger"></span>
-            </div>
-    
-            <div class="col-md-3">
-                <label asp-for="GpsLon" class="form-label"></label>
-                <input type="number" asp-for="GpsLon" class="form-control" />
-                <span asp-validation-for="GpsLon" class="text-danger"></span>
-            </div> *@
-    
-            @* <div class="col-md-3">
-                <label asp-for="IdEstatus" class="form-label"></label>
-                <select asp-for="IdEstatus" asp-items="ViewBag.EstatusList" class="form-select">
-                    <option value="">-- Selecciona un estatus --</option>
-                </select>
-                <span asp-validation-for="IdEstatus" class="text-danger"></span>
-            </div>
 
-            <div class="col-md-3">
-                <label asp-for="IdTipoEntrada" class="form-label"></label>
-                <select asp-for="IdTipoEntrada" asp-items="ViewBag.TipoEntradaList" class="form-select">
-                    <option value="">-- Selecciona un estatus --</option>
-                </select>
-                <span asp-validation-for="IdTipoEntrada" class="text-danger"></span>
-            </div> *@
-    
             <div class="col-md-12">
                 <label asp-for="Observaciones" class="form-label"></label>
                 <textarea asp-for="Observaciones" class="form-control"></textarea>
                 <span asp-validation-for="Observaciones" class="text-danger"></span>
             </div>
 
+            <div class="col-12">
+                <label for="attachfile" class="btn btn-small btn-primary" id="upload-label">
+                    <span class="upload-icon">
+                        <i class="uil uil-paperclip"></i>
+                        <span>Adjuntar Archivo</span>
+                    </span>
+                    <span class="upload-spinner d-none">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span>Subiendo archivo...</span>
+                    </span>
+                </label>
+                <span class="text-danger field-validation-valid" data-valmsg-for="file" data-valmsg-replace="true"></span>
+
+                <div class="p-1 m-1 list-box text-limit">
+                    <ul id="attachFiles" />
+                </div>
+            </div>
+
             <input asp-for="IdTipoReporte" type="hidden" />
             <input asp-for="IdTipoEntrada" type="hidden" />
             <input asp-for="IdEstatus" type="hidden" />
+            <div id="hiddenFileInputs"></div>
     
             <div class="col-12 mt-3 d-flex justify-content-center">
                 <button type="submit" class="btn btn-lg btn-success px-4">
@@ -111,5 +102,7 @@
             </div>
         </div>
     </form>
+    
+    <input id="attachfile" name="file" type="file" onchange="uploadAttachFile(event)" class="d-none">
 </div>
 

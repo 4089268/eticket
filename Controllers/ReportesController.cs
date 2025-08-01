@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using System.Data.Entity;
 using System.Net.Mime;
 using System.Security.Claims;
@@ -5,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using FluentValidation;
 using eticket.Adapters;
 using eticket.Data;
@@ -16,12 +19,14 @@ namespace eticket.Controllers
 {
     [Authorize]
     [Route("/{Controller}")]
-    public class ReportesController(ILogger<ReportesController> logger, TicketsDBContext context, IValidator<ReporteRequest> validator, ReportService rpservice) : Controller
+    public class ReportesController(ILogger<ReportesController> logger, TicketsDBContext context, IValidator<ReporteRequest> validator, ReportService rpservice, IOptions<TempPathSettings> tempPathOptions, TicketsMediaDBContext mediaContext) : Controller
     {
         private readonly ILogger<ReportesController> logger = logger;
         private readonly TicketsDBContext ticketsDBContext = context;
+        private readonly TicketsMediaDBContext mediaContext = mediaContext;
         private readonly IValidator<ReporteRequest> reportValidator = validator;
         private readonly ReportService reportService = rpservice;
+        private readonly TempPathSettings tempPathSettings = tempPathOptions.Value;
         private readonly int pageSize = 10;
 
 
@@ -37,7 +42,7 @@ namespace eticket.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AlmacenarReporte([FromForm] ReporteRequest request)
+        public async Task<IActionResult> AlmacenarReporte(ReporteRequest request, List<UploadedFileMetadata> uploadedFiles)
         {
             // Validate the request
             var validation = this.reportValidator.Validate(request);
@@ -56,25 +61,75 @@ namespace eticket.Controllers
             // * obtener el usuario de quien lo genera
             request.IdGenero = ObtenerOperadorId();
 
+            long folioReporte = 0;
             // * almacenar el reporte
             try
             {
-                var folioReporte = await this.reportService.AlmacenarReporteInicial(request);
-                return StatusCode(201, new
-                {
-                    success = true,
-                    message = "Reporte guardado correctamente",
-                    folio = folioReporte
-                });
+                // * almacenar reporte
+                folioReporte = await this.reportService.AlmacenarReporteInicial(request);
             }
             catch (System.Exception e)
             {
+                this.logger.LogError(e, "Error al generar el reporte: {message}", e.Message);
                 return Conflict(new
                 {
                     Title = "Error al almacenar el reporte",
                     Message = "Error al almacenar el reporte: " + e.Message
                 });
             }
+
+            // * almacenar archivos
+            if (uploadedFiles?.Any() == true)
+            {
+                var folderPath = tempPathSettings.Path + "attach-files/";
+                foreach (var fileMetadata in uploadedFiles)
+                {
+                    var filePath = folderPath + fileMetadata.GuidName;
+
+                    try
+                    {
+                        if (!System.IO.File.Exists(filePath))
+                        {
+                            logger.LogWarning("Archivo no encontrado: {FilePath}", filePath);
+                            continue;
+                        }
+
+                        var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                        var record = new OprImagene
+                        {
+                            FolioReporte = folioReporte,
+                            IdInsert = request.IdGenero.ToString(),
+                            FechaInsert = DateTime.UtcNow,
+                            Documento = fileBytes,
+                            FileExtension = Path.GetExtension(filePath),
+                            Filesize = fileBytes.Length
+                        };
+
+                        mediaContext.OprImagenes.Add(record);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, "Error al procesar el archivo '{FileName}'. Ruta: {FilePath}", fileMetadata.GuidName, filePath);
+                    }
+                }
+
+                try
+                {
+                    await mediaContext.SaveChangesAsync();
+                    logger.LogInformation("Archivos adjuntos guardados correctamente para el folio {FolioReporte}", folioReporte);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Error al guardar cambios en la base de datos para el folio {FolioReporte}", folioReporte);
+                }
+            }
+
+            return StatusCode(201, new
+            {
+                success = true,
+                message = "Reporte guardado correctamente",
+                folio = folioReporte
+            });
         }
 
         [HttpGet("{folioReporteArg}")]
@@ -156,6 +211,56 @@ namespace eticket.Controllers
                     Message = ex.Message
                 });
             }
+        }
+
+        [HttpPost("upload-attach-file")]
+        public async Task<IActionResult> CargarArchivoAdjunto(IFormFile file)
+        {
+            if (file == null)
+            {
+                return BadRequest(new { Message = "No se recibió ningún archivo adjunto." });
+            }
+
+            // Validar tamaño máximo de 10MB
+            const long maxFileSize = 10 * 1024 * 1024; // 10MB en bytes
+            if (file.Length > maxFileSize)
+            {
+                var errors = new Dictionary<string, string>(){ { "file", "El archivo adjunto excede el tamaño máximo permitido de 10MB." }};
+                return UnprocessableEntity(new
+                {
+                    errors = errors.Select( e => new
+                    {
+                        field = e.Key,
+                        message = e.Value
+                    })
+                });
+            }
+
+            // prepare for saving the file
+            var attachFileId = Guid.NewGuid();
+            var fileExtension = Path.GetExtension(file.FileName);
+            var fileName = attachFileId.ToString() + fileExtension;
+            var filePath = tempPathSettings.Path + "attach-files/" + fileName;
+
+            if (!Directory.Exists(tempPathSettings.Path + "attach-files"))
+            {
+                Directory.CreateDirectory(filePath);
+            }
+
+            // save the file
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+            this.logger.LogInformation("Archivo adjunto cargado en ruta: {path}", filePath);
+
+            return Ok(new
+            {
+                Message = "Archivo adjunto cargado correctamente.",
+                FileName = fileName,
+                OriginalFileName = file.FileName,
+                Size = file.Length
+            });
         }
 
 
