@@ -38,6 +38,15 @@ function submitNuevoReporte(event)
 {
     event.preventDefault();
 
+    const submitButton = document.getElementById('submit-button');
+    const icon = submitButton.querySelector('.upload-icon');
+    const spinner = submitButton.querySelector('.upload-spinner');
+
+    // Toggle to spinner
+    submitButton.disabled = true;
+    icon.classList.add('d-none');
+    spinner.classList.remove('d-none');
+
     const url = "/reportes";
     const method = 'POST';
     const form = $(event.target);
@@ -90,6 +99,12 @@ function submitNuevoReporte(event)
                     icon: "error"
                 });
             }
+        },
+        complete: function()
+        {
+            submitButton.disabled = false;
+            icon.classList.remove('d-none');
+            spinner.classList.add('d-none');
         }
     });
 }

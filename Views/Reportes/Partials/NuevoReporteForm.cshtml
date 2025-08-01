@@ -95,9 +95,15 @@
             <div id="hiddenFileInputs"></div>
     
             <div class="col-12 mt-3 d-flex justify-content-center">
-                <button type="submit" class="btn btn-lg btn-success px-4">
-                    <i class="fas fa-save"></i>
-                    <span>Guardar</span>
+                <button type="submit" class="btn btn-lg btn-success px-4" id="submit-button">
+                    <span class="upload-icon">
+                        <i class="fa fa-save"></i>
+                        <span>Guardar</span>
+                    </span>
+                    <span class="upload-spinner d-none">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span>Registrando reporte</span>
+                    </span>
                 </button>
             </div>
         </div>
