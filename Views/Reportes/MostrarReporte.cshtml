@@ -1,18 +1,7 @@
 ﻿@using eticket.ViewModels
-@model OprReporte
+@model MostrarReporteViewModel
 @{
-    ViewData["Title"] = $"Reporte #{Model.Folio}";
-}
-@functions{
-    IEnumerable<OprDetReporte> DetalleReporte()
-    {
-        if(!(Model.OprDetReportes??[]).Any())
-        {
-            return [];
-        }
-
-        return Model.OprDetReportes!.OrderByDescending(i=> i.Fecha);
-    }
+    ViewData["Title"] = $"Reporte #{Model.Reporte.Folio}";
 }
 
 <nav class="breadcrumb">
@@ -43,7 +32,7 @@
                 </div>
 
                 <div class="col-lg-8 col-sm-12">
-                    @await Html.PartialAsync("./Partials/DatosReporte.cshtml", Model)
+                    @await Html.PartialAsync("./Partials/DatosReporte.cshtml", Model.Reporte)
                 </div>
 
                 <div class="col-lg-4 col-sm-12">
@@ -140,9 +129,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var detReporte in DetalleReporte())
-                            {
+                            @{
                                 var i = 1;
+                            }
+                            @foreach (var detReporte in Model.Entradas)
+                            {
                                 <tr>
                                     <td>
                                         <div class="userDatatable-content text-center">
@@ -151,15 +142,15 @@
                                     </td>
                                     <td>
                                         <div class="userDatatable-content">
-                                            <span class="bg-opacity-success color-success rounded-pill userDatatable-content-status active">
-                                                @detReporte.IdEstatusNavigation?.Descripcion
+                                            <span class="text-nowrap rounded-pill userDatatable-content-status active @(detReporte.EstatusCssClass)">
+                                                @detReporte.Estatus
                                             </span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="userDatatable-content d-flex align-items-center gap-1">
                                             @{
-                                                var _nombreOperador = detReporte.IdOperadorNavigation?.FullName ?? "Desconocido";
+                                                var _nombreOperador = detReporte.Operador ?? "Desconocido";
                                             }
                                             <img height="32" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=@(_nombreOperador.Replace(" ", "+"))' alt="avatar">
                                             <div>@_nombreOperador</div>
@@ -178,7 +169,7 @@
                                     </td>
                                     <td>
                                         <div class="userDatatable-content d-flex justify-content-center">
-                                            <span class="mr-1 me-1">0</span>
+                                            <span class="mr-1 me-1">@detReporte.TotalDocumentosAdjuntos</span>
                                             <i class="uil uil-paperclip"></i>
                                         </div>
                                     </td>
@@ -186,7 +177,7 @@
                                         <div class="btn-group" role="group">
                                             <ul class="orderDatatable_actions mb-0 d-flex flex-wrap justify-content-center">
                                                 <li>
-                                                    <a asp-action="MostrarReporte" asp-route-folioReporteArg="@Model.Folio" class="view">
+                                                    <a asp-action="MostrarReporte" asp-route-folioReporteArg="@Model.Reporte.Folio" class="view">
                                                         <i class="uil uil-eye"></i>
                                                     </a>
                                                 </li>
@@ -305,7 +296,7 @@
 {
     <script>
         let modal = undefined;
-        const folioReporte = '@Html.Raw(Model.Folio)';
+        const folioReporte = '@Html.Raw(Model.Reporte.Folio)';
 
         function inicializarTabla()
         {

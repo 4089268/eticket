@@ -66,4 +66,10 @@ public class DocumentosService(ILogger<ReportService> logger, TicketsMediaDBCont
         return record.IdImagen;
     }
 
+
+    public int TotalDocumentos(long folioreporte, long folioDetReporte)
+    {
+        return this.context.OprImagenes.Where(image => image.FolioReporte == folioreporte && image.FolioReporteDetalle == folioDetReporte).Count();
+    }
+
 }

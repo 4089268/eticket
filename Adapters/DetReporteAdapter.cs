@@ -19,4 +19,20 @@ public static class DetReporteAdapter
         return oprDetReporte;
     }
 
+    public static EntradaDTO ToEntradaDTO(this OprDetReporte entity)
+    {
+        var entrada = new EntradaDTO()
+        {
+            Id = entity.Id,
+            Folio = entity.Folio,
+            IdEstatus = entity.IdEstatus,
+            Estatus = entity.IdEstatusNavigation?.Descripcion ?? entity.IdEstatus.ToString(),
+            IdOperador = entity.IdOperador,
+            Operador = entity.IdOperadorNavigation?.FullName,
+            Fecha = entity.Fecha,
+            Observaciones = entity.Observaciones
+        };
+        return entrada;
+    }
+
 }

@@ -39,12 +39,32 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
         return reporte;
     }
 
+    public async Task<IEnumerable<EntradaDTO>> ObtenerEntradasReporte(long folio)
+    {
+        await Task.CompletedTask;
+        var reporte = this.context.OprReportes.FirstOrDefault(item => item.Folio == folio) ?? throw new KeyNotFoundException($"Reporte con folio {folio} no encontrado.");
+
+        var entradas = this.context.OprDetReportes
+            .Where(item => item.Folio == reporte.Folio)
+            .Include(e => e.IdEstatusNavigation)
+            .Include(e => e.IdOperadorNavigation)
+            .ToList()
+            .Select(e => e.ToEntradaDTO())
+            .ToList();
+
+        foreach (var entrada in entradas)
+        {
+            entrada.Estatus = this.context.CatEstatuses.FirstOrDefault(e => e.IdEstatus == entrada.IdEstatus)?.Descripcion;
+        }
+        return entradas;
+    }
+
     /// <summary>
     /// Almacenar un reporte inicial
     /// </summary>
     /// <param name="reporteRequest"></param>
     /// <returns>folio del reporte</returns>
-    public async Task<(long,long)> AlmacenarReporteInicial(ReporteRequest reporteRequest)
+    public async Task<(long, long)> AlmacenarReporteInicial(ReporteRequest reporteRequest)
     {
         var reporte = reporteRequest.ToEntity();
         reporte.FechaRegistro = DateTime.Now;

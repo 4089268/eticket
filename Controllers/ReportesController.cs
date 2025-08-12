@@ -119,7 +119,36 @@ namespace eticket.Controllers
 
             try
             {
-                var reporte = await this.reportService.ObtenerReportePorFolio(folioReporte);
+                MostrarReporteViewModel viewModel = new();
+
+                // obtener reporte
+                viewModel.Reporte = await this.reportService.ObtenerReportePorFolio(folioReporte);
+
+                // obtener rentradas del reporte
+                viewModel.Entradas = await this.reportService.ObtenerEntradasReporte(folioReporte);
+
+                // calcular clases css de los estatus
+                var _clasesDisponibles = new Dictionary<string, string>()
+                {
+                    {"ABIERTO","info"},
+                    {"EN PROCESO","success"},
+                    {"ATENDIDO","success"},
+                    {"CANCELADO","danger"}
+                };
+                foreach (var _entrada in viewModel.Entradas)
+                {
+                    if (string.IsNullOrEmpty(_entrada.Estatus) || !_clasesDisponibles.ContainsKey(_entrada.Estatus))
+                    {
+                        _entrada.EstatusCssClass = "bg-opacity-warning color-warning";
+                    }
+                    else
+                    {
+                        var _value = _clasesDisponibles[_entrada.Estatus] ?? "warning";
+                        _entrada.EstatusCssClass = $"bg-opacity-{_value} color-{_value}";
+                    }
+
+                    _entrada.TotalDocumentosAdjuntos = this.documentosService.TotalDocumentos(_entrada.Folio, _entrada.Id);
+                }
 
                 // * obtener catalog de estatus
                 var estatusList = this.ticketsDBContext.CatEstatuses
@@ -129,9 +158,9 @@ namespace eticket.Controllers
                         Value = e.IdEstatus.ToString(),
                         Text = e.Descripcion
                     }).ToList();
-                ViewBag.EstatusList = estatusList;
+                viewModel.EstatusList = estatusList;
 
-                return View(reporte);
+                return View(viewModel);
             }
             catch (InvalidOperationException ioe)
             {
