@@ -5,13 +5,11 @@ namespace eticket.Models;
 
 public partial class OprImagene
 {
-    public decimal IdImagen { get; set; }
+    public Guid IdImagen { get; set; }
 
     public long FolioReporte { get; set; }
 
     public long FolioReporteDetalle { get; set; }
-
-    public byte[]? Imagen { get; set; }
 
     public string? Descripcion { get; set; }
 
@@ -19,11 +17,11 @@ public partial class OprImagene
 
     public DateTime? FechaInsert { get; set; }
 
-    public decimal? IdMediatype { get; set; }
+    public int? IdMediatype { get; set; }
 
     public byte[]? Documento { get; set; }
 
-    public decimal? Filesize { get; set; }
+    public long? Filesize { get; set; }
 
     public string? FileExtension { get; set; }
 

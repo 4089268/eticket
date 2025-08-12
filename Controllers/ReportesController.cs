@@ -19,13 +19,14 @@ namespace eticket.Controllers
 {
     [Authorize]
     [Route("/{Controller}")]
-    public class ReportesController(ILogger<ReportesController> logger, TicketsDBContext context, IValidator<ReporteRequest> validator, ReportService rpservice, IOptions<TempPathSettings> tempPathOptions, TicketsMediaDBContext mediaContext) : Controller
+    public class ReportesController(ILogger<ReportesController> logger, TicketsDBContext context, IValidator<ReporteRequest> validator, ReportService rpservice, IOptions<TempPathSettings> tempPathOptions, TicketsMediaDBContext mediaContext, DocumentosService docService) : Controller
     {
         private readonly ILogger<ReportesController> logger = logger;
         private readonly TicketsDBContext ticketsDBContext = context;
         private readonly TicketsMediaDBContext mediaContext = mediaContext;
         private readonly IValidator<ReporteRequest> reportValidator = validator;
         private readonly ReportService reportService = rpservice;
+        private readonly DocumentosService documentosService = docService;
         private readonly TempPathSettings tempPathSettings = tempPathOptions.Value;
         private readonly int pageSize = 10;
 
@@ -62,11 +63,12 @@ namespace eticket.Controllers
             request.IdGenero = ObtenerOperadorId();
 
             long folioReporte = 0;
+            long folioDetReporte = 0;
             // * almacenar el reporte
             try
             {
                 // * almacenar reporte
-                folioReporte = await this.reportService.AlmacenarReporteInicial(request);
+                (folioReporte, folioDetReporte) = await this.reportService.AlmacenarReporteInicial(request);
             }
             catch (System.Exception e)
             {
@@ -79,48 +81,20 @@ namespace eticket.Controllers
             }
 
             // * almacenar archivos
+            List<Guid> _documentosAlmacenados = new();
             if (uploadedFiles?.Any() == true)
             {
-                var folderPath = tempPathSettings.Path + "attach-files/";
                 foreach (var fileMetadata in uploadedFiles)
                 {
-                    var filePath = folderPath + fileMetadata.GuidName;
-
                     try
                     {
-                        if (!System.IO.File.Exists(filePath))
-                        {
-                            logger.LogWarning("Archivo no encontrado: {FilePath}", filePath);
-                            continue;
-                        }
-
-                        var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
-                        var record = new OprImagene
-                        {
-                            FolioReporte = folioReporte,
-                            IdInsert = request.IdGenero.ToString(),
-                            FechaInsert = DateTime.UtcNow,
-                            Documento = fileBytes,
-                            FileExtension = Path.GetExtension(filePath),
-                            Filesize = fileBytes.Length
-                        };
-
-                        mediaContext.OprImagenes.Add(record);
+                        var documentoId = await documentosService.AlmacenarDocumento(fileMetadata, folioReporte, folioDetReporte, request.IdGenero);
+                        _documentosAlmacenados.Add(documentoId);
                     }
                     catch (Exception ex)
                     {
-                        logger.LogError(ex, "Error al procesar el archivo '{FileName}'. Ruta: {FilePath}", fileMetadata.GuidName, filePath);
+                        logger.LogError(ex, "Error al registrar el documento");
                     }
-                }
-
-                try
-                {
-                    await mediaContext.SaveChangesAsync();
-                    logger.LogInformation("Archivos adjuntos guardados correctamente para el folio {FolioReporte}", folioReporte);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "Error al guardar cambios en la base de datos para el folio {FolioReporte}", folioReporte);
                 }
             }
 

@@ -44,7 +44,7 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
     /// </summary>
     /// <param name="reporteRequest"></param>
     /// <returns>folio del reporte</returns>
-    public async Task<long> AlmacenarReporteInicial(ReporteRequest reporteRequest)
+    public async Task<(long,long)> AlmacenarReporteInicial(ReporteRequest reporteRequest)
     {
         var reporte = reporteRequest.ToEntity();
         reporte.FechaRegistro = DateTime.Now;
@@ -68,7 +68,7 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
                 await this.context.SaveChangesAsync();
                 await transaction.CommitAsync();
                 logger.LogInformation("Nuevo reporte creado con folio: {folio}", reporte.Folio);
-                return reporte.Folio;
+                return (reporte.Folio, initialDetail.Id);
             }
             catch (Exception ex)
             {

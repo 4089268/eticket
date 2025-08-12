@@ -33,6 +33,7 @@ builder.Services.AddScoped<IValidator<ReporteRequest>, ReportValidator>();
 
 // Servicios
 builder.Services.AddScoped<ReportService>();
+builder.Services.AddScoped<DocumentosService>();
 
 var app = builder.Build();
 

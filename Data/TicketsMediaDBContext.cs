@@ -30,8 +30,7 @@ public partial class TicketsMediaDBContext : DbContext
             entity.ToTable("Opr_Imagenes", "Global");
 
             entity.Property(e => e.IdImagen)
-                .ValueGeneratedOnAdd()
-                .HasColumnType("numeric(10, 0)")
+                .HasDefaultValueSql("(newid())")
                 .HasColumnName("id_imagen");
             entity.Property(e => e.Descripcion)
                 .IsUnicode(false)
@@ -44,19 +43,14 @@ public partial class TicketsMediaDBContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("file_extension");
-            entity.Property(e => e.Filesize)
-                .HasColumnType("numeric(10, 0)")
-                .HasColumnName("filesize");
+            entity.Property(e => e.Filesize).HasColumnName("filesize");
             entity.Property(e => e.FolioReporte).HasColumnName("folio_reporte");
             entity.Property(e => e.FolioReporteDetalle).HasColumnName("folio_reporte_detalle");
             entity.Property(e => e.IdInsert)
                 .HasMaxLength(5)
                 .IsUnicode(false)
                 .HasColumnName("id_insert");
-            entity.Property(e => e.IdMediatype)
-                .HasColumnType("numeric(2, 0)")
-                .HasColumnName("id_mediatype");
-            entity.Property(e => e.Imagen).HasColumnName("imagen");
+            entity.Property(e => e.IdMediatype).HasColumnName("id_mediatype");
             entity.Property(e => e.Latitud).HasColumnName("latitud");
             entity.Property(e => e.Longitud).HasColumnName("longitud");
         });
