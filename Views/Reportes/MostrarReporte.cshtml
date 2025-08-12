@@ -22,7 +22,7 @@
 
 <section class="mb-2">
     <div class="support-details">
-        <div class="container-fluid">
+        <div class="fluid-container">
             <div class="row g-2">
                 <div class="col-12">
                     <div class="p-2 border rounded bg-white d-flex align-items-center justify-content-between">
@@ -42,139 +42,11 @@
                     </div>
                 </div>
 
-                <div class="col-lg-8 col-sm-12 mb-4">
-                    <div class="p-4 border rounded bg-white">
-                        <h4>Reporte: @Model.Folio</h4>
-
-                        <div class="p-2 my-1 d-flex align-items-center">
-                            <div class="pr-3 pe-3">
-                                <label class="fw-bolder">Tipo Reporte</label>
-                                <div class="d-flex align-items-center">
-                                    <div class="mx-1 text-uppercase">@Model.IdReporteNavigation?.Descripcion</div>
-                                </div>
-                                @* <div class="dm-select" style="width: 180px;">
-                                    <select name="select-search" class="select-search form-control">
-                                    <option value="01">All</option>
-                                    <option value="02">Easy</option>
-                                    <option value="03" selected>Meduim</option>
-                                    <option value="04">Option 4</option>
-                                    <option value="05">Option 5</option>
-                                    </select>
-                                </div> *@
-                            </div>
-                            <div class="ml-4 ms-4" style="width: 10rem;">
-                                <label class="fw-bolder">Tipo Ingreso</label>
-                                <div class="d-flex align-items-center">
-                                    <div class="mx-1 text-uppercase">@Model.IdTipoentradaNavigation?.Descripcion</div>
-                                </div>
-                                @* <div class="dm-select" style="width: 180px;">
-                                    <select name="select-search" class="select-search form-control">
-                                    <option value="01">All</option>
-                                    <option value="02">Easy</option>
-                                    <option value="03" selected>Meduim</option>
-                                    <option value="04">Option 4</option>
-                                    <option value="05">Option 5</option>
-                                    </select>
-                                </div> *@
-                            </div>
-                            <div class="ml-4 ms-4" style="width: 10rem;">
-                                <label class="fw-bolder">Estado</label>
-                                <div class="d-flex align-items-center">
-                                    <div class="mx-1 text-uppercase">@Model.IdEstatusNavigation?.Descripcion</div>
-                                </div>
-                                @* <div class="dm-select" style="width: 180px;">
-                                    <select name="select-search" class="select-search form-control">
-                                        <option value="01">All</option>
-                                        <option value="02">deactivate</option>
-                                        <option value="03" selected>open</option>
-                                        <option value="04">close</option>
-                                    </select>
-                                </div> *@
-                            </div>
-                        </div>
-                        
-                        <div class="row p-2 my-1">
-                            <div class="col-4">
-                                <span class="fw-bolder">Solicitado por:</span>
-                                <div class="d-flex align-items-center">
-                                    <img height="24" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=@(Model.Nombre.Trim().Replace(" ", "+"))' alt="tdi.png">
-                                    <div class="mx-1">@Model.Nombre</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <span class="fw-bolder">Fecha Registro:</span>
-                                <div class="d-flex align-items-center">
-                                    <div class="mx-1 text-uppercase">@Model.FechaRegistro?.ToString("dd MMMM yyyy")</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <span class="fw-bolder">Ultima Actualizacion:</span>
-                                <div class="d-flex align-items-center">
-                                    <div class="mx-1 text-uppercase">@Model.FechaRegistro?.ToString("dd MMMM yyyy")</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row p-2 my-1">
-                            <div class="col-4">
-                                <span class="fw-bolder">Correo:</span>
-                                <div class="d-flex align-items-center">
-                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.Correo) ? Model.Correo : "*No registrado")</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <span class="fw-bolder">Celular:</span>
-                                <div class="d-flex align-items-center">
-                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.Celular) ? Model.Celular : "*No registrado")</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <span class="fw-bolder">Telefono:</span>
-                                <div class="d-flex align-items-center">
-                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.Telefono) ? Model.Telefono : "*No registrado")</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row p-2 my-1">
-                            <div class="col-4">
-                                <span class="fw-bolder">Municipio:</span>
-                                <div class="d-flex align-items-center">
-                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.Municipio) ? Model.Municipio : "*No registrado")</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <span class="fw-bolder">Localidad:</span>
-                                <div class="d-flex align-items-center">
-                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.Localidad) ? Model.Localidad : "*No registrado")</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <span class="fw-bolder">Colonia:</span>
-                                <div class="d-flex align-items-center">
-                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.Colonia) ? Model.Colonia : "*No registrado")</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row p-2 my-1">
-                            <div class="col-4">
-                                <span class="fw-bolder">Calle:</span>
-                                <div class="d-flex align-items-center">
-                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.Calle) ? Model.Calle : "*No registrado")</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <span class="fw-bolder">Entre Calles:</span>
-                                <div class="d-flex align-items-center">
-                                    <div class="mx-1">@(!string.IsNullOrEmpty(Model.EntreCalles) ? Model.EntreCalles : "*No registrado")</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-lg-8 col-sm-12">
+                    @await Html.PartialAsync("./Partials/DatosReporte.cshtml", Model)
                 </div>
 
-                <div class="col-lg-4 col-sm-12 mb-4">
+                <div class="col-lg-4 col-sm-12">
                     <div class="p-4 border rounded bg-white">
                         <h4>Documentos Adjuntos:</h4>
                         <div class="ticket-file-attach__wrapper">
@@ -228,90 +100,105 @@
     </div>
 </section>
 
-<section id="table-detaills" class="container mt-2">
-    <div class="row justify-content-center align-items-center g-2 p-2 border rounded bg-white">
-        <div class="col-12 d-flex align-items-center justify-content-between my-2">
-            <div class="h4">Entradas</div>
-        </div>
-
-        <div class="table-responsive col-12">
-            <table class="table table-striped table-hover table-bordered">
-                <thead class="table-dark">
-                    <tr>
-                        <th>#</th>
-                        <th>Estatus</th>
-                        <th>Operador</th>
-                        <th>Fecha</th>
-                        <th>Observaciones</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var detReporte in DetalleReporte())
-                    {
-                        var i = DetalleReporte().Count();
-                        <tr>
-                            <td>@i</td>
-                            <td>@Html.DisplayFor(item => detReporte.IdEstatus)</td>
-                            <td>@detReporte.IdOperadorNavigation?.FullName</td>
-                            <td>@Html.DisplayFor(item => detReporte.Fecha)</td>
-                            <td>@Html.Raw(detReporte.Observaciones)</td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <a asp-action="Details" asp-route-id="@detReporte.Id" class="btn btn-info btn-sm">
-                                        <i class="bi bi-eye"></i> Details
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        i--;
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-</section>
-
-<section class="container mt-2">
+<section class="fluid-container">
     <div class="row">
         <div class="col-12 mb-4">
             <div class="p-4 border rounded bg-white ticket-chat-wrapper">
-                <h4>Entradas</h4>
-                <div class="ticket-search-body">
-                    <ul class="ticket-user-list pe-15 p-4">
-                        @foreach (var detReporte in DetalleReporte())
-                        {
-                            var _nombreOperador = detReporte.IdOperadorNavigation?.FullName ?? "*Desconocido";
-                            <li class="ticket-user-list-item">
-                                <div class="ticket-user-list-item__wrapper">
-                                    <div class="avatar avatar-circle ms-0">
-                                        <img height="32" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=@(_nombreOperador.Replace(" ", "+"))' alt="avatar">
-                                    </div>
-                                    <div class="ticket-users-list-body">
-                                        <div class="ticket-users-list-body-title">
-                                            <h6>@_nombreOperador</h6>
-                                            <div class="text-limit" data-maxlength="10">
-                                                <p class="mb-0">@Html.Raw(detReporte.Observaciones)</p>
-                                            </div>
+                <h4 class="border-bottom pb-2">Entradas</h4>
+
+                <div class="table-responsive col-12">
+                    <div id="filter-form-container"></div>
+                    <table class="table mb-0 table-borderless table-striped adv-table"
+                        data-sorting="false"
+                        data-filter-container="#filter-form-container"
+                        data-paging-current="1"
+                        data-paging-position="right"
+                        data-paging-size="10">
+                        <thead>
+                            <tr class="userDatatable-header">
+                                <th data-sorted="false">
+                                    <span class="userDatatable-title">#</span>
+                                </th>
+                                <th>
+                                    <span class="userDatatable-title">Estatus</span>
+                                </th>
+                                <th>
+                                    <span class="userDatatable-title">Operador</span>
+                                </th>
+                                <th>
+                                    <span class="userDatatable-title">Fecha</span>
+                                </th>
+                                <th data-sorted="false">
+                                    <span class="userDatatable-title">Observaciones</span>
+                                </th>
+                                <th data-sorted="false">
+                                    <span class="userDatatable-title">Doc. Adjuntos</span>
+                                </th>
+                                <th data-sorted="false">
+                                    <span class="userDatatable-title">Acciones</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var detReporte in DetalleReporte())
+                            {
+                                var i = 1;
+                                <tr>
+                                    <td>
+                                        <div class="userDatatable-content text-center">
+                                            @i
                                         </div>
-                                        <div class="last-chat-time unread">
-                                            <small class="time">@detReporte.Fecha.ToLongDateString()</small>
+                                    </td>
+                                    <td>
+                                        <div class="userDatatable-content">
+                                            <span class="bg-opacity-success color-success rounded-pill userDatatable-content-status active">
+                                                @detReporte.IdEstatusNavigation?.Descripcion
+                                            </span>
                                         </div>
-                                    </div>
-                                </div>
-                            </li>
-                        }
-                    </ul>
+                                    </td>
+                                    <td>
+                                        <div class="userDatatable-content d-flex align-items-center gap-1">
+                                            @{
+                                                var _nombreOperador = detReporte.IdOperadorNavigation?.FullName ?? "Desconocido";
+                                            }
+                                            <img height="32" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=@(_nombreOperador.Replace(" ", "+"))' alt="avatar">
+                                            <div>@_nombreOperador</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="userDatatable-content d-flex flex-column align-items-center">
+                                            <div class="text-small">@detReporte.Fecha.ToString("dd/MM/yyyy")</div>
+                                            <div class="text-small">@detReporte.Fecha.ToString("HH:mm:ss")</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="userDatatable-content">
+                                            @Html.Raw(detReporte.Observaciones)
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="userDatatable-content d-flex justify-content-center">
+                                            <span class="mr-1 me-1">0</span>
+                                            <i class="uil uil-paperclip"></i>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <ul class="orderDatatable_actions mb-0 d-flex flex-wrap justify-content-center">
+                                                <li>
+                                                    <a asp-action="MostrarReporte" asp-route-folioReporteArg="@Model.Folio" class="view">
+                                                        <i class="uil uil-eye"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        </tbody>
+                    </table>
                 </div>
-                @* <div class="ticket-search-header">
-                    <form action="/" class="d-flex align-items-center p-2 mb-2 border rounded-0">
-                        <img class="svg" src="~/img/svg/message-square.svg" alt="mensaje">
-                        <input class="form-control me-sm-2 border-0 box-shadow-none" type="search" placeholder="Escribe tu mensaje..." aria-label="Search"/>
-                    </form>
-                    <button type="button" class="border btn-primary wh-50 px-4 py-1 bg-success">
-                        Enviar
-                    </button>
-                </div> *@
             </div>
         </div>
     </div>
@@ -319,7 +206,7 @@
 
 
 <!-- Modal Nuevo Det Reporte-->
-<div class="modal fade new-member nueva-entrada-modal" id="nueva-entrada-modal" role="dialog" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade new-member nueva-entrada-modal" id="nueva-entrada-modal" role="dialog" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content radius-xl">
             <div class="modal-header">
@@ -360,12 +247,18 @@
 
 
 
-    .ticket-user-list .ticket-user-list-item {
+    .ticket-user-list .ticket-user-list-item
+    {
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        margin-bottom: 30px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #bbb;
+    }
+    .ticket-user-list .ticket-user-list-item:last-child
+    {
+        border-bottom: 0px
     }
 
     .ticket-user-list .ticket-user-list-item .ticket-user-list-item__wrapper
@@ -413,6 +306,25 @@
     <script>
         let modal = undefined;
         const folioReporte = '@Html.Raw(Model.Folio)';
+
+        function inicializarTabla()
+        {
+            $('.adv-table').footable({
+                "sorting": {
+                    "enabled": false
+                },
+                "paging": {
+                    "enabled": true,
+                    "current": 1
+                },
+                strings: {
+                    enabled: false
+                },
+                "filtering": {
+                    "enabled": false
+                }
+            });
+        }
 
         function cargarFormulario()
         {
@@ -499,6 +411,8 @@
                 modal = new bootstrap.Modal(document.getElementById("nueva-entrada-modal"));
             }
             cargarFormulario();
+            
+            inicializarTabla();
         });
     </script>
 }
