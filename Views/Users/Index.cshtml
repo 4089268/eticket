@@ -15,16 +15,17 @@
             <div class="userDatatable global-shadow border-light-0 w-100 adv-table">
                 <div class="table-responsive">
                     <div class="adv-table-table__header">
-                        <div class="adv-table-table__button mb-2 w-100 d-flex justify-content-end">
+                        <div class="adv-table-table__button mb-2 w-50 d-flex justify-content-start">
                             <button type="button" onclick="newUserClick()" class="btn px-15 btn-primary ml-auto">
                                 <i class="las la-plus fs-16"></i>
                                 <span>Agregar Usuario</span>
                             </button >
                         </div>
+                        <div id="filter-form-container"></div>
                     </div>
-                    <div id="filter-form-container"></div>
-                    <table class="table mb-0 table-borderless table-striped adv-table"-
+                    <table class="table mb-0 table-borderless table-striped userDatatable"
                         data-sorting="true"
+                        data-filtering="true"
                         data-filter-container="#filter-form-container"
                         data-paging-current="1"
                         data-paging-position="right"
@@ -32,25 +33,25 @@
                     >
                         <thead>
                             <tr class="userDatatable-header">
-                                <th data-sorted="false">
+                                <th data-filterable="true">
                                     <span class="userDatatable-title">Usuario</span>
                                 </th>
-                                <th data-sorted="false">
+                                <th data-filterable="true">
                                     <span class="userDatatable-title">Nombre</span>
                                 </th>
-                                <th data-sorted="false">
+                                <th data-filterable="true">
                                     <span class="userDatatable-title">Correo</span>
                                 </th>
-                                <th data-sorted="false">
+                                <th data-filterable="true">
                                     <span class="userDatatable-title">Rol</span>
                                 </th>
-                                <th data-sorted="false">
+                                <th data-filterable="false">
                                     <span class="userDatatable-title">Ultimo Acceso</span>
                                 </th>
-                                <th data-sorted="false" data-type="html" data-name='status'>
+                                <th data-type="html" data-filterable="true">
                                     <span class="userDatatable-title">Estado</span>
                                 </th>
-                                <th data-sorted="false">
+                                <th data-filterable="false" data-breakpoints="sm">
                                     <span class="userDatatable-title float-center">Acciones</span>
                                 </th>
                             </tr>
@@ -95,6 +96,13 @@
 </div>
 <!-- Modal -->
 
+
+<style>
+    .form-group.footable-filtering-search
+    {
+        margin: 0px 0px 5px 0px !important;
+    }
+</style>
 
 @section scripts
 {
@@ -185,21 +193,7 @@
         }
 
         $(function() {
-            $('.userDatatable').footable({
-                "sorting": {
-                    "enabled": false
-                },
-                "paging": {
-                    "enabled": true,
-                    "current": 1
-                },
-                strings: {
-                    enabled: false
-                },
-                "filtering": {
-                    "enabled": false
-                }
-            });
+            $('.userDatatable').footable();
 
             // * init the modal
             if (document.getElementsByClassName("nuevo-usuario-modal").length)
