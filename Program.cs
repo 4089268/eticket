@@ -1,11 +1,9 @@
 using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using FluentValidation;
 using eticket.Data;
 using eticket.Services;
 using eticket.Validations;
-using eticket.ViewModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +27,7 @@ builder.Services.AddAuthentication("NerusTicketCookieAuth")
 builder.Services.Configure<TempPathSettings>(builder.Configuration.GetSection("TempPath"));
 
 // Validaciones
-builder.Services.AddScoped<IValidator<ReporteRequest>, ReportValidator>();
+builder.Services.AddValidations();
 
 // Servicios
 builder.Services.AddScoped<ReportService>();

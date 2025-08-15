@@ -1,0 +1,62 @@
+﻿@model eticket.ViewModels.UsuarioDTO
+<tr>
+    <td>
+        <div class="userDatatable-content">
+            @Model.Usuario
+        </div>
+    </td>
+    <td>
+        <div>
+            <div class="userDatatable-content">
+                @Model.FullName
+            </div>
+        </div>
+    </td>
+    <td>
+        <div class="">
+            @Model.Correo
+        </div>
+    </td>
+    <td>
+        <div class="userDatatable-content">
+            @Model.Rol
+        </div>
+    </td>
+    <td>
+        <div class="userDatatable-content">
+            @Model.UltimoInicioSesion?.ToString("dd/MM/yyyy HH:mm")
+        </div>
+    </td>
+    <td>
+        <div class="userDatatable-content d-inline-block">
+            @{
+                if(Model.Activo == true)
+                {
+                    <span class="bg-opacity-success color-success rounded-pill userDatatable-content-status active">
+                        Activo
+                    </span>
+                }
+                else
+                {
+                    <span class="bg-opacity-danger color-danger rounded-pill userDatatable-content-status active">
+                        Activo
+                    </span>
+                }
+            }
+        </div>
+    </td>
+    <td>
+        <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+            <li>
+                <a href="#" class="edit">
+                    <i class="uil uil-edit"></i>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="remove">
+                    <i class="uil uil-trash-alt"></i>
+                </a>
+            </li>
+        </ul>
+    </td>
+</tr>
