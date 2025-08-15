@@ -1,8 +1,8 @@
 *, :root
 {
-  --color-primary: #759cc2 !important;
-  --bg-primary-hover: #6085aa !important;
-  --color-primary-rgba: 117, 156, 194 !important;
+  --color-primary: #a61645 !important;
+  --bg-primary-hover: #83193c !important;
+  --color-primary-rgba: 75, 20, 36 !important;
 }
 html {
   font-size: 14px;
@@ -15,7 +15,7 @@ html {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #4b1424;
 }
 
 html {

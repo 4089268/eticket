@@ -4,10 +4,30 @@
     ViewData["Title"] = $"Reporte #{Model.Reporte.Folio}";
 }
 
-<nav class="breadcrumb">
-    <a class="breadcrumb-item" href='@Url.Action("Index", "Reportes")'>Reportes</a>
-    <span class="breadcrumb-item active" aria-current="page">Reporte</span>
-</nav>
+
+<div class="col-12">
+    <div class="breadcrumb-main">
+        <h4 class="text-capitalize breadcrumb-title">Reporte @Model.Reporte.Folio</h4>
+        <div class="breadcrumb-action justify-content-center flex-wrap">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/">
+                            <i class="uil uil-estate"></i>Inicio
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href='@Url.Action("Index", "Reportes")'>
+                            <i class="uil uil-table"></i>Reportes
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Reporte</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
 
 <section class="mb-2">
     <div class="support-details">

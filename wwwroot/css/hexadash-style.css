@@ -3288,7 +3288,7 @@ html {
 
 body {
   position: relative;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   font-size: 16px;
   overflow-x: hidden;
   direction: ltr;
@@ -3393,7 +3393,7 @@ ul {
 }
 
 .main-content {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   position: relative;
   background-color: var(--main-content);
 }
