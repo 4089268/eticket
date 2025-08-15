@@ -21,9 +21,15 @@ namespace eticket.Controllers
         public async Task<IActionResult> Logearse(string usuario, string contraseña)
         {
             var user = context.SysUsuarios.FirstOrDefault(u => u.Usuario == usuario && u.Activo == true);
-
+            
             if (user != null && BCrypt.Net.BCrypt.Verify(contraseña, user.Contraseña))
             {
+                // update las connection
+                user.UltimoInicioSesion = DateTime.Now;
+                context.SysUsuarios.Update(user);
+                await context.SaveChangesAsync();
+
+                // make the userIdentiy
                 var claims = new List<Claim>
                 {
                     new(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
