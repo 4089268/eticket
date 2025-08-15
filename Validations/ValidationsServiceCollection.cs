@@ -11,5 +11,6 @@ public static class ValidationsServiceCollection
     {
         services.AddScoped<IValidator<ReporteRequest>, ReportValidator>();
         services.AddScoped<IValidator<UsuarioRequest>, NewUserValidator>();
+        services.AddScoped<IValidator<EditarUsuarioRequest>, EditUserValidator>();
     }
 }

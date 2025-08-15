@@ -1,0 +1,53 @@
+using System;
+using Microsoft.EntityFrameworkCore;
+using eticket.Data;
+using eticket.ViewModels;
+using FluentValidation;
+
+namespace eticket.Validations;
+
+public class EditUserValidator: AbstractValidator<EditarUsuarioRequest>
+{
+    private readonly TicketsDBContext _context;
+
+    public EditUserValidator(TicketsDBContext context)
+    {
+        this._context = context;
+
+        RuleFor(req => req.Usuario)
+            .NotEmpty()
+            .Length(8, 24)
+            .When( x => x.Usuario != "admin")
+            .MustAsync(async (request, usuario, cancellation) =>
+            {
+                // Ignore the record with the same IdUsuario as the one being updated
+                return !await _context.SysUsuarios
+                    .AnyAsync(u => u.Usuario == usuario && u.IdUsuario != request.UsuarioId, cancellation);
+            })
+            .WithMessage("El usuario ya se encuentra en uso.");
+
+        RuleFor(req => req.Correo)
+            .EmailAddress()
+            .When(x => !string.IsNullOrEmpty(x.Correo))
+            .MustAsync(async (request, correo, cancellation) =>
+            {
+                return !await _context.SysUsuarios.AnyAsync(u => u.Correo == correo && u.IdUsuario != request.UsuarioId, cancellation);
+            })
+            .WithMessage("El correo ya se encuentra en uso.");
+
+        RuleFor(req => req.Nombre)
+            .NotEmpty()
+            .Length(8, 24);
+
+        RuleFor(req => req.Contraseña)
+            .NotEmpty()
+            .Length(8, 24)
+            .When(x => !string.IsNullOrWhiteSpace(x.Contraseña));
+
+        RuleFor(req => req.ConfirmarContraseña)
+            .NotEmpty()
+            .Equal(req => req.Contraseña)
+            .WithMessage("Las contraseña no coincide.")
+            .When(x => !string.IsNullOrWhiteSpace(x.Contraseña));
+    }
+}

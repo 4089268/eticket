@@ -5,11 +5,25 @@
     ViewData["Title"] = "Usuarios";
 }
 
-<div class="container py-2">
-    <div class="row">
-        <h1 class="h2">Usuarios</h1>
+<div class="col-12">
+    <div class="breadcrumb-main">
+        <h4 class="text-capitalize breadcrumb-title">Usuarios</h4>
+        <div class="breadcrumb-action justify-content-center flex-wrap">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/">
+                            <i class="uil uil-estate"></i>Inicio
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Usuarios</li>
+                </ol>
+            </nav>
+        </div>
     </div>
+</div>
 
+<div class="container">
     <div class="row">
         <section id="table-section" class="mt-4 border rounded bg-white shadow-sm p-3 col-12">
             <div class="userDatatable global-shadow border-light-0 w-100 adv-table">
@@ -96,7 +110,6 @@
 </div>
 <!-- Modal -->
 
-
 <style>
     .form-group.footable-filtering-search
     {
@@ -108,6 +121,7 @@
 {
     <script>
         let modal = undefined;
+        let modalEditar = undefined;
 
         function newUserClick()
         {

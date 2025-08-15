@@ -1,0 +1,107 @@
+﻿@model eticket.ViewModels.EditarUsuarioRequest
+@{
+    ViewData["Title"] = "Editando Usuario";
+}
+
+<div class="col-12">
+    <div class="breadcrumb-main">
+        <h4 class="text-capitalize breadcrumb-title">Editando Usuario</h4>
+        <div class="breadcrumb-action justify-content-center flex-wrap">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/">
+                            <i class="uil uil-estate"></i>Inicio
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index">
+                            <i class="uil uil-user"></i>Usuarios
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Editando Usuario</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="row">
+
+        <div class="card card-horizontal card-sm mb-4 mt-4">
+            <div class="card-header">
+                <h6 class="m-0">Ediar Datos Generales</h6>
+            </div>
+            <div class="card-body py-md-30">
+                <div class="horizontal-form">
+                    <form asp-action="ActualizarUsuario" asp-route-userid="@Model.UsuarioId" method="post">
+                        <div class="row">
+                            <div id="form-error" class="col-12 alert alert-danger d-none">Esto es error</div>
+                            @Html.AntiForgeryToken()
+                        </div>
+
+                        <div class="row g-2">
+                            <input asp-for="UsuarioId" type="hidden" />
+
+                            <div class="col-md-12 col-lg-6">
+                                <label asp-for="Usuario" class="form-label"></label>
+                                <input asp-for="Usuario" class="form-control" required />
+                                <span asp-validation-for="Usuario" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-12 col-lg-6">
+                                <label asp-for="Correo" class="form-label"></label>
+                                <input asp-for="Correo" class="form-control" />
+                                <span asp-validation-for="Correo" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12 col-lg-6">
+                                <label asp-for="Nombre" class="form-label"></label>
+                                <input asp-for="Nombre" class="form-control" required />
+                                <span asp-validation-for="Nombre" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12 col-lg-6">
+                                <label asp-for="Apellido" class="form-label"></label>
+                                <input asp-for="Apellido" class="form-control" />
+                                <span asp-validation-for="Apellido" class="text-danger"></span>
+                            </div>
+
+                            <div class="alert alert-info d-flex align-items-center mt-4 mb-1" role="alert">
+                                <i class="fa fa-info-circle me-2"></i>
+                                <span style="font-size:14px !important">Para mantener la contraseña actual, deje ambos campos de contraseña vacíos.</span>
+                            </div>
+                            
+                            <div class="col-md-12 col-lg-6">
+                                <label asp-for="Contraseña" class="form-label"></label>
+                                <input type="password" asp-for="Contraseña" class="form-control"/>
+                                <span asp-validation-for="Contraseña" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12 col-lg-6">
+                                <label asp-for="ConfirmarContraseña" class="form-label"></label>
+                                <input type="password" asp-for="ConfirmarContraseña" class="form-control"/>
+                                <span asp-validation-for="ConfirmarContraseña" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-12 mt-3 d-flex justify-content-center">
+                                <button type="submit" class="btn btn-lg btn-success px-4" id="submit-button">
+                                    <span class="upload-icon">
+                                        <i class="fa fa-save"></i>
+                                        <span>Guardar</span>
+                                    </span>
+                                    <span class="upload-spinner d-none">
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        <span>Guardando cambios</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

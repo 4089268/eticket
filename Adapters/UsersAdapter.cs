@@ -24,6 +24,19 @@ public static class UsersAdapter
         return user;
     }
 
+    public static EditarUsuarioRequest ToUserEditRequest(this SysUsuario sysUsuario)
+    {
+        var user = new EditarUsuarioRequest()
+        {
+            UsuarioId = sysUsuario.IdUsuario,
+            Usuario = sysUsuario.Usuario,
+            Correo = sysUsuario.Correo,
+            Nombre = sysUsuario.Nombre,
+            Apellido = sysUsuario.Apellido
+        };
+        return user;
+    }
+
     public static SysUsuario ToEntity(this UsuarioRequest request)
     {
         var sysUsuario = new SysUsuario

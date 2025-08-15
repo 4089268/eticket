@@ -46,10 +46,11 @@
         </div>
     </td>
     <td>
-        <ul class="orderDatatable_actions mb-0 d-flex flex-wrap justify-content-start">
+        <ul class="mb-0 d-flex flex-wrap justify-content-start">
             <li>
-                <a href="#" class="edit">
+                <a asp-controller="Users" asp-action="EditarUsuario" asp-route-userid="@Model.IdUsuario" type="button" class="btn btn-default btn-rounded color-primary btn-outline-primary">
                     <i class="uil uil-edit"></i>
+                    <span>Editar</span>
                 </a>
             </li>
             @*
