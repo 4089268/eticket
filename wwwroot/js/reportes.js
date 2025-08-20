@@ -1,3 +1,5 @@
+let intervalId = null;
+
 function displayMenu()
 {
     $("#form-section").load("/reportes/partial-view/menu");
@@ -213,10 +215,39 @@ function appendUploadedFile(response)
     container.appendChild(originalNameInput);
 }
 
+async function getHashAndSave() 
+{
+    const response = await fetch('/api/reportes/ultimos-reportes-hash');
+    if (!response.ok)
+    {
+        throw new Error(response.statusText);
+    }
+    return await response.text();
+}
+
 jQuery(document).ready(function()
 {
     displayMenu();
     displayTable();
+    
+    // * create interval for checking if the last reportas has changed
+    setInterval(async function()
+    {
+        try
+        {
+            const hash = await getHashAndSave();
+            if(ultimosReportesHash !== hash)
+            {
+                ultimosReportesHash = hash;
+                displayTable();
+            }
+        }catch(error)
+        {
+            clearInterval(intervalId);
+            console.error(error);
+        }
+    }, 3000);
+    
 
     // * init the modal
     if (document.getElementsByClassName("nuevo-reporte-modal").length)
