@@ -1,7 +1,7 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Data.Entity;
-using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -22,20 +22,19 @@ namespace eticket.Controllers
     public class ReportesController(ILogger<ReportesController> logger, TicketsDBContext context, IValidator<ReporteRequest> validator, ReportService rpservice, IOptions<TempPathSettings> tempPathOptions, TicketsMediaDBContext mediaContext, DocumentosService docService) : Controller
     {
         private readonly ILogger<ReportesController> logger = logger;
-        private readonly TicketsDBContext ticketsDBContext = context;
+        private readonly TicketsDBContext ticketsDbContext = context;
         private readonly TicketsMediaDBContext mediaContext = mediaContext;
         private readonly IValidator<ReporteRequest> reportValidator = validator;
         private readonly ReportService reportService = rpservice;
         private readonly DocumentosService documentosService = docService;
         private readonly TempPathSettings tempPathSettings = tempPathOptions.Value;
-        private readonly int pageSize = 10;
-
-
+        private const int PageSize = 10;
+        
         [HttpGet]
         public IActionResult Index(int page = 1)
         {
-            var totalItems = ticketsDBContext.OprReportes.Count();
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            var totalItems = ticketsDbContext.OprReportes.Count();
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / PageSize);
             ViewBag.CurrentPage = page;
 
             return View("Reportes");
@@ -151,7 +150,7 @@ namespace eticket.Controllers
                 }
 
                 // * obtener catalog de estatus
-                var estatusList = this.ticketsDBContext.CatEstatuses
+                var estatusList = this.ticketsDbContext.CatEstatuses
                     .OrderBy(e => e.Descripcion)
                     .Select(e => new SelectListItem
                     {
@@ -266,6 +265,31 @@ namespace eticket.Controllers
             });
         }
 
+        [HttpGet("/api/reportes/ultimos-reportes-hash")]
+        public ActionResult<string> GetLastReportsHash()
+        {
+            try
+            {
+                var ultimosReportes = ticketsDbContext.OprReportes
+                    .OrderByDescending(r => r.FechaRegistro)
+                    .Include(r => r.IdEstatusNavigation)
+                    .Include(r => r.IdGeneroNavigation)
+                    .Take(PageSize)
+                    .ToList();
+                string hashValue = GenerarReportesHash(ultimosReportes);
+                return Ok(hashValue);
+            }
+            catch (Exception e)
+            {
+                this.logger.LogError(e, "Error al generar el hash");
+                return Conflict(new
+                {
+                    Title = "Error al generar el hash",
+                    Message = e.Message
+                });
+            }
+        }
+
 
         #region PartialViews
         [HttpGet("partial-view/menu")]
@@ -273,7 +297,7 @@ namespace eticket.Controllers
         {
             try
             {
-                var elements = this.ticketsDBContext.CatReportes.Where(item => item.IdReporte > 0).ToList();
+                var elements = this.ticketsDbContext.CatReportes.Where(item => item.IdReporte > 0).ToList();
                 return PartialView("~/Views/Reportes/Partials/NewFormMenu.cshtml", elements);
             }
             catch (Exception err)
@@ -291,11 +315,11 @@ namespace eticket.Controllers
             try
             {
                 // * cargar tipo reporte seleccionado
-                var _tipoReporte = this.ticketsDBContext.CatReportes
+                var _tipoReporte = this.ticketsDbContext.CatReportes
                     .FirstOrDefault(item => item.IdReporte == tipoReporteId) ?? throw new ArgumentException($"No se encontró el tipo de reporte con Id {tipoReporteId}");
 
                 // * cargar catalog the estatus
-                var estatusList = this.ticketsDBContext.CatEstatuses
+                var estatusList = this.ticketsDbContext.CatEstatuses
                     .OrderBy(e => e.Descripcion)
                     .Select(e => new SelectListItem
                     {
@@ -305,7 +329,7 @@ namespace eticket.Controllers
                 ViewBag.EstatusList = estatusList;
 
                 // * cargar catalog tipo entradas
-                var tipoEntradaList = this.ticketsDBContext.CatTipoEntrada
+                var tipoEntradaList = this.ticketsDbContext.CatTipoEntrada
                     .OrderBy(item => item.Descripcion)
                     .Select(e => new SelectListItem
                     {
@@ -337,7 +361,7 @@ namespace eticket.Controllers
         public IActionResult FormularioNuevoDetReporte()
         {
             // * obtener catalog estatus
-            var estatusList = this.ticketsDBContext.CatEstatuses.ToList().Select(item => new SelectListItem
+            var estatusList = this.ticketsDbContext.CatEstatuses.ToList().Select(item => new SelectListItem
             {
                 Value = item.IdEstatus.ToString(),
                 Text = item.Descripcion
@@ -356,11 +380,11 @@ namespace eticket.Controllers
         {
             try
             {
-                var reportes = ticketsDBContext.OprReportes
+                var reportes = ticketsDbContext.OprReportes
                     .OrderByDescending(r => r.FechaRegistro)
                     .Include(r => r.IdEstatusNavigation)
                     .Include(r => r.IdGeneroNavigation)
-                    .Take(pageSize)
+                    .Take(PageSize)
                     .ToList();
                 return PartialView("~/Views/Reportes/Partials/UltimosReportesTable.cshtml", reportes);
             }
@@ -385,6 +409,13 @@ namespace eticket.Controllers
                 throw new Exception("No se pudo obtener el identificador del usuario.");
             }
             return Convert.ToInt32(_userId);
+        }
+
+        private string GenerarReportesHash(IEnumerable<OprReporte> reportes)
+        {
+            var _reportesStrings = reportes.Select(item => $"{item.IdReporte}|{item.IdEstatus}").ToList();
+            string payload = string.Join("|", _reportesStrings);
+            return Convert.ToHexString(System.Security.Cryptography.MD5.HashData(Encoding.UTF8.GetBytes(payload)));
         }
         #endregion
     }
