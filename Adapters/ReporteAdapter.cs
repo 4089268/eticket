@@ -28,4 +28,28 @@ public static class ReporteAdapter
             IdGenero = request.IdGenero
         };
     }
+
+    public static ReporteDTO ToDTO(this OprReporte oprReporte)
+    {
+        return new ReporteDTO
+        {
+            Folio = oprReporte.Folio,
+            Nombre = oprReporte.Nombre,
+            Celular = oprReporte.Celular,
+            Correo = oprReporte.Correo,
+            Telefono = oprReporte.Telefono,
+            Calle = oprReporte.Calle,
+            EntreCalles = oprReporte.EntreCalles,
+            Colonia = oprReporte.Colonia,
+            Localidad = oprReporte.Localidad,
+            Municipio = oprReporte.Municipio,
+            GpsLat = oprReporte.GpsLat,
+            GpsLon = oprReporte.GpsLon,
+            FechaRegistro = DateTime.Now,
+            IdEstatus = oprReporte.IdEstatus,
+            IdTipoentrada = oprReporte.IdTipoentrada,
+            IdTipoReporte = oprReporte.IdReporte,
+            IdGenero = oprReporte.IdGenero
+        };
+    }
 }

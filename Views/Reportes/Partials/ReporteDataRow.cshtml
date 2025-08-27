@@ -1,4 +1,4 @@
-﻿@model eticket.Models.OprReporte
+﻿@model eticket.ViewModels.ReporteDTO
 <tr>
     <td>
         <div class="userDatatable-content">@Model.Folio</div>
@@ -17,26 +17,38 @@
     </td>
     <td>
         <div class="userDatatable-content">
-            @Model.IdGeneroNavigation?.Usuario
+            @if(Model.UsuarioGenero != null)
+            {
+                var _urlName = Model.UsuarioGenero?.FullName.Replace(" ", "+");
+                <img src="https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=@_urlName" alt="" class="rounded-circle" height="24" />
+                <span>@Model.UsuarioGenero?.FullName</span>
+            }
         </div>
     </td>
     <td>
         <div class="userDatatable-content">
-            @Model.FechaRegistro?.ToString("dd/MM/yyyy HH:mm")
+            @Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm:ss")
         </div>
     </td>
     <td>
         <div class="userDatatable-content d-inline-block">
             <span class="bg-opacity-success color-success rounded-pill userDatatable-content-status active">
-                @(Model.IdEstatusNavigation?.Descripcion ?? "Desconocido")
+                @Model.EstatusDesc
             </span>
         </div>
     </td>
     <td>
-        <ul class="orderDatatable_actions mb-0 d-flex flex-wrap justify-content-center">
+        <div class="userDatatable-content text-center">
+            @Model.TotalEntradas
+            <i class="las la-comments"></i>
+        </div>
+    </td>
+    <td>
+        <ul class="mb-0 d-flex flex-wrap justify-content-center">
             <li>
-                <a asp-action="MostrarReporte" asp-route-folioReporteArg="@Model.Folio" class="view">
+                <a asp-action="MostrarReporte" asp-route-folioReporteArg="@Model.Folio" class="btn btn-small btn-squared color-primary btn-outline-primary px-2 py-1">
                     <i class="uil uil-eye"></i>
+                    <span class="">Mostrar</span>
                 </a>
             </li>
         </ul>

@@ -382,10 +382,34 @@ namespace eticket.Controllers
             {
                 var reportes = ticketsDbContext.OprReportes
                     .OrderByDescending(r => r.FechaRegistro)
-                    .Include(r => r.IdEstatusNavigation)
-                    .Include(r => r.IdGeneroNavigation)
                     .Take(PageSize)
+                    .Select(rep => new ReporteDTO
+                    {
+                        Folio = rep.Folio,
+                        Nombre = rep.Nombre,
+                        Celular = rep.Celular,
+                        Correo = rep.Correo,
+                        Telefono = rep.Telefono,
+                        Calle = rep.Calle,
+                        EntreCalles = rep.EntreCalles,
+                        Colonia = rep.Colonia,
+                        Localidad = rep.Localidad,
+                        Municipio = rep.Municipio,
+                        GpsLat = rep.GpsLat,
+                        GpsLon = rep.GpsLat,
+                        FechaRegistro = rep.FechaRegistro!.Value,
+                        IdTipoReporte = rep.IdTipoentrada,
+                        TiporReporteDesc = rep.IdTipoentradaNavigation == null ? null : rep.IdTipoentradaNavigation.Descripcion,
+                        IdGenero = rep.IdGenero,
+                        UsuarioGenero = rep.IdGeneroNavigation,
+                        IdEstatus = rep.IdEstatus,
+                        EstatusDesc = rep.IdEstatusNavigation == null ? null : rep.IdEstatusNavigation.Descripcion,
+                        IdTipoentrada = rep.IdTipoentrada,
+                        TipoEntradaDesc = rep.IdTipoentradaNavigation == null ? null : rep.IdTipoentradaNavigation.Descripcion,
+                        TotalEntradas = rep.OprDetReportes.Count
+                    })
                     .ToList();
+
                 return PartialView("~/Views/Reportes/Partials/UltimosReportesTable.cshtml", reportes);
             }
             catch (Exception err)
