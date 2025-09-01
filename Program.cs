@@ -1,9 +1,9 @@
 using System;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using eticket.Data;
 using eticket.Services;
 using eticket.Validations;
+using eticket.Core.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +32,7 @@ builder.Services.AddValidations();
 // Servicios
 builder.Services.AddScoped<ReportService>();
 builder.Services.AddScoped<DocumentosService>();
+builder.Services.AddScoped<IResumeService, ResumenService>();
 
 var app = builder.Build();
 
