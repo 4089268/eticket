@@ -24,13 +24,22 @@ public class ResumenService(ILogger<ResumenService> logger, TicketsDBContext dbC
                 EstatusId = group.Key,
                 Estatus = group.First().reporte.IdEstatusNavigation!.Descripcion,
                 Total = group.Count(),
-                Entradas = group.Sum(rep => rep.detalles.Count())
+                TotalEntradas = group.Sum(rep => rep.detalles.Count()),
+                Reportes = group.Select(rep => new
+                {
+                    Folio = rep.reporte.Folio,
+                    Fecha = rep.reporte.FechaRegistro,
+                    Estatus = rep.reporte.IdEstatusNavigation!.Descripcion,
+                    TipoEntrada = rep.reporte.IdTipoentradaNavigation!.Descripcion,
+                    TipoReporte = rep.reporte.IdReporteNavigation!.Descripcion,
+                    UsuarioGenero = rep.reporte.IdEstatusNavigation!.Descripcion,
+                })
             })
             .ToArray();
         return reportes;
     }
 
-    public IEnumerable<dynamic> ObtenerResumenPorTipoEntrada()
+    public IEnumerable<dynamic> ObtenerResumenPorTipoReporte()
     {
         var reportes = this.dbContext.OprReportes
             .GroupJoin(
@@ -39,13 +48,22 @@ public class ResumenService(ILogger<ResumenService> logger, TicketsDBContext dbC
                 det => det.Folio,
                 (reporte, detalles) => new { reporte, detalles }
             )
-            .GroupBy(item => item.reporte.IdTipoentrada)
+            .GroupBy(item => item.reporte.IdReporte)
             .Select(group => new
             {
-                TipoEntradaId = group.Key,
-                TipoEntrada = group.First().reporte.IdTipoentradaNavigation!.Descripcion,
+                TipoReporteId = group.Key,
+                TipoReporte = group.First().reporte.IdReporteNavigation!.Descripcion,
                 Total = group.Count(),
-                Entradas = group.Sum(rep => rep.detalles.Count())
+                TotalEntradas = group.Sum(rep => rep.detalles.Count()),
+                Reportes = group.Select(rep => new
+                {
+                    Folio = rep.reporte.Folio,
+                    Fecha = rep.reporte.FechaRegistro,
+                    Estatus = rep.reporte.IdEstatusNavigation!.Descripcion,
+                    TipoEntrada = rep.reporte.IdTipoentradaNavigation!.Descripcion,
+                    TipoReporte = rep.reporte.IdReporteNavigation!.Descripcion,
+                    UsuarioGenero = rep.reporte.IdEstatusNavigation!.Descripcion,
+                })
             })
             .ToArray();
         return reportes;
@@ -66,7 +84,16 @@ public class ResumenService(ILogger<ResumenService> logger, TicketsDBContext dbC
             {
                 Dia = group.Key,
                 Total = group.Count(),
-                Entradas = group.Sum(rep=> rep.detalles.Count())
+                TotalEntradas = group.Sum(rep => rep.detalles.Count()),
+                Reportes = group.Select(rep => new
+                {
+                    Folio = rep.reporte.Folio,
+                    Fecha = rep.reporte.FechaRegistro,
+                    Estatus = rep.reporte.IdEstatusNavigation!.Descripcion,
+                    TipoEntrada = rep.reporte.IdTipoentradaNavigation!.Descripcion,
+                    TipoReporte = rep.reporte.IdReporteNavigation!.Descripcion,
+                    UsuarioGenero = rep.reporte.IdEstatusNavigation!.Descripcion,
+                })
             })
             .ToArray();
         return reportes;
