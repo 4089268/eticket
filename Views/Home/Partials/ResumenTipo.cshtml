@@ -1,0 +1,65 @@
+@using System.Diagnostics
+@model IEnumerable<dynamic>
+
+<div class="row mb-5">
+    <div class="col-12 px-4">
+        <h6>Reportes por tipo de reporte</h6>
+    </div>
+    @foreach(var statusResume in Model)
+    {
+        <div class="col-xxl-3 col-sm-6 col-ssm-12 mb-3">
+            <div class="ap-po-details ap-po-details--2 p-25 radius-xl d-flex justify-content-between">
+                <div class="overview-content w-100">
+                    <div class=" ap-po-details-content d-flex flex-wrap justify-content-between">
+                        <div class="ap-po-details__titlebar">
+                            <p class="text-truncate w-100 w-sm-auto resume-title-card">
+                                @statusResume.TipoReporte
+                            </p>
+                            <h1>@statusResume.Total.ToString("n0")</h1>
+                        </div>
+                        <div class="ap-po-details__icon-area">
+                            <div class="svg-icon order-bg-opacity-secondary color-secondary">
+                                @switch (statusResume.TipoReporte.ToLower())
+                                {
+                                    case "fuga":
+                                        <i class="las la-tint"></i>
+                                        break;
+                                    case "falta de servicio":
+                                        <i class="las la-exclamation-triangle"></i>
+                                        break;
+                                    case "bacheo/hundimiento":
+                                        <i class="las la-road"></i>
+                                        break;
+                                    case "falta de tapa o rejillas":
+                                        <i class="las la-wrench"></i>
+                                        break;
+                                    case "sugerencias":
+                                        <i class="las la-comment-alt"></i>
+                                        break;
+                                    case "quejas":
+                                        <i class="las la-bullhorn"></i>
+                                        break;
+                                    case "aclaracion de recibo":
+                                        <i class="lab la-wpforms"></i>
+                                        break;
+                                    default:
+                                        <i class="las la-info-circle"></i>
+                                        break;
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ap-po-details-time">
+                        <div>
+                            <span class="color-success">
+                                <i class="las la-arrow-up"></i>
+                                <strong>0.0%</strong>
+                            </span>
+                            <small>Desde el mes pasado</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

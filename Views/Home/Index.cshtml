@@ -6,31 +6,24 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-xxl-12 mb-4">
-                <div class="card banner-feature--18 d-flex">
+                <div class="card d-flex p-1 mt-1" style="background-color: var(--bg-primary-hover); justify-content: center;">
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-xl-6">
-                                <div class="card-body px-25">
-                                <h1 class="banner-feature__heading color-white">Bienvenido eTicket Dashboard</h1>
-                                <p class="banner-feature__para color-white">There are many variations of passages of
-                                    Lorem
-                                    Ipsum available, but the majority have suffered
-                                    alteration in some form
-                                </p>
-                                <div class="d-flex justify-content-sm-start justify-content-center">
-                                    <button class="banner-feature__btn btn btn-primary color-white btn-md px-20 radius-xs fs-15" type="button">Learn More</button>
-                                </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-6">
-                                <div class="banner-feature__shape px-md-25 px-25 py-sm-0 pt-15 pb-30 d-flex justify-content-sm-end justify-content-center">
-                                    <img src="img/demo5-banner.png" alt="img" class="svg">
-                                </div>
+                                @await Html.PartialAsync("./Partials/Banner.cshtml")
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <section id="resume-status">
+                @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "Cargando...")
+            </section>
+
+            <section id="resume-tipo">
+                @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "Cargando...")
+            </section>
 
             <div class="col-xxl-8 mb-4">
                 <div class="card border-0 p-2 px-25 h-100">
@@ -156,3 +149,29 @@
         </div>
     </div>
 </div>
+
+<style>
+    .resume-title-card {
+        max-width: 100%; /* default for xs */
+    }
+
+    @@media (min-width: 576px)
+    {
+        .resume-title-card
+        {
+            max-width: 8.5rem;
+        }
+    }
+</style>
+
+@section scripts
+{
+    <script>
+        jQuery(document).ready(function()
+        {
+            $("#resume-status").load("/home/partial-view/status-resume");
+
+            $("#resume-tipo").load("/home/partial-view/tipo-reporte-resume");
+        });
+    </script>
+}
