@@ -56,44 +56,7 @@
                 </div>
 
                 <div class="col-lg-4 col-sm-12">
-                    <div class="p-4 border rounded bg-white">
-                        <h4>Documentos Adjuntos:</h4>
-                        <div class="ticket-file-attach__wrapper">
-                            @foreach(var archivo in Model.Archivos.OrderByDescending(item => item.FechaInsert))
-                            {
-                                <div class="ticket-file-attach__items p-1 w-100">
-                                    <div class="ticket-file-attach__items_detail w-100">
-                                        @if(archivo.FileExtension.ToLower().Contains("png"))
-                                        {
-                                            <img src="~/img/png.png" alt="png">
-                                        }
-                                        else if(archivo.FileExtension.ToLower().Contains("jpg"))
-                                        {
-                                            <img src="~/img/jpg.png" alt="jpg">
-                                        }
-                                        else if(archivo.FileExtension.ToLower().Contains("pdf"))
-                                        {
-                                            <img src="~/img/pdf.png" alt="pdf">
-                                        }
-                                        else
-                                        {
-                                            <img src="~/img/document.png" alt="document">
-                                        }
-                                        <div style="width: calc(100% - 50px);">
-                                            <h6 class="mb-1 text-truncate small">@archivo.Descripcion</h6>
-                                            <div class="small">@archivo.FileSizeRedeable</div>
-                                            <div class="text-muted" style="font-size: 10px;">@archivo.IdImagen</div>
-                                        </div>
-                                    </div>
-                                    <div class="ticket-file-attach__items_download d-flex">
-                                        <a href="#" onclick="mostrarDocumento(event, '@archivo.Descripcion', '@archivo.UrlImage')">
-                                            <img src="~/img/svg/eye.svg" alt="download" class="svg">
-                                        </a>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
+                    @await Html.PartialAsync("./Partials/DocumentosAdjuntosPanel.cshtml", Model.Archivos)
                 </div>
             </div>
         </div>
@@ -269,8 +232,6 @@
         align-items: center;
     }
 
-
-
     .ticket-user-list .ticket-user-list-item
     {
         display: flex;
@@ -432,9 +393,17 @@
 
         function mostrarDocumento(event, nombre, urlArchivo)
         {
-            $("#body-modal2 iframe").attr("src", urlArchivo);
-            $("#modaltitle2").text(nombre);
-            modalDocumento.show();
+            $("body").css("cursor", "wait");
+
+            const $iframe = $("#body-modal2 iframe");
+            $iframe.off("load");
+            $iframe.on("load", function ()
+            {
+                $("body").css("cursor", "default");
+                $("#modaltitle2").text(nombre);
+                modalDocumento.show();
+            });
+            $iframe.attr("src", urlArchivo);
         }
 
         jQuery(document).ready(function()

@@ -86,7 +86,7 @@ public class DocumentController(ILogger<DocumentController> logger, TicketsMedia
             _ => "application/octet-stream"
         };
 
-        return File(oprImage.Documento!, mediaType, oprImage.Descripcion?.Split(".").First() ?? "eticket");
+        return File(oprImage.Documento!, mediaType, oprImage.Descripcion ?? "eticket" + oprImage.FileExtension );
     }
 
 }

@@ -22,6 +22,10 @@ public class ArchivoDTO
     {
         get => $"/api/document/{IdImagen.ToString()}";
     }
+    public string UrlDownload
+    {
+        get => $"/api/document/{IdImagen.ToString()}/download";
+    }
 
     public string FileSizeRedeable
     {
