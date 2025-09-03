@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using eticket.Models;
 using Microsoft.AspNetCore.Authorization;
+using eticket.Models;
 
 namespace eticket.Controllers;
 

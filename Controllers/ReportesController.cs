@@ -14,6 +14,7 @@ using eticket.Data;
 using eticket.Models;
 using eticket.ViewModels;
 using eticket.Services;
+using eticket.DTO;
 
 namespace eticket.Controllers
 {
@@ -134,6 +135,7 @@ namespace eticket.Controllers
                     {"ATENDIDO","success"},
                     {"CANCELADO","danger"}
                 };
+
                 foreach (var _entrada in viewModel.Entradas)
                 {
                     if (string.IsNullOrEmpty(_entrada.Estatus) || !_clasesDisponibles.ContainsKey(_entrada.Estatus))
@@ -148,6 +150,24 @@ namespace eticket.Controllers
 
                     _entrada.TotalDocumentosAdjuntos = this.documentosService.TotalDocumentos(_entrada.Folio, _entrada.Id);
                 }
+
+                // * obtener los documentos adjuntos
+                IEnumerable<ArchivoDTO> archivosAdjuntos = this.mediaContext.OprImagenes
+                    .Where(item => item.FolioReporte == folioReporte)
+                    .Select( oprImagen => new ArchivoDTO
+                    {
+                        IdImagen = oprImagen.IdImagen,
+                        FolioReporte = oprImagen.FolioReporte,
+                        FolioReporteDetalle = oprImagen.FolioReporteDetalle,
+                        Descripcion = oprImagen.Descripcion,
+                        FechaInsert = oprImagen.FechaInsert,
+                        Filesize = oprImagen.Filesize!.Value,
+                        Mediatype = string.Empty,
+                        FileExtension = oprImagen.FileExtension ?? string.Empty
+                    })
+                    .ToList();
+                viewModel.Archivos = archivosAdjuntos;
+
 
                 // * obtener catalog de estatus
                 var estatusList = this.ticketsDbContext.CatEstatuses

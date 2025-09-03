@@ -59,48 +59,39 @@
                     <div class="p-4 border rounded bg-white">
                         <h4>Documentos Adjuntos:</h4>
                         <div class="ticket-file-attach__wrapper">
-                            <div class="ticket-file-attach__items">
-                                <div class="ticket-file-attach__items_detail">
-                                    <img src="~/img/pdf.png" alt="pdf.png">
-                                    <div class="div">
-                                    <h6>Product-guidelines.pdf</h6>
-                                    <span>7.05 MB</span>
+                            @foreach(var archivo in Model.Archivos.OrderByDescending(item => item.FechaInsert))
+                            {
+                                <div class="ticket-file-attach__items p-1 w-100">
+                                    <div class="ticket-file-attach__items_detail w-100">
+                                        @if(archivo.FileExtension.ToLower().Contains("png"))
+                                        {
+                                            <img src="~/img/png.png" alt="png">
+                                        }
+                                        else if(archivo.FileExtension.ToLower().Contains("jpg"))
+                                        {
+                                            <img src="~/img/jpg.png" alt="jpg">
+                                        }
+                                        else if(archivo.FileExtension.ToLower().Contains("pdf"))
+                                        {
+                                            <img src="~/img/pdf.png" alt="pdf">
+                                        }
+                                        else
+                                        {
+                                            <img src="~/img/document.png" alt="document">
+                                        }
+                                        <div style="width: calc(100% - 50px);">
+                                            <h6 class="mb-1 text-truncate small">@archivo.Descripcion</h6>
+                                            <div class="small">@archivo.FileSizeRedeable</div>
+                                            <div class="text-muted" style="font-size: 10px;">@archivo.IdImagen</div>
+                                        </div>
+                                    </div>
+                                    <div class="ticket-file-attach__items_download d-flex">
+                                        <a href="#" onclick="mostrarDocumento(event, '@archivo.Descripcion', '@archivo.UrlImage')">
+                                            <img src="~/img/svg/eye.svg" alt="download" class="svg">
+                                        </a>
                                     </div>
                                 </div>
-                                <div class="ticket-file-attach__items_download">
-                                    <a href="#">
-                                        <img src="~/img/svg/download.svg" alt="download" class="svg">
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="ticket-file-attach__items">
-                                <div class="ticket-file-attach__items_detail">
-                                    <img src="~/img/zip.png" alt="zip.png">
-                                    <div class="div">
-                                    <h6>Main-admin-design.zip</h6>
-                                    <span>522 KB</span>
-                                    </div>
-                                </div>
-                                <div class="ticket-file-attach__items_download">
-                                    <a href="#">
-                                        <img src="~/img/svg/download.svg" alt="download" class="svg">
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="ticket-file-attach__items">
-                                <div class="ticket-file-attach__items_detail">
-                                    <img src="~/img/psd.png" alt="psd">
-                                    <div class="div">
-                                    <h6>Admin-wireframe.psd</h6>
-                                    <span>5 MB</span>
-                                    </div>
-                                </div>
-                                <div class="ticket-file-attach__items_download">
-                                    <a href="#">
-                                        <img src="~/img/svg/download.svg" alt="download" class="svg">
-                                    </a>
-                                </div>
-                            </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -195,10 +186,11 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <ul class="orderDatatable_actions mb-0 d-flex flex-wrap justify-content-center">
+                                            <ul class="mb-0 d-flex flex-wrap justify-content-center">
                                                 <li>
-                                                    <a asp-action="MostrarReporte" asp-route-folioReporteArg="@Model.Reporte.Folio" class="view">
+                                                    <a asp-action="MostrarReporte" asp-route-folioReporteArg="@Model.Reporte.Folio" class="btn btn-small btn-squared color-primary btn-outline-primary px-2 py-1">
                                                         <i class="uil uil-eye"></i>
+                                                        <span class="">Mostrar</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -228,6 +220,27 @@
             </div>
             <div class="modal-body" id="body-modal">
                 @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "")
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+
+
+<!-- Modal Nuevo Det Reporte-->
+<div class="modal fade new-member documento-adjunto-modal" id="documento-adjunto-modal" role="dialog" tabindex="-1"
+    aria-labelledby="staticBackdropLabel2" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"
+>
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content radius-xl">
+            <div class="modal-header">
+                <h4 class="modal-title fw-500" id="modaltitle2">Docuemnto Adjunto</h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <img src="~/img/svg/x.svg" alt="x" class="svg">
+                </button>
+            </div>
+            <div class="modal-body" id="body-modal2">
+                <iframe src="" title="eticket viewer" class="w-100" style="height: 75dvh;"></iframe>
             </div>
         </div>
     </div>
@@ -310,12 +323,14 @@
         text-align: end;
     }
 
+
 </style>
 
 @section scripts
 {
     <script>
         let modal = undefined;
+        let modalDocumento = undefined;
         const folioReporte = '@Html.Raw(Model.Reporte.Folio)';
 
         function inicializarTabla()
@@ -415,12 +430,25 @@
             });
         }
 
+        function mostrarDocumento(event, nombre, urlArchivo)
+        {
+            $("#body-modal2 iframe").attr("src", urlArchivo);
+            $("#modaltitle2").text(nombre);
+            modalDocumento.show();
+        }
+
         jQuery(document).ready(function()
         {
             if (document.getElementsByClassName("nueva-entrada-modal").length)
             {
                 modal = new bootstrap.Modal(document.getElementById("nueva-entrada-modal"));
             }
+
+            if (document.getElementsByClassName("documento-adjunto-modal").length)
+            {
+                modalDocumento = new bootstrap.Modal(document.getElementById("documento-adjunto-modal"));
+            }
+
             cargarFormulario();
             
             inicializarTabla();
