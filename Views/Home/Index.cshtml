@@ -6,153 +6,328 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-xxl-12 mb-4">
-                <div class="card banner-feature--18 d-flex">
+                <div class="card d-flex p-1 mt-1" style="background-color: var(--bg-primary-hover); justify-content: center;">
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-xl-6">
-                                <div class="card-body px-25">
-                                <h1 class="banner-feature__heading color-white">Bienvenido eTicket Dashboard</h1>
-                                <p class="banner-feature__para color-white">There are many variations of passages of
-                                    Lorem
-                                    Ipsum available, but the majority have suffered
-                                    alteration in some form
-                                </p>
-                                <div class="d-flex justify-content-sm-start justify-content-center">
-                                    <button class="banner-feature__btn btn btn-primary color-white btn-md px-20 radius-xs fs-15" type="button">Learn More</button>
-                                </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-6">
-                                <div class="banner-feature__shape px-md-25 px-25 py-sm-0 pt-15 pb-30 d-flex justify-content-sm-end justify-content-center">
-                                    <img src="img/demo5-banner.png" alt="img" class="svg">
-                                </div>
+                                @await Html.PartialAsync("./Partials/Banner.cshtml")
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xxl-8 mb-4">
-                <div class="card border-0 p-2 px-25 h-100">
-                    <div class="card-header px-0 border-0">
-                        <h6>Resumen</h6>
-                        <div class="card-extra">
-                            <ul class="card-tab-links nav-tabs nav" role="tablist">
-                                <li>
-                                <a href="#salesgrowth" data-bs-toggle="tab" id="salesgrowth-tab" role="tab" aria-selected="false">Today</a>
-                                </li>
-                                <li>
-                                <a href="#salesgrowth2" data-bs-toggle="tab" id="salesgrowth2-tab" role="tab" aria-selected="false">Week</a>
-                                </li>
-                                <li>
-                                <a class="active" href="#salesgrowth3" data-bs-toggle="tab" id="salesgrowth3-tab" role="tab" aria-selected="true">Month</a>
-                                </li>
-                            </ul>
-                        </div>
+            <section id="resume-status">
+                @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "Cargando...")
+            </section>
+
+            <section id="resume-tipo">
+                @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "Cargando...")
+            </section>
+
+            <div class="col-12 mb-4">
+                <div class="card revenueChartTwo border-0">
+                    <div class="card-header border-0">
+                        <h6 class="text-uppercase">Registros por dia del mes anterior</h6>
                     </div>
-                    <div class="card-body p-0 pb-sm-25">
-                        <div class="tab-content">
-                            <div class="tab-pane" id="salesgrowth" role="tabpanel" aria-labelledby="salesgrowth-tab">
-                                <div class="label-detailed label-detailed--two">
-                                <div class="label-detailed__single">
-                                    <span class="label-detailed__type label-detailed__type--primary">Target</span>
-                                    <strong class="label-detailed__total">$8,550</strong>
-                                    <span class="label-detailed__status color-success">
-                                        <img class="svg" src="img/svg/arrow-success-up.svg" alt="">
-                                        <strong>25%</strong>
-                                    </span>
-                                </div>
-                                <div class="label-detailed__single">
-                                    <span class="label-detailed__type label-detailed__type--info">Gained</span>
-                                    <strong class="label-detailed__total">$5,550</strong>
-                                    <span class="label-detailed__status color-danger">
-                                        <img class="svg" src="img/svg/arrow-danger-down.svg" alt="">
-                                        <strong>15%</strong>
-                                    </span>
-                                </div>
-                                </div>
-                                <div class="parentContainer">
-
-
+                    <div class="card-body pt-0 px-20">
+                        <div class="wp-chart">
+                            <div class="parentContainer">
                                 <div>
-                                    <canvas id="salesGrowthNewToday"></canvas>
-                                </div>
-
-
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="salesgrowth2" role="tabpanel" aria-labelledby="salesgrowth2-tab">
-                                <div class="label-detailed label-detailed--two">
-                                <div class="label-detailed__single">
-                                    <span class="label-detailed__type label-detailed__type--primary">Target</span>
-                                    <strong class="label-detailed__total">$8,550</strong>
-                                    <span class="label-detailed__status color-success">
-                                        <img class="svg" src="img/svg/arrow-success-up.svg" alt="">
-                                        <strong>25%</strong>
-                                    </span>
-                                </div>
-                                <div class="label-detailed__single">
-                                    <span class="label-detailed__type label-detailed__type--info">Gained</span>
-                                    <strong class="label-detailed__total">$5,550</strong>
-                                    <span class="label-detailed__status color-danger">
-                                        <img class="svg" src="img/svg/arrow-danger-down.svg" alt="">
-                                        <strong>15%</strong>
-                                    </span>
-                                </div>
-                                </div>
-                                <div class="parentContainer">
-
-
-                                <div>
-                                    <canvas id="salesGrowthNewWeek"></canvas>
-                                </div>
-
-
-                                </div>
-                            </div>
-                            <div class="tab-pane  active show" id="salesgrowth3" role="tabpanel" aria-labelledby="salesgrowth3-tab">
-                                <div class="label-detailed label-detailed--two">
-                                <div class="label-detailed__single">
-                                    <span class="label-detailed__type label-detailed__type--primary">Target</span>
-                                    <strong class="label-detailed__total">$8,550</strong>
-                                    <span class="label-detailed__status color-success">
-                                        <img class="svg" src="img/svg/arrow-success-up.svg" alt="">
-                                        <strong>25%</strong>
-                                    </span>
-                                </div>
-                                <div class="label-detailed__single">
-                                    <span class="label-detailed__type label-detailed__type--info">Gained</span>
-                                    <strong class="label-detailed__total">$5,550</strong>
-                                    <span class="label-detailed__status color-danger">
-                                        <img class="svg" src="img/svg/arrow-danger-down.svg" alt="">
-                                        <strong>15%</strong>
-                                    </span>
-                                </div>
-                                </div>
-                                <div class="parentContainer">
-
-
-                                <div>
-                                    <canvas id="salesGrowthNewMonth"></canvas>
-                                </div>
-
-
+                                    <canvas id="saleRevenueToday"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
+                <!-- ends: .card-body -->
                 </div>
             </div>
 
-            <div class="col-xxl-4 col-lg-6 order-xxl-0 order-1 mb-4">
-                <div class="card card-md border-0 mb-4 date-picker__calendar-height h-100">
-                    <div class="card-body px-10 d-flex align-items-center">
-                        <div class="date-picker date-picker--demo5 w-100">
-                            <div class="date-picker__calendar"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
+
+<style>
+    .resume-title-card {
+        max-width: 100%; /* default for xs */
+    }
+
+    @@media (min-width: 576px)
+    {
+        .resume-title-card
+        {
+            max-width: 8.5rem;
+        }
+    }
+</style>
+
+@section scripts
+{
+    <script src="~/assets/vendor_assets/js/Chart.min.js"></script>
+    <script>
+        /* ======= Custom Tooltip ====== */
+        const customTooltips = function (context) {
+            // Tooltip Element
+            let tooltipEl = document.getElementById('chartjs-tooltip');
+
+            if (!tooltipEl) {
+                tooltipEl = document.createElement('div');
+                tooltipEl.id = 'chartjs-tooltip';
+                tooltipEl.className = "chartjs-tooltip";
+                tooltipEl.innerHTML = '<table></table>';
+                document.body.appendChild(tooltipEl);
+            }
+
+            // Hide if no tooltip
+            const tooltipModel = context.tooltip;
+            if (tooltipModel.opacity === 0) {
+                tooltipEl.style.opacity = 0;
+                return;
+            }
+
+            // Set caret Position
+            tooltipEl.classList.remove('above', 'below', 'no-transform');
+            if (tooltipModel.yAlign) {
+                tooltipEl.classList.add(tooltipModel.yAlign);
+            } else {
+                tooltipEl.classList.add('no-transform');
+            }
+
+            function getBody(bodyItem) {
+                return bodyItem.lines;
+            }
+
+            // Set Text
+            if (tooltipModel.body) {
+                const titleLines = tooltipModel.title || [];
+                const bodyLines = tooltipModel.body.map(getBody);
+
+                let innerHtml = '<thead>';
+
+                titleLines.forEach(function (title) {
+                    innerHtml += `<div class='tooltip-title'>${title}</div>`;
+                });
+                innerHtml += '</thead><tbody>';
+
+                bodyLines.forEach(function (body, i) {
+                    const colors = tooltipModel.labelColors[i];
+                    let style = 'background:' + colors.backgroundColor;
+                    style += '; border-color:' + colors.borderColor;
+                    style += '; border-width: 2px';
+                    style += "; border-radius: 30px";
+                    const span = `<span class="chartjs-tooltip-key" style="${style}"></span>`;
+                    innerHtml += `<tr><td>${span}${body}</td></tr>`;
+                });
+                innerHtml += '</tbody>';
+
+                let tableRoot = tooltipEl.querySelector('table');
+                tableRoot.innerHTML = innerHtml;
+            }
+
+            const toolTip = document.querySelector('.chartjs-tooltip');
+            const position = context.chart.canvas.getBoundingClientRect();
+            const toolTipHeight = toolTip.clientHeight;
+            const rtl = document.querySelector('html[dir="rtl"]');
+
+
+            // Display, position, and set styles for font
+            tooltipEl.style.opacity = 1;
+            tooltipEl.style.position = 'absolute';
+            tooltipEl.style.left = `${position.left + window.pageXOffset + tooltipModel.caretX - (rtl !== null ? toolTip.clientWidth : 0)}px`;
+            tooltipEl.style.top = `${position.top + window.pageYOffset + tooltipModel.caretY-(tooltipModel.caretY > 10 ? (toolTipHeight > 100 ? toolTipHeight + 5 : toolTipHeight + 15) : 70)}px`;
+            tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px';
+            tooltipEl.style.pointerEvents = 'none';
+        }
+
+        const chartLinearGradient = (canvas, height, color) => {
+            const ctx = canvas.getContext('2d');
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0, `${color.start}`);
+            gradient.addColorStop(1, `${color.end}`);
+            return gradient;
+        };
+
+        function chartjsLineChart(selector, height, dataCur, labels, labelName, fill) {
+            let delayed;
+            let primaryColorRGB;
+            let primaryColor;
+            primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary');
+            primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue(
+                '--color-primary-rgba'
+            );
+            var ctx = document.getElementById(selector);
+            if (ctx) {
+                ctx.getContext("2d");
+                ctx.height = window.innerWidth <= 1399 ? (window.innerWidth < 575 ? 200 : 150) : height;
+                var charts = new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: dataCur,
+                            borderColor: primaryColor,
+                            backgroundColor: () =>
+                                chartLinearGradient(document.getElementById(selector), 300, {
+                                    start: `rgba(${primaryColorRGB},0.5)`,
+                                    end: 'rgba(255,255,255,0.05)'
+                                }),
+                            fill: fill,
+                            label: labelName,
+                            pointBackgroundColor: primaryColor,
+                            tension: 0.4,
+                            borderWidth: 3,
+                            hoverRadius: '6',
+                            pointRadius: 0,
+                            pointHoverRadius: 6,
+                            pointHitRadius: 30,
+                            pointStyle: 'circle',
+                            pointHoverBorderWidth: 2,
+
+                        }, ],
+                    },
+                    options: {
+                        maintainAspectRatio: true,
+                        responsive: true,
+                        interaction: {
+                            mode: 'index',
+                        },
+                        plugins: {
+                            legend: {
+                                display: false,
+                                position: "bottom",
+                                align: "start",
+                                labels: {
+                                    boxWidth: 6,
+                                    display: true,
+                                    usePointStyle: true,
+                                },
+                            },
+                            tooltip: {
+                                usePointStyle: true,
+                                enabled: false,
+                                external: customTooltips,
+                                callbacks: {
+                                    label: function (context) {
+                                        let label = context.dataset.label || '';
+
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat().format(context.parsed.y);
+                                        }
+                                        return `<span class="data-label">${label} reportes</span>`;
+                                    }
+                                },
+                            },
+                        },
+                        animation: {
+                            onComplete: () => {
+                                delayed = true;
+                            },
+                            delay: (context) => {
+                                let delay = 0;
+                                if (context.type === 'data' && context.mode === 'default' && !delayed) {
+                                    delay = context.dataIndex * 200 + context.datasetIndex * 50;
+                                }
+                                return delay;
+                            },
+                        },
+                        layout: {
+                            padding: {
+                                left: -13,
+                                right: -10,
+                                top: 0,
+                                bottom: 0,
+                            },
+                        },
+                        elements: {
+                            point: {
+                                radius: 0,
+                            },
+                        },
+                        scales: {
+                            y: {
+                                grid: {
+                                    color: "#485e9029",
+                                    borderDash: [3, 3],
+                                    zeroLineColor: "#485e9029",
+                                    zeroLineWidth: 1,
+                                    zeroLineBorderDash: [3, 3],
+                                    drawTicks: false,
+                                    drawBorder: false,
+                                    zeroLineWidth: 3,
+                                    borderWidth: 0,
+                                },
+                                ticks: {
+                                    beginAtZero: true,
+                                    font: {
+                                        size: 14,
+                                        family: "'Jost', sans-serif",
+                                    },
+                                    color: '#747474',
+                                    padding: 15,
+                                    max: 80,
+                                    min: 0,
+                                    stepSize: 20,
+                                    callback(value, index, values) {
+                                        return `${value} reportes`;
+                                    },
+                                },
+                            },
+                            x: {
+                                grid: {
+                                    display: true,
+                                    zeroLineWidth: 2,
+                                    zeroLineColor: "transparent",
+                                    color: "transparent",
+                                    z: 1,
+                                    tickMarkLength: 10,
+                                    drawTicks: true,
+                                    drawBorder: false,
+                                },
+
+                                ticks: {
+                                    beginAtZero: true,
+                                    font: {
+                                        size: 14,
+                                        family: "'Jost', sans-serif",
+                                    },
+                                    color: '#747474'
+                                },
+                            },
+                        },
+                    },
+                });
+            }
+        }
+
+        jQuery(document).ready(function()
+        {
+            $("#resume-status").load("/home/partial-view/status-resume");
+            $("#resume-tipo").load("/home/partial-view/tipo-reporte-resume");
+
+
+            // fetch data for the chart
+            fetch("/api/entradas/resume-dias")
+                .then(response => response.json())
+                .then(data => {
+
+                    console.dir(data);
+
+                    chartjsLineChart(
+                        "saleRevenueToday",
+                        100,
+                        data.map(item => item.total),
+                        data.map(item => item.label),
+                        "",
+                        true
+                    );
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
+
+        });
+    </script>
+}

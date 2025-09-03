@@ -1,8 +1,11 @@
 *, :root
 {
   --color-primary: #a61645 !important;
-  --bg-primary-hover: #83193c !important;
   --color-primary-rgba: 75, 20, 36 !important;
+  --bg-primary-hover: #83193c !important;
+
+  --color-secondary: #b28955 !important;
+  --color-secondary-rgba: 78, 137, 85 !important;
 }
 html {
   font-size: 14px;
