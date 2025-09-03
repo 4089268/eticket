@@ -1,0 +1,261 @@
+
+const customTooltips = function (context) {
+    // Tooltip Element
+    let tooltipEl = document.getElementById('chartjs-tooltip');
+
+    if (!tooltipEl) {
+        tooltipEl = document.createElement('div');
+        tooltipEl.id = 'chartjs-tooltip';
+        tooltipEl.className = "chartjs-tooltip";
+        tooltipEl.innerHTML = '<table></table>';
+        document.body.appendChild(tooltipEl);
+    }
+
+    // Hide if no tooltip
+    const tooltipModel = context.tooltip;
+    if (tooltipModel.opacity === 0) {
+        tooltipEl.style.opacity = 0;
+        return;
+    }
+
+    // Set caret Position
+    tooltipEl.classList.remove('above', 'below', 'no-transform');
+    if (tooltipModel.yAlign) {
+        tooltipEl.classList.add(tooltipModel.yAlign);
+    } else {
+        tooltipEl.classList.add('no-transform');
+    }
+
+    function getBody(bodyItem) {
+        return bodyItem.lines;
+    }
+
+    // Set Text
+    if (tooltipModel.body) {
+        const titleLines = tooltipModel.title || [];
+        const bodyLines = tooltipModel.body.map(getBody);
+
+        let innerHtml = '<thead>';
+
+        titleLines.forEach(function (title) {
+            innerHtml += `<div class='tooltip-title'>${title}</div>`;
+        });
+        innerHtml += '</thead><tbody>';
+
+        bodyLines.forEach(function (body, i) {
+            const colors = tooltipModel.labelColors[i];
+            let style = 'background:' + colors.backgroundColor;
+            style += '; border-color:' + colors.borderColor;
+            style += '; border-width: 2px';
+            style += "; border-radius: 30px";
+            const span = `<span class="chartjs-tooltip-key" style="${style}"></span>`;
+            innerHtml += `<tr><td>${span}${body}</td></tr>`;
+        });
+        innerHtml += '</tbody>';
+
+        let tableRoot = tooltipEl.querySelector('table');
+        tableRoot.innerHTML = innerHtml;
+    }
+
+    const toolTip = document.querySelector('.chartjs-tooltip');
+    const position = context.chart.canvas.getBoundingClientRect();
+    const toolTipHeight = toolTip.clientHeight;
+    const rtl = document.querySelector('html[dir="rtl"]');
+
+
+    // Display, position, and set styles for font
+    tooltipEl.style.opacity = 1;
+    tooltipEl.style.position = 'absolute';
+    tooltipEl.style.left = `${position.left + window.pageXOffset + tooltipModel.caretX - (rtl !== null ? toolTip.clientWidth : 0)}px`;
+    tooltipEl.style.top = `${position.top + window.pageYOffset + tooltipModel.caretY-(tooltipModel.caretY > 10 ? (toolTipHeight > 100 ? toolTipHeight + 5 : toolTipHeight + 15) : 70)}px`;
+    tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px';
+    tooltipEl.style.pointerEvents = 'none';
+}
+
+const chartLinearGradient = (canvas, height, color) => {
+    const ctx = canvas.getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, `${color.start}`);
+    gradient.addColorStop(1, `${color.end}`);
+    return gradient;
+};
+
+function chartjsLineChart(selector, height, dataCur, labels, labelName, fill) {
+    let delayed;
+    let primaryColorRGB;
+    let primaryColor;
+    primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary');
+    primaryColorRGB = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-rgba');
+    var ctx = document.getElementById(selector);
+    if (ctx)
+    {
+        ctx.getContext("2d");
+        ctx.height = window.innerWidth <= 1399 ? (window.innerWidth < 575 ? 200 : 150) : height;
+        var charts = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: dataCur,
+                    borderColor: primaryColor,
+                    backgroundColor: () =>
+                        chartLinearGradient(document.getElementById(selector), 300, {
+                            start: `rgba(${primaryColorRGB},0.5)`,
+                            end: 'rgba(255,255,255,0.05)'
+                        }),
+                    fill: fill,
+                    label: labelName,
+                    pointBackgroundColor: primaryColor,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    hoverRadius: '6',
+                    pointRadius: 0,
+                    pointHoverRadius: 6,
+                    pointHitRadius: 30,
+                    pointStyle: 'circle',
+                    pointHoverBorderWidth: 2,
+
+                }, ],
+            },
+            options: {
+                maintainAspectRatio: true,
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                        position: "bottom",
+                        align: "start",
+                        labels: {
+                            boxWidth: 6,
+                            display: true,
+                            usePointStyle: true,
+                        },
+                    },
+                    tooltip: {
+                        usePointStyle: true,
+                        enabled: false,
+                        external: customTooltips,
+                        callbacks: {
+                            label: function (context) {
+                                let label = context.dataset.label || '';
+                                if (label)
+                                {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null)
+                                {
+                                    label += new Intl.NumberFormat().format(context.parsed.y);
+                                }
+                                return `<span class="data-label">${label} reportes</span>`;
+                            }
+                        },
+                    },
+                },
+                animation: {
+                    onComplete: () => {
+                        delayed = true;
+                    },
+                    delay: (context) => {
+                        let delay = 0;
+                        if (context.type === 'data' && context.mode === 'default' && !delayed) {
+                            delay = context.dataIndex * 200 + context.datasetIndex * 50;
+                        }
+                        return delay;
+                    },
+                },
+                layout: {
+                    padding: {
+                        left: -13,
+                        right: -10,
+                        top: 0,
+                        bottom: 0,
+                    },
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                    },
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            color: "#485e9029",
+                            borderDash: [3, 3],
+                            zeroLineColor: "#485e9029",
+                            zeroLineWidth: 1,
+                            zeroLineBorderDash: [3, 3],
+                            drawTicks: true,
+                            drawBorder: true,
+                            zeroLineWidth: 3,
+                            borderWidth: 1,
+                        },
+                        ticks: {
+                            beginAtZero: true,
+                            font: {
+                                size: 14,
+                                family: "'Jost', sans-serif",
+                            },
+                            color: '#747474',
+                            padding: 15,
+                            max: 100,
+                            min: 0,
+                            stepSize: 10,
+                            callback(value, index, values) {
+                                return `${value} reportes`;
+                            },
+                        },
+                    },
+                    x: {
+                        grid: {
+                            display: true,
+                            zeroLineWidth: 2,
+                            zeroLineColor: "transparent",
+                            color: "transparent",
+                            z: 1,
+                            tickMarkLength: 10,
+                            drawTicks: true,
+                            drawBorder: false,
+                        },
+
+                        ticks: {
+                            beginAtZero: true,
+                            font: {
+                                size: 14,
+                                family: "'Jost', sans-serif",
+                            },
+                            color: '#747474'
+                        },
+                    },
+                },
+            },
+        });
+    }
+}
+
+
+jQuery(document).ready(function()
+{
+    $("#resume-status").load("/home/partial-view/status-resume");
+    $("#resume-tipo").load("/home/partial-view/tipo-reporte-resume");
+
+
+    // fetch data for the chart
+    fetch("/api/entradas/resume-dias")
+        .then(response => response.json())
+        .then(data => {
+            chartjsLineChart(
+                "saleRevenueToday",
+                60,
+                data.map(item => item.total),
+                data.map(item => item.label),
+                "",
+                true
+            );
+        })
+        .catch(error => {
+            console.error("Error fetching data:", error);
+        });
+});
