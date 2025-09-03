@@ -1,8 +1,6 @@
-﻿
-using System.Reflection.Metadata.Ecma335;
+﻿using System;
 
 namespace eticket.DTO;
-
 
 public class ArchivoDTO
 {

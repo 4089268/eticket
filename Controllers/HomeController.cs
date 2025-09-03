@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using eticket.Models;
+using eticket.DTO;
 using eticket.Core.Interfaces;
 
 namespace eticket.Controllers;
@@ -43,11 +44,11 @@ public class HomeController(ILogger<HomeController> l, IResumeService rs) : Cont
             var resumen = this.resumeService.ObtenerResumenPorDias(d1, d2);
 
             // Process the data
-            var days = new ResumeDayDTO[totalDays];
+            var days = new ResumeDayGraphDTO[totalDays];
             for (int i = 0; i < totalDays; i++)
             {
                 var resumeDay = resumen.FirstOrDefault(item => item.Dia.Day == (i + 1));
-                ResumeDayDTO resumeDayDTO = new()
+                ResumeDayGraphDTO resumeDayDTO = new()
                 {
                     Label = $"{(i + 1)} {now.ToString("MMM")}"
                 };
@@ -105,10 +106,4 @@ public class HomeController(ILogger<HomeController> l, IResumeService rs) : Cont
         }
     }
     #endregion
-}
-
-class ResumeDayDTO
-{
-    public string Label { get; set; } = "";
-    public int Total { get; set; } = 0;
 }
