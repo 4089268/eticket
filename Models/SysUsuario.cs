@@ -25,12 +25,19 @@ public partial class SysUsuario
 
     public string? Rol { get; set; }
 
+    public int? IdNivel { get; set; }
+
     public string FullName
     {
         get => string.Join(" ", [Nombre, Apellido]);
     }
+    
+
+    public virtual CatNivelesUsuario? IdNivelNavigation { get; set; }
 
     public virtual ICollection<OprDetReporte> OprDetReportes { get; set; } = new List<OprDetReporte>();
 
     public virtual ICollection<OprReporte> OprReportes { get; set; } = new List<OprReporte>();
+
+    public virtual ICollection<UsuarioOficina> UsuarioOficinas { get; set; } = new List<UsuarioOficina>();
 }

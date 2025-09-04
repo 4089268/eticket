@@ -39,9 +39,13 @@ public partial class OprReporte
 
     public long Folio { get; set; }
 
+    public int? IdOficina { get; set; }
+
     public virtual CatEstatus? IdEstatusNavigation { get; set; }
 
     public virtual SysUsuario? IdGeneroNavigation { get; set; }
+
+    public virtual CatOficina? IdOficinaNavigation { get; set; }
 
     public virtual CatReporte? IdReporteNavigation { get; set; }
 

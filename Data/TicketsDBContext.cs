@@ -18,15 +18,23 @@ public partial class TicketsDBContext : DbContext
 
     public virtual DbSet<CatEstatus> CatEstatuses { get; set; }
 
+    public virtual DbSet<CatNivelesUsuario> CatNivelesUsuarios { get; set; }
+
+    public virtual DbSet<CatOficina> CatOficinas { get; set; }
+
     public virtual DbSet<CatReporte> CatReportes { get; set; }
 
     public virtual DbSet<CatTipoEntradum> CatTipoEntrada { get; set; }
+
+    public virtual DbSet<CatTipoMovimiento> CatTipoMovimientos { get; set; }
 
     public virtual DbSet<OprDetReporte> OprDetReportes { get; set; }
 
     public virtual DbSet<OprReporte> OprReportes { get; set; }
 
     public virtual DbSet<SysUsuario> SysUsuarios { get; set; }
+
+    public virtual DbSet<UsuarioOficina> UsuarioOficinas { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=TicketDB");
@@ -49,6 +57,34 @@ public partial class TicketsDBContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("tabla");
+        });
+
+        modelBuilder.Entity<CatNivelesUsuario>(entity =>
+        {
+            entity.HasKey(e => e.IdNivel).HasName("PK__Cat_Nive__9CAF1C5332B92CBE");
+
+            entity.ToTable("Cat_NivelesUsuario", "Global");
+
+            entity.Property(e => e.IdNivel).HasColumnName("id_nivel");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(100)
+                .HasColumnName("nombre");
+        });
+
+        modelBuilder.Entity<CatOficina>(entity =>
+        {
+            entity.ToTable("Cat_Oficinas", "Global");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.BaseDatos).HasColumnName("baseDatos");
+            entity.Property(e => e.Contraseña).HasColumnName("contraseña");
+            entity.Property(e => e.Inactivo).HasColumnName("inactivo");
+            entity.Property(e => e.Oficina).HasColumnName("oficina");
+            entity.Property(e => e.Servidor).HasColumnName("servidor");
+            entity.Property(e => e.Usuario).HasColumnName("usuario");
+            entity.Property(e => e.Visible)
+                .HasDefaultValue(true)
+                .HasColumnName("visible");
         });
 
         modelBuilder.Entity<CatReporte>(entity =>
@@ -79,6 +115,23 @@ public partial class TicketsDBContext : DbContext
             entity.Property(e => e.Inactivo).HasColumnName("inactivo");
         });
 
+        modelBuilder.Entity<CatTipoMovimiento>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Cat_Tipo__3213E83F16B0B17A");
+
+            entity.ToTable("Cat_TipoMovimiento", "Global");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Categoria)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("categoria");
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("descripcion");
+        });
+
         modelBuilder.Entity<OprDetReporte>(entity =>
         {
             entity.ToTable("Opr_DetReportes", "Reportes");
@@ -90,6 +143,7 @@ public partial class TicketsDBContext : DbContext
             entity.Property(e => e.Folio).HasColumnName("folio");
             entity.Property(e => e.IdEstatus).HasColumnName("id_estatus");
             entity.Property(e => e.IdOperador).HasColumnName("id_operador");
+            entity.Property(e => e.IdTipoMovimiento).HasColumnName("id_tipoMovimiento");
             entity.Property(e => e.Observaciones)
                 .IsUnicode(false)
                 .HasColumnName("observaciones");
@@ -108,6 +162,10 @@ public partial class TicketsDBContext : DbContext
                 .HasForeignKey(d => d.IdOperador)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_DetReportes_Usuarios");
+
+            entity.HasOne(d => d.IdTipoMovimientoNavigation).WithMany(p => p.OprDetReportes)
+                .HasForeignKey(d => d.IdTipoMovimiento)
+                .HasConstraintName("FK_DetReportes_TipoMovimiento");
         });
 
         modelBuilder.Entity<OprReporte>(entity =>
@@ -160,6 +218,7 @@ public partial class TicketsDBContext : DbContext
                 .HasDefaultValue(1)
                 .HasColumnName("id_estatus");
             entity.Property(e => e.IdGenero).HasColumnName("id_genero");
+            entity.Property(e => e.IdOficina).HasColumnName("id_oficina");
             entity.Property(e => e.IdReporte)
                 .HasDefaultValue(0)
                 .HasColumnName("id_reporte");
@@ -194,6 +253,10 @@ public partial class TicketsDBContext : DbContext
                 .HasForeignKey(d => d.IdGenero)
                 .HasConstraintName("FK_Opr_Reportes_Sys_Usuarios");
 
+            entity.HasOne(d => d.IdOficinaNavigation).WithMany(p => p.OprReportes)
+                .HasForeignKey(d => d.IdOficina)
+                .HasConstraintName("FK_Reportes_Oficina");
+
             entity.HasOne(d => d.IdReporteNavigation).WithMany(p => p.OprReportes)
                 .HasForeignKey(d => d.IdReporte)
                 .HasConstraintName("FK_Opr_Reportes_Cat_Reportes");
@@ -221,12 +284,38 @@ public partial class TicketsDBContext : DbContext
             entity.Property(e => e.FechaCreacion)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.IdNivel).HasColumnName("id_nivel");
             entity.Property(e => e.Nombre).HasMaxLength(50);
             entity.Property(e => e.Rol)
                 .HasMaxLength(30)
                 .HasDefaultValue("Usuario");
             entity.Property(e => e.UltimoInicioSesion).HasColumnType("datetime");
             entity.Property(e => e.Usuario).HasMaxLength(50);
+
+            entity.HasOne(d => d.IdNivelNavigation).WithMany(p => p.SysUsuarios)
+                .HasForeignKey(d => d.IdNivel)
+                .HasConstraintName("FK_Usuarios_Nivel");
+        });
+
+        modelBuilder.Entity<UsuarioOficina>(entity =>
+        {
+            entity.HasKey(e => new { e.IdUsuario, e.IdOficina });
+
+            entity.ToTable("Usuario_Oficina", "Global");
+
+            entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
+            entity.Property(e => e.IdOficina).HasColumnName("id_oficina");
+            entity.Property(e => e.FechaAsignacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.IdOficinaNavigation).WithMany(p => p.UsuarioOficinas)
+                .HasForeignKey(d => d.IdOficina)
+                .HasConstraintName("FK_Usuario_Oficina_Oficina");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.UsuarioOficinas)
+                .HasForeignKey(d => d.IdUsuario)
+                .HasConstraintName("FK_Usuario_Oficina_Usuario");
         });
 
         OnModelCreatingPartial(modelBuilder);

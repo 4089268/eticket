@@ -17,9 +17,13 @@ public partial class OprDetReporte
 
     public string? Observaciones { get; set; }
 
+    public int? IdTipoMovimiento { get; set; }
+
     public virtual OprReporte FolioNavigation { get; set; } = null!;
 
     public virtual CatEstatus IdEstatusNavigation { get; set; } = null!;
 
     public virtual SysUsuario IdOperadorNavigation { get; set; } = null!;
+
+    public virtual CatTipoMovimiento? IdTipoMovimientoNavigation { get; set; }
 }
