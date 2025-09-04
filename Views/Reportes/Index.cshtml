@@ -1,0 +1,118 @@
+﻿@using eticket.ViewModels
+@model List<ReporteDTO>
+@{
+    ViewData["Title"] = "Reportes";
+    //var currentPage = (int)ViewBag.CurrentPage;
+    //var totalPages = (int)ViewBag.TotalPages; *@
+
+    var currentPage = 0;
+    var totalPages = 1;
+}
+
+<section class="col-12">
+    <div class="breadcrumb-main">
+        <h4 class="text-capitalize breadcrumb-title">Reportes</h4>
+        <div class="breadcrumb-action justify-content-center flex-wrap">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/">
+                            <i class="uil uil-estate"></i>Inicio
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Reportes</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section id="table-section" class="mt-4 border rounded bg-white shadow-sm px-3">
+    <div class="global-shadow border-light-0 w-100 adv-table">
+        <div class="table-responsive">
+            @* <div class="adv-table-table__header">
+                <button class="btn btn-primary">
+                    Exportar Datos
+                </button>
+                
+            </div> *@
+            <div id="filter-form-container"></div>
+        </div>
+    </div>
+</section>
+
+<section id="table-section" class="mt-4 border rounded bg-white shadow-sm p-3">
+    <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 adv-table">
+        <div class="table-responsive">
+            <table class="table mb-0 table-borderless adv-table reportes-table"
+                data-sorting="true"
+                data-filtering="true"
+                data-filter-container="#filter-form-container"
+                data-paging-current="1"
+                data-paging-position="right"
+                data-paging-size="25"
+            >
+                <thead>
+                    <tr class="userDatatable-header">
+                        <th data-type="number">
+                            <span class="userDatatable-title">Folio</span>
+                        </th>
+                        <th>
+                            <span class="userDatatable-title">Nombre</span>
+                        </th>
+                        <th>
+                            <span class="userDatatable-title">Municipio</span>
+                        </th>
+                        <th>
+                            <span class="userDatatable-title">Genero</span>
+                        </th>
+                        <th date-name='dateRange'>
+                            <span class="userDatatable-title">Fecha Registro</span>
+                        </th>
+                        <th data-type="html" data-name='status'>
+                            <span class="userDatatable-title">Estatus</span>
+                        </th>
+                        <th data-type="html" data-name='reportType'>
+                            <span class="userDatatable-title">Tipo de Reporte</span>
+                        </th>
+                        <th data-type="html" data-name='registerType'>
+                            <span class="userDatatable-title">Tipo de Entrada</span>
+                        </th>
+                        <th data-filterable="false" data-type="html" data-name='totalEntradas'>
+                            <span class="userDatatable-title">Entradas</span>
+                        </th>
+                        <th data-filterable="false">
+                            <span class="userDatatable-title float-center">Acciones</span>
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var reporte in Model)
+                    {
+                        @await Html.PartialAsync("./Partials/ReporteDataRow.cshtml", reporte);
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<style>
+    #filter-form-container {
+        display: inherit;
+    }
+</style>
+
+@section scripts
+{
+    @* <script>
+        let modal = undefined;
+        let currentReportTypeId = undefined;
+        let uploadingFile = false;
+        let ultimosReportesHash = undefined;
+    </script>
+    <script src="~/js/reportes-footable.js"></script>
+    <script src="~/js/reportes.min.js"></script> *@
+    <script src="~/js/reportes-index.js"></script>
+}

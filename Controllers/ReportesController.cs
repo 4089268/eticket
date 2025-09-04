@@ -30,15 +30,50 @@ namespace eticket.Controllers
         private readonly DocumentosService documentosService = docService;
         private readonly TempPathSettings tempPathSettings = tempPathOptions.Value;
         private const int PageSize = 10;
-        
+
+
         [HttpGet]
-        public IActionResult Index(int page = 1)
+        public IActionResult Index()
+        {
+            var reportes = ticketsDbContext.OprReportes
+                .OrderByDescending(r => r.FechaRegistro)
+                .Select(rep => new ReporteDTO
+                {
+                    Folio = rep.Folio,
+                    Nombre = rep.Nombre,
+                    Celular = rep.Celular,
+                    Correo = rep.Correo,
+                    Telefono = rep.Telefono,
+                    Calle = rep.Calle,
+                    EntreCalles = rep.EntreCalles,
+                    Colonia = rep.Colonia,
+                    Localidad = rep.Localidad,
+                    Municipio = rep.Municipio,
+                    GpsLat = rep.GpsLat,
+                    GpsLon = rep.GpsLat,
+                    FechaRegistro = rep.FechaRegistro!.Value,
+                    IdTipoReporte = rep.IdTipoentrada,
+                    TiporReporteDesc = rep.IdReporteNavigation == null ? null : rep.IdReporteNavigation.Descripcion,
+                    IdGenero = rep.IdGenero,
+                    UsuarioGenero = rep.IdGeneroNavigation,
+                    IdEstatus = rep.IdEstatus,
+                    EstatusDesc = rep.IdEstatusNavigation == null ? null : rep.IdEstatusNavigation.Descripcion,
+                    IdTipoentrada = rep.IdTipoentrada,
+                    TipoEntradaDesc = rep.IdTipoentradaNavigation == null ? null : rep.IdTipoentradaNavigation.Descripcion,
+                    TotalEntradas = rep.OprDetReportes.Count
+                })
+                .ToList();
+
+            return View(reportes);
+        }
+
+        [HttpGet("nuevo-reporte")]
+        public IActionResult NuevoReporte(int page = 1)
         {
             var totalItems = ticketsDbContext.OprReportes.Count();
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / PageSize);
             ViewBag.CurrentPage = page;
-
-            return View("Reportes");
+            return View();
         }
 
         [HttpPost]
