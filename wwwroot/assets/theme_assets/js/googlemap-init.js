@@ -4,7 +4,7 @@
         var myCenter = new google.maps.LatLng(lat, lang);
         var mapProp = {
             center:myCenter,
-            zoom: 13,
+            zoom: 7,
             scrollwheel: false,
             styles: style
         };
@@ -12,18 +12,20 @@
         var map = new google.maps.Map(document.getElementById(selector),mapProp);
 
         var marker = new google.maps.Marker({
-            position:myCenter,
-            icon: myIcon ||typeof env !== "undefined" && env.googleMarkerUrl ? env.googleMarkerUrl : 'img/markar-icon.png'
+          position:myCenter,
+          icon: myIcon ||typeof env !== "undefined" && env.googleMarkerUrl ? env.googleMarkerUrl : 'img/markar-icon.png'
         });
 
         marker.setMap(map);
     }
 
-    if($('.google-map').length){
-
+    if($('.google-map').length)
+    {
+      var lat = 19.922385;
+      var lon = -96.826112;
         google.maps.event.addDomListener(window, 'load', function () {
             // init map 1
-            $('#google-map-basic').length ? initialize("google-map-basic", 50.797897, -1.077641): "";
+            $('#google-map-basic').length ? initialize("google-map-basic", lat, lon): "";
 
             var mapStyleLight=[
                 {
@@ -203,7 +205,7 @@
             ];
 
             // init map Light
-            $('#google-map-light').length ? initialize("google-map-light", 50.797897, -1.077641, mapStyleLight):"";
+            $('#google-map-light').length ? initialize("google-map-light", lat, lon, mapStyleLight):"";
 
             var mapStyleDark=[
                 {
@@ -323,7 +325,7 @@
             ];
 
             // init map Dark
-            $('#google-map-dark').length ? initialize("google-map-dark", 50.797897, -1.077641, mapStyleDark):"";
+            $('#google-map-dark').length ? initialize("google-map-dark", lat, lon, mapStyleDark):"";
 
             var mapStyle2=[
                 {
@@ -443,7 +445,7 @@
             ];
 
             // init map 2
-            $('#google-map-theme').length ? initialize("google-map-theme", 50.797897, -1.077641, mapStyle2):"";
+            $('#google-map-theme').length ? initialize("google-map-theme", lat, lon, mapStyle2):"";
         });
     }
 })();

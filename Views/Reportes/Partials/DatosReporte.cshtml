@@ -1,49 +1,60 @@
-﻿@model OprReporte
+﻿@using Microsoft.EntityFrameworkCore.Metadata.Conventions
+@using eticket.ViewModels
+@model MostrarReporteViewModel
+@{
+    bool allowEdition = true;
+}
+
 <div class="p-4 border rounded bg-white">
-    <div class="p-2 my-1 d-flex align-items-center">
-        <div class="pr-3 pe-3">
-            <label class="fw-bolder">Tipo Reporte</label>
-            <div class="d-flex align-items-center">
-                <div class="mx-1 text-uppercase">@Model.IdReporteNavigation?.Descripcion</div>
-            </div>
-            @* <div class="dm-select" style="width: 180px;">
-                <select name="select-search" class="select-search form-control">
-                <option value="01">All</option>
-                <option value="02">Easy</option>
-                <option value="03" selected>Meduim</option>
-                <option value="04">Option 4</option>
-                <option value="05">Option 5</option>
-                </select>
-            </div> *@
-        </div>
-        <div class="ml-4 ms-4" style="width: 10rem;">
+    <div class="p-2 my-1 d-flex align-items-center gap-3">
+
+        <div style="width: 14rem;">
             <label class="fw-bolder">Tipo Ingreso</label>
             <div class="d-flex align-items-center">
-                <div class="mx-1 text-uppercase">@Model.IdTipoentradaNavigation?.Descripcion</div>
+                <div class="mx-1 text-uppercase">@Model.Reporte.IdTipoentradaNavigation?.Descripcion</div>
             </div>
-            @* <div class="dm-select" style="width: 180px;">
-                <select name="select-search" class="select-search form-control">
-                <option value="01">All</option>
-                <option value="02">Easy</option>
-                <option value="03" selected>Meduim</option>
-                <option value="04">Option 4</option>
-                <option value="05">Option 5</option>
-                </select>
-            </div> *@
         </div>
-        <div class="ml-4 ms-4" style="width: 10rem;">
+
+        <div style="width: 18rem;">
+            <label class="fw-bolder">Tipo Reporte</label>
+            @if(allowEdition)
+            {
+                <div class="dm-select border-secondary">
+                    <select id="select-tiporeporte" class="form-control">
+                    @foreach(var ele in Model.TiposReporteList)
+                    {
+                        <option value="@ele.Value">@ele.Text</option>
+                    }
+                    </select>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex align-items-center">
+                    <div class="mx-1 text-uppercase">@Model.Reporte.IdReporteNavigation?.Descripcion</div>
+                </div>
+            }
+        </div>
+        
+        <div style="width: 14rem;">
             <label class="fw-bolder">Estado</label>
-            <div class="d-flex align-items-center">
-                <div class="mx-1 text-uppercase">@Model.IdEstatusNavigation?.Descripcion</div>
-            </div>
-            @* <div class="dm-select" style="width: 180px;">
-                <select name="select-search" class="select-search form-control">
-                    <option value="01">All</option>
-                    <option value="02">deactivate</option>
-                    <option value="03" selected>open</option>
-                    <option value="04">close</option>
-                </select>
-            </div> *@
+            @if(allowEdition)
+            {
+                <div class="dm-select border-secondary">
+                    <select id="select-estatus" class="form-control">
+                        @foreach(var ele in Model.EstatusList)
+                        {
+                            <option value="@ele.Value">@ele.Text</option>
+                        }
+                    </select>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex align-items-center">
+                    <div class="mx-1 text-uppercase">@Model.Reporte.IdEstatusNavigation?.Descripcion</div>
+                </div>
+            }
         </div>
     </div>
     
@@ -51,20 +62,20 @@
         <div class="col-4">
             <span class="fw-bolder">Solicitado por:</span>
             <div class="d-flex align-items-center">
-                <img height="24" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=@(Model.Nombre.Trim().Replace(" ", "+"))' alt="tdi.png">
-                <div class="mx-1">@Model.Nombre</div>
+                <img height="24" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=@(Model.Reporte.Nombre.Trim().Replace(" ", "+"))' alt="tdi.png">
+                <div class="mx-1">@Model.Reporte.Nombre</div>
             </div>
         </div>
         <div class="col-4">
             <span class="fw-bolder">Fecha Registro:</span>
             <div class="d-flex align-items-center">
-                <div class="mx-1 text-uppercase">@Model.FechaRegistro?.ToString("dd MMMM yyyy")</div>
+                <div class="mx-1 text-uppercase">@Model.Reporte.FechaRegistro?.ToString("dd MMMM yyyy")</div>
             </div>
         </div>
         <div class="col-4">
             <span class="fw-bolder">Ultima Actualizacion:</span>
             <div class="d-flex align-items-center">
-                <div class="mx-1 text-uppercase">@Model.FechaRegistro?.ToString("dd MMMM yyyy")</div>
+                <div class="mx-1 text-uppercase">@Model.Reporte.FechaRegistro?.ToString("dd MMMM yyyy")</div>
             </div>
         </div>
     </div>
@@ -73,19 +84,19 @@
         <div class="col-4">
             <span class="fw-bolder">Correo:</span>
             <div class="d-flex align-items-center">
-                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Correo) ? Model.Correo : "*No registrado")</div>
+                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.Correo) ? Model.Reporte.Correo : "*No registrado")</div>
             </div>
         </div>
         <div class="col-4">
             <span class="fw-bolder">Celular:</span>
             <div class="d-flex align-items-center">
-                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Celular) ? Model.Celular : "*No registrado")</div>
+                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.Celular) ? Model.Reporte.Celular : "*No registrado")</div>
             </div>
         </div>
         <div class="col-4">
             <span class="fw-bolder">Telefono:</span>
             <div class="d-flex align-items-center">
-                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Telefono) ? Model.Telefono : "*No registrado")</div>
+                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.Telefono) ? Model.Reporte.Telefono : "*No registrado")</div>
             </div>
         </div>
     </div>
@@ -94,19 +105,19 @@
         <div class="col-4">
             <span class="fw-bolder">Municipio:</span>
             <div class="d-flex align-items-center">
-                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Municipio) ? Model.Municipio : "*No registrado")</div>
+                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.Municipio) ? Model.Reporte.Municipio : "*No registrado")</div>
             </div>
         </div>
         <div class="col-4">
             <span class="fw-bolder">Localidad:</span>
             <div class="d-flex align-items-center">
-                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Localidad) ? Model.Localidad : "*No registrado")</div>
+                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.Localidad) ? Model.Reporte.Localidad : "*No registrado")</div>
             </div>
         </div>
         <div class="col-4">
             <span class="fw-bolder">Colonia:</span>
             <div class="d-flex align-items-center">
-                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Colonia) ? Model.Colonia : "*No registrado")</div>
+                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.Colonia) ? Model.Reporte.Colonia : "*No registrado")</div>
             </div>
         </div>
     </div>
@@ -115,13 +126,13 @@
         <div class="col-4">
             <span class="fw-bolder">Calle:</span>
             <div class="d-flex align-items-center">
-                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Calle) ? Model.Calle : "*No registrado")</div>
+                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.Calle) ? Model.Reporte.Calle : "*No registrado")</div>
             </div>
         </div>
         <div class="col-4">
             <span class="fw-bolder">Entre Calles:</span>
             <div class="d-flex align-items-center">
-                <div class="mx-1">@(!string.IsNullOrEmpty(Model.EntreCalles) ? Model.EntreCalles : "*No registrado")</div>
+                <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.EntreCalles) ? Model.Reporte.EntreCalles : "*No registrado")</div>
             </div>
         </div>
     </div>

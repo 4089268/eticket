@@ -204,7 +204,7 @@ namespace eticket.Controllers
                 viewModel.Archivos = archivosAdjuntos;
 
 
-                // * obtener catalog de estatus
+                // * obtener catalogo de estatus
                 var estatusList = this.ticketsDbContext.CatEstatuses
                     .OrderBy(e => e.Descripcion)
                     .Select(e => new SelectListItem
@@ -213,6 +213,17 @@ namespace eticket.Controllers
                         Text = e.Descripcion
                     }).ToList();
                 viewModel.EstatusList = estatusList;
+
+                // * obtener catalogo tipo-reportes
+                var tiposReportes = this.ticketsDbContext.CatReportes
+                    .OrderBy(e => e.Descripcion)
+                    .Select(e => new SelectListItem
+                    {
+                        Value = e.IdReporte.ToString(),
+                        Text = e.Descripcion
+                    })
+                    .ToList();
+                viewModel.TiposReporteList = tiposReportes;
 
                 return View(viewModel);
             }

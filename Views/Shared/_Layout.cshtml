@@ -17,9 +17,9 @@
     
     <!-- Fonts -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-
     <link rel="stylesheet" href="~/css/hexadash-style.css" />
 
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="layout-light side-menu">
 
@@ -261,6 +261,8 @@
     </div>
     <div class="overlay-dark-sidebar"></div>
     <div class="customizer-overlay"></div>
+
+    @await RenderSectionAsync("Modals", required: false)
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
