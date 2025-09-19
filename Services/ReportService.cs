@@ -1,5 +1,6 @@
 using System;
 using System.Data.Entity;
+using System.Security.Claims;
 using eticket.Adapters;
 using eticket.Data;
 using eticket.Models;
@@ -7,10 +8,12 @@ using eticket.ViewModels;
 
 namespace eticket.Services;
 
-public class ReportService(ILogger<ReportService> logger, TicketsDBContext context)
+public class ReportService(ILogger<ReportService> logger, TicketsDBContext context, IHttpContextAccessor httpContextAccessor)
 {
     private readonly ILogger<ReportService> logger = logger;
     private readonly TicketsDBContext context = context;
+    private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
+
 
     /// <summary>
     /// Obtener reporte por folio con sus relaciones
@@ -109,5 +112,87 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
         await this.context.SaveChangesAsync();
 
         return reporte.Entity;
+    }
+
+    public async Task ActualizarReporte(long folio, ActualizarReporteRequest reporteRequest)
+    {
+        // * attempt to retrive the reporte by folio
+        var reporte = this.context.OprReportes.FirstOrDefault(rep => rep.Folio == folio);
+        if (reporte == null)
+        {
+            throw new KeyNotFoundException($"El reporte con folio {folio} no se encuentra registrado");
+        }
+
+        // * retrive the current userId
+        var idOperador = RetriveCurrentUserId();
+
+        // * check what are to be changed
+        var modificacionEstatus = reporte.IdEstatus != reporteRequest.EstatusId;
+        var modificacionGeneral = reporte.IdReporte != reporteRequest.TipoReporte;
+
+        // * start transaction
+        using var transaction = await this.context.Database.BeginTransactionAsync();
+        try
+        {
+            // * make a status record 
+            if (modificacionEstatus)
+            {
+                var previousStatus = this.context.CatEstatuses.FirstOrDefault(item => item.IdEstatus == reporte.IdEstatus)?.Descripcion ?? "DESCONOCIDO";
+                var newStatus = this.context.CatEstatuses.FirstOrDefault(item => item.IdEstatus == reporteRequest.EstatusId)?.Descripcion ?? "DESCONOCIDO";
+                var oprDetReporte = new OprDetReporte
+                {
+                    Folio = reporte.Folio,
+                    IdEstatus = (int)EstatusReporteEnum.ABIERTO,
+                    IdOperador = idOperador,
+                    Fecha = DateTime.Now,
+                    IdTipoMovimiento = (int)TipoMovimientoEnum.CambioDeEstatus,
+                    Observaciones = $"Estatus modificado de {previousStatus} a {newStatus}"
+                };
+                this.context.OprDetReportes.Add(oprDetReporte);
+            }
+
+            if (modificacionGeneral)
+            {
+                var previousReportType = this.context.CatReportes.FirstOrDefault(item => item.IdReporte == reporte.IdReporte)?.Descripcion ?? "DESCONOCIDO";
+                var newReportType = this.context.CatReportes.FirstOrDefault(item => item.IdReporte == reporteRequest.TipoReporte)?.Descripcion ?? "DESCONOCIDO";
+                var oprDetReporte = new OprDetReporte
+                {
+                    Folio = reporte.Folio,
+                    IdEstatus = (int)EstatusReporteEnum.ABIERTO,
+                    IdOperador = idOperador,
+                    Fecha = DateTime.Now,
+                    Observaciones = $"Tipo de Reporte modificado de '{previousReportType}' a '{newReportType}'",
+                    IdTipoMovimiento = (int)TipoMovimientoEnum.Edicion
+                };
+                this.context.OprDetReportes.Add(oprDetReporte);
+            }
+
+            // * update the entity
+            reporte.IdEstatus = reporteRequest.EstatusId;
+            reporte.IdReporte = reporteRequest.TipoReporte;
+            this.context.OprReportes.Update(reporte);
+
+            // * save all changes
+            await this.context.SaveChangesAsync();
+
+            // * commit transaction
+            await transaction.CommitAsync();
+        }
+        catch (System.Exception)
+        {
+            // rollback transaction if anything fails
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    private int RetriveCurrentUserId()
+    {
+        var userIdClaim = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId))
+        {
+            throw new InvalidOperationException("No se pudo obtener el IdUsuario del contexto HTTP.");
+        }
+        return userId;
     }
 }

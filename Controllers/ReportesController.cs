@@ -356,6 +356,38 @@ namespace eticket.Controllers
             }
         }
 
+        [HttpPatch("/api/reportes/{folioReporteArg}")]
+        public async Task<IActionResult> ActualizarReporte([FromRoute] string folioReporteArg, ActualizarReporteRequest request)
+        {
+            var folioReporte = long.TryParse(folioReporteArg, out long f) ? f : -1;
+            if (folioReporte == -1)
+            {
+                this.logger.LogWarning("Error al actualizar el reporte, el formato del folio no es valido");
+                return BadRequest(new
+                {
+                    Title = "El formato del folio no es valido"
+                });
+            }
+
+            try
+            {
+                await this.reportService.ActualizarReporte(folioReporte, request);
+                this.logger.LogInformation("Reporte con folio {FolioReporte} actualizado correctamente.", folioReporte);
+                return Ok(new
+                {
+                    Title = "Reporte actualizado"
+                });
+            }
+            catch (System.Exception err)
+            {
+                this.logger.LogError(err, "Error al actualizar el reporte: {message}", err.Message);
+                return Conflict(new
+                {
+                    Title = "Error al actualizar el reporte",
+                    err.Message
+                });
+            }
+        }
 
         #region PartialViews
         [HttpGet("partial-view/menu")]

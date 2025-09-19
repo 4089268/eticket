@@ -362,6 +362,9 @@
             },
             load: ()=> {
                 modificacionReporte.buttonSave = document.getElementById('button-save-changes');
+                modificacionReporte.buttonSave.addEventListener('click', function(event){
+                    modificacionReporte.saveChanges();
+                });
 
                 modificacionReporte.buttonDiscard = document.getElementById('button-discard-changes');
                 modificacionReporte.buttonDiscard.addEventListener('click', function(event){
@@ -409,6 +412,37 @@
                 modificacionReporte.selectEstatus.value = modificacionReporte._newEstatus;
                 modificacionReporte.selectTipoReporte.value = modificacionReporte._newTipoReporte;
                 modificacionReporte.checkChanges();
+            },
+            saveChanges: ()=>{
+                const data = {
+                    EstatusId: modificacionReporte.newEstatus,
+                    TipoReporte: modificacionReporte.newTipoReporte
+                };
+
+                $.ajax({
+                    url: `/api/reportes/${folioReporte}`,
+                    type: 'PATCH',
+                    data: data,
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Reporte actualizado",
+                            icon: "success",
+                            confirmButtonText: 'Aceptar'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    },
+                    error: function(xhr) {
+                        let titleMessage = "Error al actualizar el reporte";
+                        if (xhr.responseJSON && xhr.responseJSON.title) {
+                            titleMessage = xhr.responseJSON.title;
+                        }
+                        Swal.fire({
+                            title: titleMessage,
+                            icon: "error"
+                        });
+                    }
+                });
             }
         };
 

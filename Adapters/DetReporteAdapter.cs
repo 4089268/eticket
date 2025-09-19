@@ -1,4 +1,5 @@
 using System;
+using eticket.Data;
 using eticket.Models;
 using eticket.ViewModels;
 
@@ -14,7 +15,8 @@ public static class DetReporteAdapter
             IdEstatus = request.IdEstatus,
             IdOperador = request.IdOperador,
             Fecha = DateTime.Now,
-            Observaciones = request.Observaciones
+            Observaciones = request.Observaciones,
+            IdTipoMovimiento = (int) TipoMovimientoEnum.Usuario
         };
         return oprDetReporte;
     }

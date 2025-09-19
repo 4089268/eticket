@@ -23,6 +23,7 @@ builder.Services.AddAuthentication("NerusTicketCookieAuth")
     options.LogoutPath = "/cerrar-sesion";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
 });
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.Configure<TempPathSettings>(builder.Configuration.GetSection("TempPath"));
 
