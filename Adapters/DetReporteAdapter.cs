@@ -34,6 +34,13 @@ public static class DetReporteAdapter
             Fecha = entity.Fecha,
             Observaciones = entity.Observaciones
         };
+
+        if (entity.IdTipoMovimientoNavigation != null)
+        {
+            entrada.TipoMovimientoId = entity.IdTipoMovimiento!.Value;
+            entrada.TipoMovimientoDesc = entity.IdTipoMovimientoNavigation?.Descripcion ?? "Desconocido";
+        }
+
         return entrada;
     }
 

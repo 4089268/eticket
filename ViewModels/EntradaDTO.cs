@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Identity.Client;
 
 namespace eticket.ViewModels;
 
@@ -22,4 +23,7 @@ public class EntradaDTO
     public int TotalDocumentosAdjuntos { get; set; } = 0;
 
     public string? EstatusCssClass { get; set; } = "bg-opacity-info color-info";
+
+    public int TipoMovimientoId { get; set; } = 1;
+    public string TipoMovimientoDesc { get; set; } = "Desconocido";
 }

@@ -51,6 +51,7 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
             .Where(item => item.Folio == reporte.Folio)
             .Include(e => e.IdEstatusNavigation)
             .Include(e => e.IdOperadorNavigation)
+            .Include(e => e.IdTipoMovimientoNavigation)
             .ToList()
             .Select(e => e.ToEntradaDTO())
             .ToList();

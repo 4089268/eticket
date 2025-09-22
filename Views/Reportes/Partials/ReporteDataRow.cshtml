@@ -1,4 +1,6 @@
-﻿@model eticket.ViewModels.ReporteDTO
+﻿@using System.Diagnostics
+@using eticket.Data
+@model eticket.ViewModels.ReporteDTO
 <tr>
     <td>
         <div class="userDatatable-content">@Model.Folio</div>
@@ -32,9 +34,33 @@
     </td>
     <td>
         <div class="userDatatable-content d-inline-block">
-            <span class="bg-opacity-success color-success rounded-pill userDatatable-content-status active">
-                @Model.EstatusDesc
-            </span>
+            @switch(Model.IdEstatus)
+            {
+                case (int) EstatusReporteEnum.ABIERTO:
+                    <span class="bg-opacity-danger color-danger rounded-pill userDatatable-content-status active">
+                        @Model.EstatusDesc
+                    </span>
+                    break;
+
+                case (int) EstatusReporteEnum.EN_PROCESO:
+                    <span class="bg-opacity-warning color-warning rounded-pill userDatatable-content-status active">
+                        @Model.EstatusDesc
+                    </span>
+                    break;
+
+                case (int) EstatusReporteEnum.CANCELADO:
+                    <span class="bg-opacity-gray color-gray rounded-pill userDatatable-content-status active">
+                        @Model.EstatusDesc
+                    </span>
+                    break;
+
+                case (int) EstatusReporteEnum.ATENDIDO:
+                    <span class="bg-opacity-success color-success rounded-pill userDatatable-content-status active">
+                        @Model.EstatusDesc
+                    </span>
+                    break;
+                    
+            }
         </div>
     </td>
     <td>

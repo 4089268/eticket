@@ -1,4 +1,6 @@
-﻿@using eticket.ViewModels
+﻿@using System.Diagnostics
+@using eticket.Data
+@using eticket.ViewModels
 @model MostrarReporteViewModel
 @{
     ViewData["Title"] = $"Reporte #{Model.Reporte.Folio}";
@@ -106,107 +108,72 @@
                 </ul>
 
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tab-v-1" role="tabpanel" aria-labelledby="tab-v-1-tab" style="min-height: 25vh;">
-                        <div class="row">
-                            <div class="col-12 mb-2">
-                                <div class="table-responsive col-12">
-                                    <div id="filter-form-container"></div>
-                                    <table class="table mb-0 table-borderless table-striped adv-table"
-                                        data-sorting="false"
-                                        data-filter-container="#filter-form-container"
-                                        data-paging-current="1"
-                                        data-paging-position="right"
-                                        data-paging-size="10">
-                                        <thead>
-                                            <tr class="userDatatable-header">
-                                                <th data-sorted="false">
-                                                    <span class="userDatatable-title">#</span>
-                                                </th>
-                                                <th>
-                                                    <span class="userDatatable-title">Estatus</span>
-                                                </th>
-                                                <th>
-                                                    <span class="userDatatable-title">Operador</span>
-                                                </th>
-                                                <th>
-                                                    <span class="userDatatable-title">Fecha</span>
-                                                </th>
-                                                <th data-sorted="false">
-                                                    <span class="userDatatable-title">Observaciones</span>
-                                                </th>
-                                                <th data-sorted="false">
-                                                    <span class="userDatatable-title">Doc. Adjuntos</span>
-                                                </th>
-                                                <th data-sorted="false">
-                                                    <span class="userDatatable-title">Acciones</span>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @{
-                                                var i = 1;
-                                            }
-                                            @foreach (var detReporte in Model.Entradas)
+                    <div class="tab-pane fade show active pt-2" id="tab-v-1" role="tabpanel" aria-labelledby="tab-v-1-tab" style="min-height: 25vh;">
+
+                        @foreach(EntradaDTO detReporte in Model.Entradas)
+                        {
+                            var _nombreOperador = detReporte.Operador ?? "Desconocido";
+
+                            <div class="px-3 mb-4 mt-3 border-bottom">
+                                <div class="flex-1">
+                                    <div class="d-flex gap-2">
+                                        <div class="report-type-icon text-center">
+                                            @switch(detReporte.TipoMovimientoId)
                                             {
-                                                <tr>
-                                                    <td>
-                                                        <div class="userDatatable-content text-center">
-                                                            @i
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="userDatatable-content">
-                                                            <span class="text-nowrap rounded-pill userDatatable-content-status active @(detReporte.EstatusCssClass)">
-                                                                @detReporte.Estatus
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="userDatatable-content d-flex align-items-center gap-1">
-                                                            @{
-                                                                var _nombreOperador = detReporte.Operador ?? "Desconocido";
-                                                            }
-                                                            <img height="32" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=@(_nombreOperador.Replace(" ", "+"))' alt="avatar">
-                                                            <div>@_nombreOperador</div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="userDatatable-content d-flex flex-column align-items-center">
-                                                            <div class="text-small">@detReporte.Fecha.ToString("dd/MM/yyyy")</div>
-                                                            <div class="text-small">@detReporte.Fecha.ToString("HH:mm:ss")</div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="userDatatable-content">
-                                                            @Html.Raw(detReporte.Observaciones)
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="userDatatable-content d-flex justify-content-center">
-                                                            <span class="mr-1 me-1">@detReporte.TotalDocumentosAdjuntos</span>
-                                                            <i class="uil uil-paperclip"></i>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="btn-group" role="group">
-                                                            <ul class="mb-0 d-flex flex-wrap justify-content-center">
-                                                                <li>
-                                                                    <a asp-action="MostrarReporte" asp-route-folioReporteArg="@Model.Reporte!.Folio" class="btn btn-small btn-squared color-primary btn-outline-primary px-2 py-1">
-                                                                        <i class="uil uil-eye"></i>
-                                                                        <span class="">Mostrar</span>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                i++;
+                                                case (int) TipoMovimientoEnum.Usuario:
+                                                    <i class="las la-comment-medical fa-2x bg-info rounded-circle p-2"></i>
+                                                    break;
+
+                                                case (int) TipoMovimientoEnum.CambioDeEstatus:
+                                                    <i class="las la-check-circle fa-2x bg-success rounded-circle p-2"></i>
+                                                    break;
+                                                
+                                                case (int) TipoMovimientoEnum.Asignacion:
+                                                    <i class="las la-clone fa-2x bg-info rounded-circle p-2"></i>
+                                                    break;
+                                                
+                                                case (int) TipoMovimientoEnum.Edicion:
+                                                    <i class="las la-pen fa-2x bg-success rounded-circle p-2"></i>
+                                                    break;
+                                                
+                                                default:
+                                                    <i class="las la-laptop-code fa-2x bg-info rounded-circle p-2"></i>
+                                                    break;
                                             }
-                                        </tbody>
-                                    </table>
+                                            <span class="text-muted" style="font-size:10px;">@detReporte.TipoMovimientoDesc</span>
+                                        </div>
+                                        <div class="body w-100">
+                                            <div class="d-flex align-items-end gap-2">
+                                                <h6 class="fs-14 mb-0">@_nombreOperador</h6>
+                                                <span class="chat-text-box__time fs-12 color-light fw-400 ms-15">
+                                                    @detReporte.Fecha
+                                                </span>
+                                            </div>
+                                            <div class="d-flex align-items-center mb-2 mt-1">
+                                                <div class="px-4 py-2">
+                                                    <p>
+                                                        @Html.Raw(detReporte.Observaciones)
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="chat-text-box__other d-flex">
+                                            <div class="dropdown dropdown-click">
+                                                <button class="btn-link border-0 bg-transparent p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <img src="~/img/svg/more-horizontal.svg" alt="more-horizontal" class="svg">
+                                                </button>
+                                                <div class="dropdown-default dropdown-bottomLeft dropdown-menu-left dropdown-menu" style="">
+                                                    <a class="dropdown-item" href="#">Copiar</a>
+                                                    <a class="dropdown-item" href="#">Comentar</a>
+                                                    <a class="dropdown-item" href="#">Reenviar</a>
+                                                    <a class="dropdown-item" href="#">Reportar</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        }
                     </div>
 
                     <div class="tab-pane fade" id="tab-v-2" role="tabpanel" aria-labelledby="tab-v-2-tab" style="min-height: 25vh;">
@@ -336,6 +303,14 @@
         .ticket-user-list .ticket-user-list-item .ticket-user-list-item__wrapper .ticket-users-list-body .last-chat-time {
             width: 6rem;
             text-align: end;
+        }
+
+
+
+        .report-type-icon
+        {
+            transform:translateY(-1rem);
+
         }
     </style>
 }
