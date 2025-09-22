@@ -15,7 +15,7 @@
     <div class="breadcrumb-main">
         <div class="d-flex aling-items-center">
             <div>
-                <a asp-action="Index" class="text-decoration-none text-black h5">
+                <a href="@ViewBag.UrlBack"  class="text-decoration-none text-black h5">
                     <i class="las la-undo"></i>
                     <span>Regresar</span>
                 </a>
@@ -191,7 +191,7 @@
                                                         <div class="btn-group" role="group">
                                                             <ul class="mb-0 d-flex flex-wrap justify-content-center">
                                                                 <li>
-                                                                    <a asp-action="MostrarReporte" asp-route-folioReporteArg="@Model.Reporte.Folio" class="btn btn-small btn-squared color-primary btn-outline-primary px-2 py-1">
+                                                                    <a asp-action="MostrarReporte" asp-route-folioReporteArg="@Model.Reporte!.Folio" class="btn btn-small btn-squared color-primary btn-outline-primary px-2 py-1">
                                                                         <i class="uil uil-eye"></i>
                                                                         <span class="">Mostrar</span>
                                                                     </a>

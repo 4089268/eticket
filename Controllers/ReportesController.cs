@@ -44,6 +44,10 @@ namespace eticket.Controllers
                 Estatus = e
             };
 
+            TempData["reportes-filter-tipoEntrada"] = te;
+            TempData["reportes-filter-tipoReporte"] = tr;
+            TempData["reportes-filter-estatus"] = e;
+
             // * retrive the data
             var reportesQuery = ticketsDbContext.OprReportes
                 .OrderByDescending(r => r.FechaRegistro)
@@ -179,6 +183,8 @@ namespace eticket.Controllers
                 ViewBag.ErrorMessage = "El formato del folio no es valido";
                 return View("NotFound");
             }
+
+            ConstruirUrlRegreso();
 
             try
             {
@@ -607,6 +613,27 @@ namespace eticket.Controllers
                     Text = e.Descripcion
                 }).ToList();
             ViewBag.EstatusList = estatusList;
+        }
+
+        private void ConstruirUrlRegreso()
+        {
+            var queryParams = new List<string>();
+
+            void AddParam(string key, string tempDataKey)
+            {
+                var value = TempData[tempDataKey]?.ToString();
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    queryParams.Add($"{key}={Uri.EscapeDataString(value)}");
+                }
+            }
+
+            AddParam("te", "reportes-filter-tipoEntrada");
+            AddParam("tr", "reportes-filter-tipoReporte");
+            AddParam("e", "reportes-filter-estatus");
+
+            var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
+            ViewBag.UrlBack = Url.Action("Index", "Reportes") + queryString;
         }
         #endregion
     }
