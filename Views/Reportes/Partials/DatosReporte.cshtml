@@ -5,9 +5,8 @@
     bool allowEdition = true;
 }
 
-<div class="p-4 border rounded bg-white">
-    <div class="p-2 my-1 d-flex align-items-center gap-3">
-
+<div class="p-2 border rounded bg-white">
+    <div class="p-2 d-flex align-items-center gap-3">
         <div style="width: 14rem;">
             <label class="fw-bolder">Tipo Ingreso</label>
             <div class="d-flex align-items-center">
@@ -59,77 +58,78 @@
     </div>
     
     <div class="row p-2 my-1">
-        <div class="col-4">
+        <div class="col-3 mb-2">
             <span class="fw-bolder">Solicitado por:</span>
             <div class="d-flex align-items-center">
                 <img height="24" src='https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=@(Model.Reporte.Nombre.Trim().Replace(" ", "+"))' alt="tdi.png">
                 <div class="mx-1">@Model.Reporte.Nombre</div>
             </div>
         </div>
-        <div class="col-4">
+
+        <div class="col-3 mb-2">
             <span class="fw-bolder">Fecha Registro:</span>
             <div class="d-flex align-items-center">
                 <div class="mx-1 text-uppercase">@Model.Reporte.FechaRegistro?.ToString("dd MMMM yyyy")</div>
             </div>
         </div>
-        <div class="col-4">
+
+        <div class="col-3 mb-2">
             <span class="fw-bolder">Ultima Actualizacion:</span>
             <div class="d-flex align-items-center">
                 <div class="mx-1 text-uppercase">@Model.Reporte.FechaRegistro?.ToString("dd MMMM yyyy")</div>
             </div>
         </div>
-    </div>
 
-    <div class="row p-2 my-1">
-        <div class="col-4">
+        <div class="col-3 mb-2">
             <span class="fw-bolder">Correo:</span>
             <div class="d-flex align-items-center">
                 <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.Correo) ? Model.Reporte.Correo : "*No registrado")</div>
             </div>
         </div>
-        <div class="col-4">
+
+        <div class="col-3 mb-2">
             <span class="fw-bolder">Celular:</span>
             <div class="d-flex align-items-center">
                 <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.Celular) ? Model.Reporte.Celular : "*No registrado")</div>
             </div>
         </div>
-        <div class="col-4">
+
+        <div class="col-3 mb-2">
             <span class="fw-bolder">Telefono:</span>
             <div class="d-flex align-items-center">
                 <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.Telefono) ? Model.Reporte.Telefono : "*No registrado")</div>
             </div>
         </div>
-    </div>
-
-    <div class="row p-2 my-1">
-        <div class="col-4">
+    
+        <div class="col-3 mb-2">
             <span class="fw-bolder">Municipio:</span>
             <div class="d-flex align-items-center">
                 <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.Municipio) ? Model.Reporte.Municipio : "*No registrado")</div>
             </div>
         </div>
-        <div class="col-4">
+
+        <div class="col-3 mb-2">
             <span class="fw-bolder">Localidad:</span>
             <div class="d-flex align-items-center">
                 <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.Localidad) ? Model.Reporte.Localidad : "*No registrado")</div>
             </div>
         </div>
-        <div class="col-4">
+
+        <div class="col-3 mb-2">
             <span class="fw-bolder">Colonia:</span>
             <div class="d-flex align-items-center">
                 <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.Colonia) ? Model.Reporte.Colonia : "*No registrado")</div>
             </div>
         </div>
-    </div>
-
-    <div class="row p-2 my-1">
-        <div class="col-4">
+    
+        <div class="col-3 mb-2">
             <span class="fw-bolder">Calle:</span>
             <div class="d-flex align-items-center">
                 <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.Calle) ? Model.Reporte.Calle : "*No registrado")</div>
             </div>
         </div>
-        <div class="col-4">
+
+        <div class="col-3 mb-2">
             <span class="fw-bolder">Entre Calles:</span>
             <div class="d-flex align-items-center">
                 <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.EntreCalles) ? Model.Reporte.EntreCalles : "*No registrado")</div>
