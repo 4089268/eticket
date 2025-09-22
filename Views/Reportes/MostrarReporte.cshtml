@@ -346,7 +346,7 @@
     <script>
         let modal = undefined;
         let modalDocumento = undefined;
-        const folioReporte = '@Html.Raw(Model.Reporte.Folio)';
+        const folioReporte = '@Html.Raw(Model.Reporte!.Folio)';
 
         var modificacionReporte = {
             selectTipoReporte: undefined,

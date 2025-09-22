@@ -2,15 +2,14 @@
 @model List<ReporteDTO>
 @{
     ViewData["Title"] = "Reportes";
-    //var currentPage = (int)ViewBag.CurrentPage;
-    //var totalPages = (int)ViewBag.TotalPages; *@
-
-    var currentPage = 0;
-    var totalPages = 1;
 }
 
 <section class="col-12">
     <div class="breadcrumb-main">
+        @if(string.IsNullOrEmpty(ViewBag.ReturnUrl))
+        {
+            @ViewBag.ReturnUrl
+        }
         <h4 class="text-capitalize breadcrumb-title">Reportes</h4>
         <div class="breadcrumb-action justify-content-center flex-wrap">
             <nav aria-label="breadcrumb">
@@ -27,16 +26,37 @@
     </div>
 </section>
 
-<section id="table-section" class="mt-4 border rounded bg-white shadow-sm px-3">
-    <div class="global-shadow border-light-0 w-100 adv-table">
-        <div class="table-responsive">
-            @* <div class="adv-table-table__header">
-                <button class="btn btn-primary">
-                    Exportar Datos
-                </button>
-                
-            </div> *@
-            <div id="filter-form-container"></div>
+<section id="table-fiter" class="mt-4 border rounded bg-white shadow-sm px-3">
+    <div class="p-2 d-flex gap-2 global-shadow border-light-0 w-100 adv-table">
+        <div class='form-group my-xl-2 my-1 me-2'>
+            <label class="d-flex align-items-center mb-sm-0 mb-2">Tipo de Entrada</label>
+            <select id="select-tipoentrada" class="form-control ms-sm-10 ms-0">
+                <option value="0">TODOS</option>
+                @foreach(SelectListItem elem in ViewBag.TipoEntradaList)
+                {
+                    <option value="@elem.Value">@elem.Text</option>
+                }
+            </select>
+        </div>
+        <div class='form-group align-items-center my-xl-2 my-1 me-2'>
+            <label class="d-flex mb-sm-0 mb-2">Tipo de Reporte</label>
+            <select id="select-tiporeporte" class="form-control ms-sm-10 ms-0">
+                <option value="0">TODOS</option>
+                @foreach(SelectListItem elem in ViewBag.TiposReporteList)
+                {
+                    <option value="@elem.Value">@elem.Text</option>
+                }
+            </select>
+        </div>
+        <div class='form-group my-xl-2 my-1 me-2'>
+            <label class="d-flex align-items-center mb-sm-0 mb-2">Estatus</label>
+            <select id="select-status" class="form-control ms-sm-10 ms-0">
+                <option value="0">TODOS</option>
+                @foreach(SelectListItem elem in ViewBag.EstatusList)
+                {
+                    <option value="@elem.Value">@elem.Text</option>
+                }
+            </select>
         </div>
     </div>
 </section>
@@ -44,13 +64,8 @@
 <section id="table-section" class="mt-4 border rounded bg-white shadow-sm p-3">
     <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 adv-table">
         <div class="table-responsive">
-            <table class="table mb-0 table-borderless adv-table reportes-table"
-                data-sorting="true"
-                data-filtering="true"
-                data-filter-container="#filter-form-container"
-                data-paging-current="1"
-                data-paging-position="right"
-                data-paging-size="25"
+            <table class="table mb-0 table-borderless adv-table reportes-table stripe row-border order-column w-100"
+                data-page-length='25'
             >
                 <thead>
                     <tr class="userDatatable-header">
@@ -98,13 +113,27 @@
     </div>
 </section>
 
-<style>
-    #filter-form-container {
-        display: inherit;
-    }
-</style>
+@section styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/5.0.5/css/fixedColumns.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.5/css/buttons.dataTables.min.css">
+    <style>
+        #filter-form-container {
+            display: inherit;
+        }
+    </style>
+}
 
 @section scripts
 {
+    <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedcolumns/5.0.5/js/dataTables.fixedColumns.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.5/js/dataTables.buttons.min.js"></script>
     <script src="~/js/reportes-index.min.js"></script>
+    <script>
+        var currentTipoEntrada = '@Html.Raw(ViewBag.Filters.TipoEntrada)';
+        var currentTipoReporte = '@Html.Raw(ViewBag.Filters.TipoReporte)';
+        var currentEstatus = '@Html.Raw(ViewBag.Filters.Estatus)';
+    </script>
 }

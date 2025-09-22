@@ -34,10 +34,37 @@ namespace eticket.Controllers
 
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index([FromQuery] int te = 0, int tr = 0, int e = 0, string q = "")
         {
-            var reportes = ticketsDbContext.OprReportes
+            CargarCatalogos();
+            ViewBag.Filters = new
+            {
+                TipoEntrada = te,
+                TipoReporte = tr,
+                Estatus = e
+            };
+
+            // * retrive the data
+            var reportesQuery = ticketsDbContext.OprReportes
                 .OrderByDescending(r => r.FechaRegistro)
+                .AsQueryable();
+
+            if (te > 0)
+            {
+                reportesQuery = reportesQuery.Where(el => el.IdTipoentrada == te);
+            }
+
+            if (tr > 0)
+            {
+                reportesQuery = reportesQuery.Where(el => el.IdReporte == tr);
+            }
+
+            if (e > 0)
+            {
+                reportesQuery = reportesQuery.Where(el => el.IdEstatus == e);
+            }
+
+            var reportes = reportesQuery
                 .Select(rep => new ReporteDTO
                 {
                     Folio = rep.Folio,
@@ -190,7 +217,7 @@ namespace eticket.Controllers
                 // * obtener los documentos adjuntos
                 IEnumerable<ArchivoDTO> archivosAdjuntos = this.mediaContext.OprImagenes
                     .Where(item => item.FolioReporte == folioReporte)
-                    .Select( oprImagen => new ArchivoDTO
+                    .Select(oprImagen => new ArchivoDTO
                     {
                         IdImagen = oprImagen.IdImagen,
                         FolioReporte = oprImagen.FolioReporte,
@@ -297,10 +324,10 @@ namespace eticket.Controllers
             const long maxFileSize = 10 * 1024 * 1024; // 10MB en bytes
             if (file.Length > maxFileSize)
             {
-                var errors = new Dictionary<string, string>(){ { "file", "El archivo adjunto excede el tamaño máximo permitido de 10MB." }};
+                var errors = new Dictionary<string, string>() { { "file", "El archivo adjunto excede el tamaño máximo permitido de 10MB." } };
                 return UnprocessableEntity(new
                 {
-                    errors = errors.Select( e => new
+                    errors = errors.Select(e => new
                     {
                         field = e.Key,
                         message = e.Value
@@ -542,6 +569,44 @@ namespace eticket.Controllers
             var _reportesStrings = reportes.Select(item => $"{item.IdReporte}|{item.IdEstatus}").ToList();
             string payload = string.Join("|", _reportesStrings);
             return Convert.ToHexString(System.Security.Cryptography.MD5.HashData(Encoding.UTF8.GetBytes(payload)));
+        }
+
+        private void CargarCatalogos()
+        {
+            // * obtener catalogo tipo-reportes
+            var tiposEntrada = this.ticketsDbContext.CatTipoEntrada
+                .Where(e => e.IdTipoentrada > 0)
+                .OrderBy(e => e.Descripcion)
+                .Select(e => new SelectListItem
+                {
+                    Value = e.IdTipoentrada.ToString(),
+                    Text = e.Descripcion
+                })
+                .ToList();
+            ViewBag.TipoEntradaList = tiposEntrada;
+
+            // * obtener catalogo tipo-reportes
+            var tiposReportes = this.ticketsDbContext.CatReportes
+            .Where(e => e.IdReporte > 0)
+                .OrderBy(e => e.Descripcion)
+                .Select(e => new SelectListItem
+                {
+                    Value = e.IdReporte.ToString(),
+                    Text = e.Descripcion
+                })
+                .ToList();
+            ViewBag.TiposReporteList = tiposReportes;
+
+            // * obtener catalogo de estatus
+            var estatusList = this.ticketsDbContext.CatEstatuses
+                .Where(e => e.IdEstatus > 0)
+                .OrderBy(e => e.Descripcion)
+                .Select(e => new SelectListItem
+                {
+                    Value = e.IdEstatus.ToString(),
+                    Text = e.Descripcion
+                }).ToList();
+            ViewBag.EstatusList = estatusList;
         }
         #endregion
     }
