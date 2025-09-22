@@ -20,7 +20,7 @@ namespace eticket.Controllers
 {
     [Authorize]
     [Route("/{Controller}")]
-    public class ReportesController(ILogger<ReportesController> logger, TicketsDBContext context, IValidator<ReporteRequest> validator, ReportService rpservice, IOptions<TempPathSettings> tempPathOptions, TicketsMediaDBContext mediaContext, DocumentosService docService) : Controller
+    public class ReportesController(ILogger<ReportesController> logger, TicketsDBContext context, IValidator<ReporteRequest> validator, ReportService rpservice, IOptions<TempPathSettings> tempPathOptions, TicketsMediaDBContext mediaContext, DocumentosService docService, IOptions<GoogleMapsSettings> googleMapsOptions) : Controller
     {
         private readonly ILogger<ReportesController> logger = logger;
         private readonly TicketsDBContext ticketsDbContext = context;
@@ -29,6 +29,7 @@ namespace eticket.Controllers
         private readonly ReportService reportService = rpservice;
         private readonly DocumentosService documentosService = docService;
         private readonly TempPathSettings tempPathSettings = tempPathOptions.Value;
+        private readonly GoogleMapsSettings googleMapsSettings = googleMapsOptions.Value;
         private const int PageSize = 10;
 
 
@@ -224,6 +225,9 @@ namespace eticket.Controllers
                     })
                     .ToList();
                 viewModel.TiposReporteList = tiposReportes;
+
+                // * pass the googleMapSettings
+                ViewBag.GoogleMapsSettings = this.googleMapsSettings;
 
                 return View(viewModel);
             }

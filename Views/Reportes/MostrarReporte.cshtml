@@ -2,6 +2,13 @@
 @model MostrarReporteViewModel
 @{
     ViewData["Title"] = $"Reporte #{Model.Reporte.Folio}";
+    string? googleMapsKey = ViewBag.GoogleMapsSettings.Key.ToString();
+
+    bool mostrarMapa = false;
+    if(Model.Reporte?.GpsLat != 0 && Model.Reporte?.GpsLat != null && Model.Reporte?.GpsLon != 0 && Model.Reporte?.GpsLon != null )
+    {
+        mostrarMapa = true;
+    }
 }
 
 <div class="col-12">
@@ -14,7 +21,7 @@
                 </a>
             </div>
             <span class="mx-3 vr mb-2 bolder"></span>
-            <h4 class="text-capitalize breadcrumb-title">Reporte @Model.Reporte.Folio</h4>
+            <h4 class="text-capitalize breadcrumb-title">Reporte @Model.Reporte?.Folio</h4>
         </div>
 
         <div class="breadcrumb-action justify-content-center flex-wrap">
@@ -87,12 +94,15 @@
                             Archivos
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="tab-v-3-tab" data-bs-toggle="tab" href="#tab-v-3" role="tab" aria-selected="false">
-                            <i class="las la-map-marked-alt"></i>
-                            Mapa
-                        </a>
-                    </li>
+                    @if(mostrarMapa)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab-v-3-tab" data-bs-toggle="tab" href="#tab-v-3" role="tab" aria-selected="false">
+                                <i class="las la-map-marked-alt"></i>
+                                Mapa
+                            </a>
+                        </li>
+                    }
                 </ul>
 
                 <div class="tab-content">
@@ -203,9 +213,12 @@
                         @await Html.PartialAsync("./Partials/DocumentosAdjuntosPanel.cshtml", Model.Archivos)
                     </div>
 
-                    <div class="tab-pane fade" id="tab-v-3" role="tabpanel" aria-labelledby="tab-v-3-tab">
-                        <div class="google-map" id="google-map-basic" style="min-height: 75vh;"></div>
-                    </div>
+                    @if(mostrarMapa)
+                    {
+                        <div class="tab-pane fade" id="tab-v-3" role="tabpanel" aria-labelledby="tab-v-3-tab">
+                            <div class="google-map" id="google-map" style="min-height: 75vh;"></div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -329,8 +342,7 @@
 
 @section scripts
 {
-    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBgYKHZB_QKKLWfIRaYPCadza3nhTAbv7c"></script>
-    <script src="~/assets/theme_assets/js/googlemap-init.js"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?key=@Html.Raw(googleMapsKey)&v=weekly&libraries=marker"></script>
     <script>
         let modal = undefined;
         let modalDocumento = undefined;
@@ -443,6 +455,50 @@
                         });
                     }
                 });
+            }
+        };
+
+        var maps = {
+            map: undefined,
+            default_lat: 19.922385,
+            default_lon: -96.826112,
+            init: (lat, lang)=>{
+                let showMarker = false;
+                if(lat && lang )
+                {
+                    showMarker = true;
+                    var myCenter = new google.maps.LatLng(lat, lang);
+                    var initZoom = 17;
+                }
+                else
+                {
+                    var myCenter = new google.maps.LatLng(maps.default_lat, maps.default_lon);
+                    var initZoom = 7;
+                }
+
+                var myCenter = (lat && lang)
+                    ? new google.maps.LatLng(lat, lang)
+                    : new google.maps.LatLng(maps.default_lat, maps.default_lon);
+
+                // init the map
+                var mapProp = {
+                    center: myCenter,
+                    zoom: initZoom,
+                    scrollwheel: false,
+                    mapId: "eticket_reporte_map_id"
+                };
+                maps.map = new google.maps.Map(document.getElementById("google-map"), mapProp);
+
+                // add the marker
+                if(showMarker)
+                {
+                    const marker = new google.maps.marker.AdvancedMarkerElement({
+                        map: maps.map,
+                        position: myCenter,
+                        title: 'Uluru'
+                    });
+                    marker.setMap(maps.map);
+                }
             }
         };
 
@@ -575,6 +631,13 @@
             inicializarTabla();
 
             modificacionReporte.load();
+
+            if($('#google-map').length)
+            {
+                let lat = @Html.Raw(Model.Reporte?.GpsLat);
+                let lon = @Html.Raw(Model.Reporte?.GpsLon);
+                maps.init(lat, lon);
+            }
         });
     </script>
 }

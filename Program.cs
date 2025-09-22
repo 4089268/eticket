@@ -1,4 +1,6 @@
 using System;
+using System.Globalization;
+using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using eticket.Data;
 using eticket.Services;
@@ -6,6 +8,11 @@ using eticket.Validations;
 using eticket.Core.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Force culture to es-MX
+var cultureInfo = new CultureInfo("es-MX");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -26,6 +33,7 @@ builder.Services.AddAuthentication("NerusTicketCookieAuth")
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.Configure<TempPathSettings>(builder.Configuration.GetSection("TempPath"));
+builder.Services.Configure<GoogleMapsSettings>(builder.Configuration.GetSection("GoogleMapsSettings"));
 
 // Validaciones
 builder.Services.AddValidations();
