@@ -108,65 +108,62 @@
                 </ul>
 
                 <div class="tab-content">
-                    <div class="tab-pane fade show active pt-2" id="tab-v-1" role="tabpanel" aria-labelledby="tab-v-1-tab" style="min-height: 25vh;">
-
+                    <div class="tab-pane fade show active" id="tab-v-1" role="tabpanel" aria-labelledby="tab-v-1-tab" style="min-height: 25vh;">
                         @foreach(EntradaDTO detReporte in Model.Entradas)
                         {
                             var _nombreOperador = detReporte.Operador ?? "Desconocido";
+                            <div class="w-100 h-100 pt-2 pb-2 d-flex">
+                                <div class="entrada-wrap px-3">
+                                    <div class="flex-1">
+                                        <div class="d-flex gap-2">
+                                            <div class="report-type-icon text-center">
+                                                @switch(detReporte.TipoMovimientoId)
+                                                {
+                                                    case (int) TipoMovimientoEnum.Usuario:
+                                                        <i class="las la-comment-medical bg-info text-white rounded-circle p-1" style="font-size:1.5rem;"></i>
+                                                        break;
 
-                            <div class="px-3 mb-4 mt-3 border-bottom">
-                                <div class="flex-1">
-                                    <div class="d-flex gap-2">
-                                        <div class="report-type-icon text-center">
-                                            @switch(detReporte.TipoMovimientoId)
-                                            {
-                                                case (int) TipoMovimientoEnum.Usuario:
-                                                    <i class="las la-comment-medical fa-2x bg-info rounded-circle p-2"></i>
-                                                    break;
-
-                                                case (int) TipoMovimientoEnum.CambioDeEstatus:
-                                                    <i class="las la-check-circle fa-2x bg-success rounded-circle p-2"></i>
-                                                    break;
-                                                
-                                                case (int) TipoMovimientoEnum.Asignacion:
-                                                    <i class="las la-clone fa-2x bg-info rounded-circle p-2"></i>
-                                                    break;
-                                                
-                                                case (int) TipoMovimientoEnum.Edicion:
-                                                    <i class="las la-pen fa-2x bg-success rounded-circle p-2"></i>
-                                                    break;
-                                                
-                                                default:
-                                                    <i class="las la-laptop-code fa-2x bg-info rounded-circle p-2"></i>
-                                                    break;
-                                            }
-                                            <span class="text-muted" style="font-size:10px;">@detReporte.TipoMovimientoDesc</span>
-                                        </div>
-                                        <div class="body w-100">
-                                            <div class="d-flex align-items-end gap-2">
-                                                <h6 class="fs-14 mb-0">@_nombreOperador</h6>
-                                                <span class="chat-text-box__time fs-12 color-light fw-400 ms-15">
-                                                    @detReporte.Fecha
-                                                </span>
+                                                    case (int) TipoMovimientoEnum.CambioDeEstatus:
+                                                        <i class="las la-check-circle bg-info text-white rounded-circle p-1" style="font-size:1.5rem;"></i>
+                                                        break;
+                                                    
+                                                    case (int) TipoMovimientoEnum.Asignacion:
+                                                        <i class="las la-clone bg-info text-white rounded-circle p-1" style="font-size:1.5rem;"></i>
+                                                        break;
+                                                    
+                                                    case (int) TipoMovimientoEnum.Edicion:
+                                                        <i class="las la-pen bg-info text-white rounded-circle p-1" style="font-size:1.5rem;"></i>
+                                                        break;
+                                                    
+                                                    default:
+                                                        <i class="las la-laptop-code bg-info text-white rounded-circle p-1" style="font-size:1.5rem;"></i>
+                                                        break;
+                                                }
                                             </div>
-                                            <div class="d-flex align-items-center mb-2 mt-1">
-                                                <div class="px-4 py-2">
+                                            <div class="body w-100">
+                                                <div class="d-flex align-items-end gap-2">
+                                                    <h6 class="fs-14 mb-0">@_nombreOperador</h6>
+                                                    <span class="chat-text-box__time fs-12 color-light fw-400 ms-15">
+                                                        @detReporte.Fecha
+                                                    </span>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-2 mt-1 entrada-content">
                                                     <p>
                                                         @Html.Raw(detReporte.Observaciones)
                                                     </p>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="chat-text-box__other d-flex">
-                                            <div class="dropdown dropdown-click">
-                                                <button class="btn-link border-0 bg-transparent p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <img src="~/img/svg/more-horizontal.svg" alt="more-horizontal" class="svg">
-                                                </button>
-                                                <div class="dropdown-default dropdown-bottomLeft dropdown-menu-left dropdown-menu" style="">
-                                                    <a class="dropdown-item" href="#">Copiar</a>
-                                                    <a class="dropdown-item" href="#">Comentar</a>
-                                                    <a class="dropdown-item" href="#">Reenviar</a>
-                                                    <a class="dropdown-item" href="#">Reportar</a>
+                                            <div class="chat-text-box__other d-flex">
+                                                <div class="dropdown dropdown-click">
+                                                    <button class="btn-link border-0 bg-transparent p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <img src="~/img/svg/more-horizontal.svg" alt="more-horizontal" class="svg">
+                                                    </button>
+                                                    <div class="dropdown-default dropdown-bottomLeft dropdown-menu-left dropdown-menu" style="">
+                                                        <a class="dropdown-item" href="#">Copiar</a>
+                                                        <a class="dropdown-item" href="#">Comentar</a>
+                                                        <a class="dropdown-item" href="#">Reenviar</a>
+                                                        <a class="dropdown-item" href="#">Reportar</a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -214,7 +211,7 @@
     <!-- Modal -->
 
 
-    <!-- Modal Nuevo Det Reporte-->
+    <!-- Modal mostrar documento-->
     <div class="modal fade new-member documento-adjunto-modal" id="documento-adjunto-modal" role="dialog" tabindex="-1"
         aria-labelledby="staticBackdropLabel2" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"
     >
@@ -238,79 +235,36 @@
 @section styles
 {
     <style>
-        .ticket-file-attach__items:not(:last-child) {
-            margin-bottom: 20px;
-        }
-
-        .ticket-file-attach__items {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .ticket-file-attach__items_detail {
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .ticket-user-list .ticket-user-list-item
-        {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #bbb;
-        }
-        .ticket-user-list .ticket-user-list-item:last-child
-        {
-            border-bottom: 0px
-        }
-
-        .ticket-user-list .ticket-user-list-item .ticket-user-list-item__wrapper
+        .entrada-wrap
         {
             width: 100%;
+            display: grid;
+            grid-template-columns: 4px 1fr;
+        }
+        .entrada-wrap::before
+        {
+            content: "";
+            display: block;
+            width: 4px;
             height: 100%;
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
+            background: #00aaff;
+            border-radius: 1.5px;
+            transform: translateX(30px) translateY(10px);
+            z-index:0;
         }
-
-        .ticket-user-list .ticket-user-list-item .ticket-user-list-item__wrapper .avatar
-        {
-            margin-right: 0.75rem;
+        .entrada-content{
+            background: #f2f2f2;
+            border-radius: 16px 4px 4px 4px;
+            transform: translateX(-24px);
+            border: 1px solid #eaeaea;
+            padding: 1rem 2rem;
         }
-
-        .ticket-user-list .ticket-user-list-item .ticket-users-list-body {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            width: 100%;
-        }
-
-        .ticket-user-list .ticket-user-list-item .ticket-user-list-item__wrapper .ticket-users-list-body-title {
-            width: calc(100% - 6.5rem);
-        }
-
-        .ticket-user-list .ticket-user-list-item .ticket-user-list-item__wrapper .ticket-users-list-body-title h6 {
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 1.4285714286;
-            color: var(--color-dark);
-        }
-
-        .ticket-user-list .ticket-user-list-item .ticket-user-list-item__wrapper .ticket-users-list-body .last-chat-time {
-            width: 6rem;
-            text-align: end;
-        }
-
-
 
         .report-type-icon
         {
-            transform:translateY(-1rem);
-
+            transform:translateY(-.5rem);
+            width: 4rem;
+            z-index:20;
         }
     </style>
 }
@@ -319,300 +273,12 @@
 {
     <script src="http://maps.googleapis.com/maps/api/js?key=@Html.Raw(googleMapsKey)&v=weekly&libraries=marker"></script>
     <script>
-        let modal = undefined;
-        let modalDocumento = undefined;
-        const folioReporte = '@Html.Raw(Model.Reporte!.Folio)';
-
-        var modificacionReporte = {
-            selectTipoReporte: undefined,
-            selectEstatus: undefined,
-            buttonSave:undefined,
-            buttonDiscard: undefined,
-            currentEstatus: '@Html.Raw(Model.Reporte.IdEstatus)',
-            currentTipoReporte: '@Html.Raw(Model.Reporte.IdReporte)',
-            showSaveChangesButton: false,
-            _newEstatus: '@Html.Raw(Model.Reporte.IdEstatus)',
-            _newTipoReporte: '@Html.Raw(Model.Reporte.IdReporte)',
-            set newEstatus(value) {
-                this._newEstatus = value;
-                this.checkChanges();
-            },
-            get newEstatus(){
-                return this._newEstatus;
-            },
-            set newTipoReporte(value) {
-                this._newTipoReporte = value;
-                this.checkChanges();
-            },
-            get newTipoReporte(){
-                return this._newTipoReporte;
-            },
-            load: ()=> {
-                modificacionReporte.buttonSave = document.getElementById('button-save-changes');
-                modificacionReporte.buttonSave.addEventListener('click', function(event){
-                    modificacionReporte.saveChanges();
-                });
-
-                modificacionReporte.buttonDiscard = document.getElementById('button-discard-changes');
-                modificacionReporte.buttonDiscard.addEventListener('click', function(event){
-                    modificacionReporte.discardChanges();
-                })
-
-                
-                modificacionReporte.selectTipoReporte = document.getElementById('select-tiporeporte');
-                modificacionReporte.selectTipoReporte.value = modificacionReporte.newTipoReporte;
-                modificacionReporte.selectTipoReporte.addEventListener('change', function(event) {
-                    const selectedValue = event.target.value;
-                    if (selectedValue !== modificacionReporte.newTipoReporte)
-                    {
-                        modificacionReporte.newTipoReporte = selectedValue;
-                    }
-                });
-
-                modificacionReporte.selectEstatus = document.getElementById('select-estatus');
-                modificacionReporte.selectEstatus.value = modificacionReporte.newEstatus;
-                modificacionReporte.selectEstatus.addEventListener('change', function(event) {
-                    const selectedValue = event.target.value;
-                    if (selectedValue !== modificacionReporte.newEstatus)
-                    {
-                        modificacionReporte.newEstatus = selectedValue;
-                    }
-                });
-            },
-            checkChanges: ()=>{
-                if(modificacionReporte.currentEstatus != modificacionReporte._newEstatus || modificacionReporte.currentTipoReporte != modificacionReporte._newTipoReporte)
-                {
-                    modificacionReporte.showSaveChangesButton = true;
-                    modificacionReporte.buttonDiscard.classList.remove("d-none");
-                    modificacionReporte.buttonSave.classList.remove("d-none");
-                }
-                else
-                {
-                    modificacionReporte.showSaveChangesButton = false;
-                    modificacionReporte.buttonDiscard.classList.add("d-none");
-                    modificacionReporte.buttonSave.classList.add("d-none");
-                }
-            },
-            discardChanges: ()=>{
-                modificacionReporte._newEstatus = modificacionReporte.currentEstatus;
-                modificacionReporte._newTipoReporte = modificacionReporte.currentTipoReporte;
-                modificacionReporte.selectEstatus.value = modificacionReporte._newEstatus;
-                modificacionReporte.selectTipoReporte.value = modificacionReporte._newTipoReporte;
-                modificacionReporte.checkChanges();
-            },
-            saveChanges: ()=>{
-                const data = {
-                    EstatusId: modificacionReporte.newEstatus,
-                    TipoReporte: modificacionReporte.newTipoReporte
-                };
-
-                $.ajax({
-                    url: `/api/reportes/${folioReporte}`,
-                    type: 'PATCH',
-                    data: data,
-                    success: function(response) {
-                        Swal.fire({
-                            title: "Reporte actualizado",
-                            icon: "success",
-                            confirmButtonText: 'Aceptar'
-                        }).then(() => {
-                            window.location.reload();
-                        });
-                    },
-                    error: function(xhr) {
-                        let titleMessage = "Error al actualizar el reporte";
-                        if (xhr.responseJSON && xhr.responseJSON.title) {
-                            titleMessage = xhr.responseJSON.title;
-                        }
-                        Swal.fire({
-                            title: titleMessage,
-                            icon: "error"
-                        });
-                    }
-                });
-            }
-        };
-
-        var maps = {
-            map: undefined,
-            default_lat: 19.922385,
-            default_lon: -96.826112,
-            init: (lat, lang)=>{
-                let showMarker = false;
-                if(lat && lang )
-                {
-                    showMarker = true;
-                    var myCenter = new google.maps.LatLng(lat, lang);
-                    var initZoom = 17;
-                }
-                else
-                {
-                    var myCenter = new google.maps.LatLng(maps.default_lat, maps.default_lon);
-                    var initZoom = 7;
-                }
-
-                var myCenter = (lat && lang)
-                    ? new google.maps.LatLng(lat, lang)
-                    : new google.maps.LatLng(maps.default_lat, maps.default_lon);
-
-                // init the map
-                var mapProp = {
-                    center: myCenter,
-                    zoom: initZoom,
-                    scrollwheel: false,
-                    mapId: "eticket_reporte_map_id"
-                };
-                maps.map = new google.maps.Map(document.getElementById("google-map"), mapProp);
-
-                // add the marker
-                if(showMarker)
-                {
-                    const marker = new google.maps.marker.AdvancedMarkerElement({
-                        map: maps.map,
-                        position: myCenter,
-                        title: 'Uluru'
-                    });
-                    marker.setMap(maps.map);
-                }
-            }
-        };
-
-        function inicializarTabla()
-        {
-            $('.adv-table').footable({
-                "sorting": {
-                    "enabled": false
-                },
-                "paging": {
-                    "enabled": true,
-                    "current": 1
-                },
-                strings: {
-                    enabled: false
-                },
-                "filtering": {
-                    "enabled": false
-                }
-            });
-        }
-
-        function cargarFormulario()
-        {
-            $("#body-modal").load('@Url.Action("FormularioNuevoDetReporte")', null, onFormularioCompleted);
-        }
-
-        function onFormularioCompleted(resp, status, request)
-        {
-            $('#observaciones').trumbowyg({
-                svgPath: '../img/svg/icons.svg',
-                btns: [
-                    ['formatting'],
-                    ['strong', 'em', 'del'],
-                    ['superscript', 'subscript'],
-                    ['link'],
-                    ['base64'],
-                    ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-                    ['unorderedList', 'orderedList'],
-                    ['emoji']
-                ]
-            });
-        }
-
-        function submitReporteForm(event)
-        {
-            event.preventDefault();
-
-            const url = `/reportes/${folioReporte}/entrada`;
-            const method = 'POST';
-            const form = $(event.target);
-
-            // clear errors messags
-            $("span.text-danger").text("");
-
-            $.ajax({
-                url: url,
-                type: method,
-                data: form.serialize(),
-                success: function(response) {
-                    modal.hide();
-                    Swal.fire({
-                        title: "Entrada registrada",
-                        icon: "success",
-                        confirmButtonText: 'Aceptar'
-                    }).then((result) => {
-                        window.location.reload();
-                    });
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr, error);
-                    if(xhr.status == 422)
-                    {
-                        const {errors} = xhr.responseJSON;
-                        errors.forEach(err => {
-                            const errorSpan = $(`span[data-valmsg-for="${err.field}"]`);
-                            errorSpan.text(err.message);
-                        });
-                    }
-                    else
-                    {
-                        let titleMessage = "Error no controlado al registrar la entrada";
-                        if(xhr.responseJSON)
-                        {
-                            const { title } = xhr.responseJSON;
-                            if(title)
-                            {
-                                titleMessage = title;
-                            }
-
-                        }
-                        Swal.fire({
-                            title: titleMessage,
-                            icon: "error"
-                        });
-                    }
-                }
-            });
-        }
-
-        function mostrarDocumento(event, nombre, urlArchivo)
-        {
-            $("body").css("cursor", "wait");
-
-            const $iframe = $("#body-modal2 iframe");
-            $iframe.off("load");
-            $iframe.on("load", function ()
-            {
-                $("body").css("cursor", "default");
-                $("#modaltitle2").text(nombre);
-                modalDocumento.show();
-            });
-            $iframe.attr("src", urlArchivo);
-        }
-
-        jQuery(document).ready(function()
-        {
-            if (document.getElementsByClassName("nueva-entrada-modal").length)
-            {
-                modal = new bootstrap.Modal(document.getElementById("nueva-entrada-modal"));
-            }
-
-            if (document.getElementsByClassName("documento-adjunto-modal").length)
-            {
-                modalDocumento = new bootstrap.Modal(document.getElementById("documento-adjunto-modal"));
-            }
-
-            cargarFormulario();
-            
-            inicializarTabla();
-
-            modificacionReporte.load();
-
-            if($('#google-map').length)
-            {
-                let lat = @Html.Raw(Model.Reporte?.GpsLat);
-                let lon = @Html.Raw(Model.Reporte?.GpsLon);
-                maps.init(lat, lon);
-            }
-        });
+        var _lat = @Html.Raw(Model.Reporte?.GpsLat);
+        var _lon = @Html.Raw(Model.Reporte?.GpsLon);
+        var _currentEstatus = '@Html.Raw(Model.Reporte!.IdEstatus)';
+        var _currentTipoReporte = '@Html.Raw(Model.Reporte.IdReporte)';
+        var _urlFormularioDetEntrada = '@Url.Action("FormularioNuevoDetReporte")';
+        var folioReporte = '@Html.Raw(Model.Reporte!.Folio)';
     </script>
+    <script src="~/js/mostrar-reporte.min.js"></script>
 }

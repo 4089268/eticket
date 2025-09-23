@@ -20,7 +20,7 @@
             {
                 <div class="dm-select border-secondary">
                     <select id="select-tiporeporte" class="form-control">
-                    @foreach(var ele in Model.TiposReporteList)
+                    @foreach(var ele in ViewBag.TiposReporteList)
                     {
                         <option value="@ele.Value">@ele.Text</option>
                     }
@@ -41,7 +41,7 @@
             {
                 <div class="dm-select border-secondary">
                     <select id="select-estatus" class="form-control">
-                        @foreach(var ele in Model.EstatusList)
+                        @foreach(var ele in ViewBag.EstatusList)
                         {
                             <option value="@ele.Value">@ele.Text</option>
                         }
