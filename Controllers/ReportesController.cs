@@ -44,57 +44,17 @@ namespace eticket.Controllers
                 Estatus = e
             };
 
+            // save the filters for used after
             TempData["reportes-filter-tipoEntrada"] = te;
             TempData["reportes-filter-tipoReporte"] = tr;
             TempData["reportes-filter-estatus"] = e;
 
             // * retrive the data
-            var reportesQuery = ticketsDbContext.OprReportes
-                .OrderByDescending(r => r.FechaRegistro)
-                .AsQueryable();
-
-            if (te > 0)
-            {
-                reportesQuery = reportesQuery.Where(el => el.IdTipoentrada == te);
-            }
-
-            if (tr > 0)
-            {
-                reportesQuery = reportesQuery.Where(el => el.IdReporte == tr);
-            }
-
-            if (e > 0)
-            {
-                reportesQuery = reportesQuery.Where(el => el.IdEstatus == e);
-            }
-
-            var reportes = reportesQuery
-                .Select(rep => new ReporteDTO
-                {
-                    Folio = rep.Folio,
-                    Nombre = rep.Nombre,
-                    Celular = rep.Celular,
-                    Correo = rep.Correo,
-                    Telefono = rep.Telefono,
-                    Calle = rep.Calle,
-                    EntreCalles = rep.EntreCalles,
-                    Colonia = rep.Colonia,
-                    Localidad = rep.Localidad,
-                    Municipio = rep.Municipio,
-                    GpsLat = rep.GpsLat,
-                    GpsLon = rep.GpsLat,
-                    FechaRegistro = rep.FechaRegistro!.Value,
-                    IdTipoReporte = rep.IdTipoentrada,
-                    TiporReporteDesc = rep.IdReporteNavigation == null ? null : rep.IdReporteNavigation.Descripcion,
-                    IdGenero = rep.IdGenero,
-                    UsuarioGenero = rep.IdGeneroNavigation,
-                    IdEstatus = rep.IdEstatus,
-                    EstatusDesc = rep.IdEstatusNavigation == null ? null : rep.IdEstatusNavigation.Descripcion,
-                    IdTipoentrada = rep.IdTipoentrada,
-                    TipoEntradaDesc = rep.IdTipoentradaNavigation == null ? null : rep.IdTipoentradaNavigation.Descripcion,
-                    TotalEntradas = rep.OprDetReportes.Count
-                })
-                .ToList();
+            var reportes = this.reportService.ObtenerReportes(
+                tipoEntrada: te,
+                tipoReporte: tr,
+                estatusId: e
+            );
 
             return View(reportes);
         }
@@ -185,6 +145,11 @@ namespace eticket.Controllers
             }
 
             ConstruirUrlRegreso();
+            
+            CargarCatalogos();
+            
+            // * pass the googleMapSettings
+            ViewBag.GoogleMapsSettings = this.googleMapsSettings;
 
             try
             {
@@ -193,74 +158,11 @@ namespace eticket.Controllers
                 // obtener reporte
                 viewModel.Reporte = await this.reportService.ObtenerReportePorFolio(folioReporte);
 
-                // obtener rentradas del reporte
+                // obtener entradas del reporte
                 viewModel.Entradas = await this.reportService.ObtenerEntradasReporte(folioReporte);
 
-                // calcular clases css de los estatus
-                var _clasesDisponibles = new Dictionary<string, string>()
-                {
-                    {"ABIERTO","info"},
-                    {"EN PROCESO","success"},
-                    {"ATENDIDO","success"},
-                    {"CANCELADO","danger"}
-                };
-
-                foreach (var _entrada in viewModel.Entradas)
-                {
-                    if (string.IsNullOrEmpty(_entrada.Estatus) || !_clasesDisponibles.ContainsKey(_entrada.Estatus))
-                    {
-                        _entrada.EstatusCssClass = "bg-opacity-warning color-warning";
-                    }
-                    else
-                    {
-                        var _value = _clasesDisponibles[_entrada.Estatus] ?? "warning";
-                        _entrada.EstatusCssClass = $"bg-opacity-{_value} color-{_value}";
-                    }
-
-                    _entrada.TotalDocumentosAdjuntos = this.documentosService.TotalDocumentos(_entrada.Folio, _entrada.Id);
-                }
-
                 // * obtener los documentos adjuntos
-                IEnumerable<ArchivoDTO> archivosAdjuntos = this.mediaContext.OprImagenes
-                    .Where(item => item.FolioReporte == folioReporte)
-                    .Select(oprImagen => new ArchivoDTO
-                    {
-                        IdImagen = oprImagen.IdImagen,
-                        FolioReporte = oprImagen.FolioReporte,
-                        FolioReporteDetalle = oprImagen.FolioReporteDetalle,
-                        Descripcion = oprImagen.Descripcion,
-                        FechaInsert = oprImagen.FechaInsert,
-                        Filesize = oprImagen.Filesize!.Value,
-                        Mediatype = string.Empty,
-                        FileExtension = oprImagen.FileExtension ?? string.Empty
-                    })
-                    .ToList();
-                viewModel.Archivos = archivosAdjuntos;
-
-
-                // * obtener catalogo de estatus
-                var estatusList = this.ticketsDbContext.CatEstatuses
-                    .OrderBy(e => e.Descripcion)
-                    .Select(e => new SelectListItem
-                    {
-                        Value = e.IdEstatus.ToString(),
-                        Text = e.Descripcion
-                    }).ToList();
-                viewModel.EstatusList = estatusList;
-
-                // * obtener catalogo tipo-reportes
-                var tiposReportes = this.ticketsDbContext.CatReportes
-                    .OrderBy(e => e.Descripcion)
-                    .Select(e => new SelectListItem
-                    {
-                        Value = e.IdReporte.ToString(),
-                        Text = e.Descripcion
-                    })
-                    .ToList();
-                viewModel.TiposReporteList = tiposReportes;
-
-                // * pass the googleMapSettings
-                ViewBag.GoogleMapsSettings = this.googleMapsSettings;
+                viewModel.Archivos = this.documentosService.ObtenerArchivosAdjuntos(folioReporte);
 
                 return View(viewModel);
             }

@@ -1,5 +1,7 @@
 using System;
+using System.Data.Entity;
 using eticket.Data;
+using eticket.DTO;
 using eticket.Models;
 using eticket.ViewModels;
 using Microsoft.Extensions.Options;
@@ -66,10 +68,29 @@ public class DocumentosService(ILogger<ReportService> logger, TicketsMediaDBCont
         return record.IdImagen;
     }
 
-
     public int TotalDocumentos(long folioreporte, long folioDetReporte)
     {
         return this.context.OprImagenes.Where(image => image.FolioReporte == folioreporte && image.FolioReporteDetalle == folioDetReporte).Count();
+    }
+
+    public IEnumerable<ArchivoDTO> ObtenerArchivosAdjuntos(long folio)
+    {
+        IEnumerable<ArchivoDTO> archivosAdjuntos = this.context.OprImagenes
+            .Where(item => item.FolioReporte == folio)
+            .Select(oprImagen => new ArchivoDTO
+            {
+                IdImagen = oprImagen.IdImagen,
+                FolioReporte = oprImagen.FolioReporte,
+                FolioReporteDetalle = oprImagen.FolioReporteDetalle,
+                Descripcion = oprImagen.Descripcion,
+                FechaInsert = oprImagen.FechaInsert,
+                Filesize = oprImagen.Filesize!.Value,
+                Mediatype = string.Empty,
+                FileExtension = oprImagen.FileExtension ?? string.Empty
+            })
+            .ToList();
+
+        return archivosAdjuntos;
     }
 
 }

@@ -5,15 +5,69 @@ using eticket.Adapters;
 using eticket.Data;
 using eticket.Models;
 using eticket.ViewModels;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
 
 namespace eticket.Services;
 
-public class ReportService(ILogger<ReportService> logger, TicketsDBContext context, IHttpContextAccessor httpContextAccessor)
+public class ReportService(ILogger<ReportService> logger, TicketsDBContext context, TicketsMediaDBContext mediaDBContext, IHttpContextAccessor httpContextAccessor)
 {
     private readonly ILogger<ReportService> logger = logger;
     private readonly TicketsDBContext context = context;
+    private readonly TicketsMediaDBContext mediaDBContext = mediaDBContext;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
 
+    public IEnumerable<ReporteDTO> ObtenerReportes(int tipoEntrada = 0, int tipoReporte = 0, int estatusId = 0)
+    {
+        // * retrive the data
+        var reportesQuery = context.OprReportes
+            .OrderByDescending(r => r.FechaRegistro)
+            .AsQueryable();
+
+        if (tipoEntrada > 0)
+        {
+            reportesQuery = reportesQuery.Where(el => el.IdTipoentrada == tipoEntrada);
+        }
+
+        if (tipoReporte > 0)
+        {
+            reportesQuery = reportesQuery.Where(el => el.IdReporte == tipoReporte);
+        }
+
+        if (estatusId > 0)
+        {
+            reportesQuery = reportesQuery.Where(el => el.IdEstatus == estatusId);
+        }
+
+        var reportes = reportesQuery
+            .Select(rep => new ReporteDTO
+            {
+                Folio = rep.Folio,
+                Nombre = rep.Nombre,
+                Celular = rep.Celular,
+                Correo = rep.Correo,
+                Telefono = rep.Telefono,
+                Calle = rep.Calle,
+                EntreCalles = rep.EntreCalles,
+                Colonia = rep.Colonia,
+                Localidad = rep.Localidad,
+                Municipio = rep.Municipio,
+                GpsLat = rep.GpsLat,
+                GpsLon = rep.GpsLat,
+                FechaRegistro = rep.FechaRegistro!.Value,
+                IdTipoReporte = rep.IdTipoentrada,
+                TiporReporteDesc = rep.IdReporteNavigation == null ? null : rep.IdReporteNavigation.Descripcion,
+                IdGenero = rep.IdGenero,
+                UsuarioGenero = rep.IdGeneroNavigation,
+                IdEstatus = rep.IdEstatus,
+                EstatusDesc = rep.IdEstatusNavigation == null ? null : rep.IdEstatusNavigation.Descripcion,
+                IdTipoentrada = rep.IdTipoentrada,
+                TipoEntradaDesc = rep.IdTipoentradaNavigation == null ? null : rep.IdTipoentradaNavigation.Descripcion,
+                TotalEntradas = rep.OprDetReportes.Count
+            })
+            .ToList();
+
+        return reportes;
+    }
 
     /// <summary>
     /// Obtener reporte por folio con sus relaciones
@@ -52,14 +106,26 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
             .Include(e => e.IdEstatusNavigation)
             .Include(e => e.IdOperadorNavigation)
             .Include(e => e.IdTipoMovimientoNavigation)
-            .ToList()
-            .Select(e => e.ToEntradaDTO())
+            .Select(e => new EntradaDTO {
+                Id = e.Id,
+                Folio = e.Folio,
+                IdEstatus = e.IdEstatus,
+                Estatus = e.IdEstatusNavigation == null ? "" :e.IdEstatusNavigation.Descripcion,
+                IdOperador = e.IdOperador,
+                Operador = e.IdOperadorNavigation == null ? "" : e.IdOperadorNavigation.FullName,
+                Fecha = e.Fecha,
+                Observaciones = e.Observaciones,
+                TotalDocumentosAdjuntos = 0,
+                TipoMovimientoId = e.IdTipoMovimiento == null ? 0 : e.IdTipoMovimiento.Value,
+                TipoMovimientoDesc = e.IdTipoMovimientoNavigation == null ? "" : e.IdTipoMovimientoNavigation.Descripcion!
+            })
             .ToList();
 
         foreach (var entrada in entradas)
         {
-            entrada.Estatus = this.context.CatEstatuses.FirstOrDefault(e => e.IdEstatus == entrada.IdEstatus)?.Descripcion;
+            entrada.TotalDocumentosAdjuntos = this.mediaDBContext.OprImagenes.Where(e => e.FolioReporte == entrada.Folio).Count();
         }
+
         return entradas;
     }
 
