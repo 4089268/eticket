@@ -1,4 +1,3 @@
-let modal = undefined;
 let modalDocumento = undefined;
 
 var modificacionReporte = {
@@ -179,12 +178,12 @@ function inicializarTabla()
     });
 }
 
-function cargarFormulario()
+function cargarFormularioEntrada()
 {
-    $("#body-modal").load(_urlFormularioDetEntrada, null, onFormularioCompleted);
+    $("#nueva-entrada-wrap").load(_urlFormularioDetEntrada, null, onFormularioLoadedCompleted);
 }
 
-function onFormularioCompleted(resp, status, request)
+function onFormularioLoadedCompleted(resp, status, request)
 {
     $('#observaciones').trumbowyg({
         svgPath: '../img/svg/icons.svg',
@@ -217,7 +216,6 @@ function submitReporteForm(event)
         type: method,
         data: form.serialize(),
         success: function(response) {
-            modal.hide();
             Swal.fire({
                 title: "Entrada registrada",
                 icon: "success",
@@ -274,17 +272,12 @@ function mostrarDocumento(event, nombre, urlArchivo)
 
 jQuery(document).ready(function()
 {
-    if (document.getElementsByClassName("nueva-entrada-modal").length)
-    {
-        modal = new bootstrap.Modal(document.getElementById("nueva-entrada-modal"));
-    }
-
     if (document.getElementsByClassName("documento-adjunto-modal").length)
     {
         modalDocumento = new bootstrap.Modal(document.getElementById("documento-adjunto-modal"));
     }
 
-    cargarFormulario();
+    cargarFormularioEntrada();
     
     inicializarTabla();
 

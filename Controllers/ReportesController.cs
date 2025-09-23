@@ -397,14 +397,6 @@ namespace eticket.Controllers
         [HttpGet("partial-view/for-new-det-report")]
         public IActionResult FormularioNuevoDetReporte()
         {
-            // * obtener catalog estatus
-            var estatusList = this.ticketsDbContext.CatEstatuses.ToList().Select(item => new SelectListItem
-            {
-                Value = item.IdEstatus.ToString(),
-                Text = item.Descripcion
-            }).ToList();
-            ViewBag.EstatusList = estatusList;
-
             var request = new DetReporteRequest()
             {
                 IdEstatus = 2 // En proceso

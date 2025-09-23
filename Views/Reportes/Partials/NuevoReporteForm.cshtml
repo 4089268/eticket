@@ -3,9 +3,6 @@
 <div class="fluid-container">
     <form id="nuevoReporteForm" onsubmit="submitNuevoReporte(event)">
         <div class="row">
-            @* <div class="col-12">
-                <h4 class="text-opacity-50">Reporte @Model.TipoReporte?.Descripcion</h4>
-            </div> *@
             <div id="form-error" class="col-12 alert alert-danger d-none">Esto es error</div>
             @Html.AntiForgeryToken()
         </div>
