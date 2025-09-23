@@ -52,7 +52,7 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
                 Localidad = rep.Localidad,
                 Municipio = rep.Municipio,
                 GpsLat = rep.GpsLat,
-                GpsLon = rep.GpsLat,
+                GpsLon = rep.GpsLon,
                 FechaRegistro = rep.FechaRegistro!.Value,
                 IdTipoReporte = rep.IdTipoentrada,
                 TiporReporteDesc = rep.IdReporteNavigation == null ? null : rep.IdReporteNavigation.Descripcion,

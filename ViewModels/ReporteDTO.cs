@@ -25,9 +25,9 @@ public class ReporteDTO
 
     public string? Municipio { get; set; }
 
-    public decimal? GpsLat { get; set; }
+    public decimal? GpsLat { get; set; } = null;
 
-    public decimal? GpsLon { get; set; }
+    public decimal? GpsLon { get; set; } = null;
     public DateTime FechaRegistro { get; set; }
 
 
@@ -45,4 +45,9 @@ public class ReporteDTO
 
 
     public int TotalEntradas { get; set; }
+
+    public bool TieneUbicacion
+    {
+        get => ( GpsLat != 0 && GpsLat != null && GpsLon != 0 && GpsLon != null);
+    }
 }

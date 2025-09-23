@@ -56,6 +56,9 @@ namespace eticket.Controllers
                 estatusId: e
             );
 
+            // * pass the googleMapSettings
+            ViewBag.GoogleMapsSettings = this.googleMapsSettings;
+
             return View(reportes);
         }
 

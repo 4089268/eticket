@@ -84,13 +84,19 @@
         </div>
     </td>
     <td>
-        <ul class="mb-0 d-flex flex-wrap justify-content-center">
-            <li>
+        <ul class="mb-0 d-flex gap-1 justify-content-start">
+            
                 <a asp-action="MostrarReporte" asp-route-folioReporteArg="@Model.Folio" class="btn btn-small btn-squared color-primary btn-outline-primary px-2 py-1">
                     <i class="uil uil-eye"></i>
-                    <span class="">Mostrar</span>
+                    <span style="font-size:10px">Mostrar</span>
                 </a>
-            </li>
+
+                @if(Model.TieneUbicacion)
+                {
+                    <button type="button" class="btn btn-small btn-squared color-secondary btn-outline-secondary pl-1 pe-1 pr-0 pw-0 py-1" onclick="mostrarMapa(@Model.GpsLat, @Model.GpsLon)">
+                        <i class="uil uil-map"></i>
+                    </button>
+                }
         </ul>
     </td>
 </tr>
