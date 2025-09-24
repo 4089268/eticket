@@ -31,10 +31,30 @@
     @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "Cargando...")
 </section>
 
-
-
 @section modals
 {
+    <!-- Modal Nuevo Det Reporte-->
+    <div class="modal fade new-member nuevo-reporte-modal" id="nuevo-reporte-modal" role="dialog" tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+    >
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content radius-xl">
+                <div class="modal-header">
+                    <h4 class="modal-title fw-500" id="staticBackdropLabel">Nuevo Reporte</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <img src="~/img/svg/x.svg" alt="x" class="svg">
+                    </button>
+                </div>
+                <div class="modal-body" id="body-modal">
+                    @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "")
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Mapa-->
     <div class="modal fade new-member mapa-modal" id="mapa-modal" role="dialog" tabindex="-1"
         aria-labelledby="staticBackdropLabel2"
@@ -56,27 +76,7 @@
             </div>
         </div>
     </div>
-    <!-- Modal -->
-    
-    <!-- Modal Nuevo Det Reporte-->
-    <div class="modal fade new-member nuevo-reporte-modal" id="nuevo-reporte-modal" role="dialog" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content radius-xl">
-                <div class="modal-header">
-                    <h4 class="modal-title fw-500" id="staticBackdropLabel">Nuevo Reporte</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <img src="~/img/svg/x.svg" alt="x" class="svg">
-                    </button>
-                </div>
-                <div class="modal-body" id="body-modal">
-                    @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "")
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal -->
 }
-
 
 @section styles
 {
