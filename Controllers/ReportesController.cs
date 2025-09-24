@@ -68,6 +68,10 @@ namespace eticket.Controllers
             var totalItems = ticketsDbContext.OprReportes.Count();
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / PageSize);
             ViewBag.CurrentPage = page;
+
+            // * pass the googleMapSettings
+            ViewBag.GoogleMapsSettings = this.googleMapsSettings;
+            
             return View();
         }
 
@@ -331,6 +335,7 @@ namespace eticket.Controllers
             }
         }
 
+
         #region PartialViews
         [HttpGet("partial-view/menu")]
         public IActionResult NuevoReporteMenuPartialView()
@@ -430,8 +435,8 @@ namespace eticket.Controllers
                         GpsLat = rep.GpsLat,
                         GpsLon = rep.GpsLat,
                         FechaRegistro = rep.FechaRegistro!.Value,
-                        IdTipoReporte = rep.IdTipoentrada,
-                        TiporReporteDesc = rep.IdTipoentradaNavigation == null ? null : rep.IdTipoentradaNavigation.Descripcion,
+                        IdTipoReporte = rep.IdReporte,
+                        TiporReporteDesc = rep.IdReporteNavigation == null ? null : rep.IdReporteNavigation.Descripcion,
                         IdGenero = rep.IdGenero,
                         UsuarioGenero = rep.IdGeneroNavigation,
                         IdEstatus = rep.IdEstatus,
@@ -453,7 +458,6 @@ namespace eticket.Controllers
             }
         }
         #endregion
-
 
         #region Private functions
         private int ObtenerOperadorId()

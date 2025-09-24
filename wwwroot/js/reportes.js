@@ -1,5 +1,72 @@
 let intervalId = null;
 
+let modalMapa = undefined;
+
+var maps = {
+    map: undefined,
+    default_lat: 19.922385,
+    default_lon: -96.826112,
+    init: (lat, lang)=>{
+        let showMarker = false;
+        if(lat && lang )
+        {
+            showMarker = true;
+            var myCenter = new google.maps.LatLng(lat, lang);
+            var initZoom = 17;
+        }
+        else
+        {
+            var myCenter = new google.maps.LatLng(maps.default_lat, maps.default_lon);
+            var initZoom = 7;
+        }
+
+        var myCenter = (lat && lang)
+            ? new google.maps.LatLng(lat, lang)
+            : new google.maps.LatLng(maps.default_lat, maps.default_lon);
+
+        // init the map
+        var mapProp = {
+            center: myCenter,
+            zoom: initZoom,
+            scrollwheel: false,
+            mapId: "eticket_reportes_map_id"
+        };
+        maps.map = new google.maps.Map(document.getElementById("mapa"), mapProp);
+
+        // add the marker
+        if(showMarker)
+        {
+            const marker = new google.maps.marker.AdvancedMarkerElement({
+                map: maps.map,
+                position: myCenter,
+                title: ''
+            });
+            marker.setMap(maps.map);
+        }
+    },
+    addMarker: (lat, lang)=>{
+        if (maps.map && maps.map.markers)
+        {
+            maps.map.markers.forEach(marker => marker.setMap(null));
+            maps.map.markers = [];
+        }
+        else
+            {
+            maps.map.markers = [];
+        }
+        const marker = new google.maps.marker.AdvancedMarkerElement({
+            map: maps.map,
+            position: new google.maps.LatLng(lat, lang),
+            title: ''
+        });
+        marker.setMap(maps.map);
+        maps.map.markers.push(marker);
+
+        maps.map.setCenter(new google.maps.LatLng(lat, lang));
+        maps.map.setZoom(14);
+    }
+};
+
 function displayMenu()
 {
     $("#form-section").load("/reportes/partial-view/menu");
@@ -15,7 +82,33 @@ function displayForm(reporteTipeId)
 function displayTable()
 {
     const url = '/reportes/partial-view/ultimos-reportes';
-    $('#table-section').load(url);
+    $('#table-section').load(url, function(){
+        // Destroy any existing DataTable instance first
+        if ($.fn.DataTable.isDataTable('table.reportes-table')) {
+            $('table.reportes-table').DataTable().clear().destroy();
+        }
+
+        // Initialize DataTable again
+        $('table.reportes-table').DataTable({
+            paging: false,
+            ordering: true,
+            scrollX: true,
+            fixedColumns: {
+                right: 1
+            },
+            buttons: [
+                'copy', 'excel', 'pdf'
+            ],
+            layout: {
+                topStart: '',
+                topEnd: ''
+            },
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.3.4/i18n/es-MX.json',
+            },
+            info: false
+        });
+    });
 }
 
 function onFormularioLoadedCompleted(resp, status, request)
@@ -215,7 +308,7 @@ function appendUploadedFile(response)
     container.appendChild(originalNameInput);
 }
 
-async function getHashAndSave() 
+async function getHashAndSave()
 {
     const response = await fetch('/api/reportes/ultimos-reportes-hash');
     if (!response.ok)
@@ -225,8 +318,22 @@ async function getHashAndSave()
     return await response.text();
 }
 
+function mostrarMapa(lat, lon)
+{
+    modalMapa.show();
+    maps.addMarker(lat, lon);
+}
+
 jQuery(document).ready(function()
 {
+    // initiaize the map
+    if(document.getElementById("mapa-modal"))
+    {
+        maps.init(null, null);
+        modalMapa = new bootstrap.Modal(document.getElementById("mapa-modal"));
+    }
+
+
     displayMenu();
     displayTable();
     
@@ -248,7 +355,6 @@ jQuery(document).ready(function()
         }
     }, 3000);
     
-
     // * init the modal
     if (document.getElementsByClassName("nuevo-reporte-modal").length)
     {

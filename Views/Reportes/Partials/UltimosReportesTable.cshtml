@@ -6,51 +6,43 @@
         <div class="adv-table-table__header">
             <h4>Ultimos Reportes</h4>
             <div class="adv-table-table__button">
-                @* <div class="dropdown">
-                    <a class="btn btn-primary dropdown-toggle dm-select" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Exportar Datos
-                    </a>
 
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" href="#">copy</a>
-                        <a class="dropdown-item" href="#">csv</a>
-                        <a class="dropdown-item" href="#">print</a>
-                    </div>
-                </div> *@
             </div>
         </div>
         <div id="filter-form-container"></div>
-        <table class="table mb-0 table-borderless table-striped adv-table" data-sorting="true" data-filter-container="#filter-form-container" data-paging-current="1" data-paging-position="right" data-paging-size="10">
+        <table class="table mb-0 table-borderless adv-table reportes-table stripe row-border order-column w-100"
+            data-page-length='25'
+        >
             <thead>
                 <tr class="userDatatable-header">
-                    <th data-sorted="false">
+                    <th>
                         <span class="userDatatable-title">Folio</span>
                     </th>
-                    <th data-sorted="false">
+                    <th>
                         <span class="userDatatable-title">Nombre</span>
                     </th>
-                    <th data-sorted="false">
+                    <th>
                         <span class="userDatatable-title">Municipio</span>
                     </th>
-                    <th data-sorted="false">
+                    <th>
                         <span class="userDatatable-title">Genero</span>
                     </th>
-                    <th data-sorted="false">
+                    <th>
                         <span class="userDatatable-title">Fecha Registro</span>
                     </th>
-                    <th data-type="html" data-name='status'>
+                    <th>
                         <span class="userDatatable-title">Estatus</span>
                     </th>
-                    <th data-type="html" data-name='reportType'>
+                    <th>
                         <span class="userDatatable-title">Tipo de Reporte</span>
                     </th>
-                    <th data-type="html" data-name='registerType'>
+                    <th>
                         <span class="userDatatable-title">Tipo de Entrada</span>
                     </th>
-                    <th data-filterable="false" data-type="html" data-name='totalEntradas'>
+                    <th>
                         <span class="userDatatable-title">Entradas</span>
                     </th>
-                    <th data-sorted="false">
+                    <th>
                         <span class="userDatatable-title float-center">Acciones</span>
                     </th>
                 </tr>

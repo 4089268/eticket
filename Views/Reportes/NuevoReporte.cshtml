@@ -2,6 +2,7 @@
     ViewData["Title"] = "Últimos Reportes";
     var currentPage = (int)ViewBag.CurrentPage;
     var totalPages = (int)ViewBag.TotalPages;
+    string? googleMapsKey = ViewBag.GoogleMapsSettings.Key.ToString();
 }
 
 <div class="col-12">
@@ -30,45 +31,82 @@
     @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "Cargando...")
 </section>
 
-<!-- Modal Nuevo Det Reporte-->
-<div class="modal fade new-member nuevo-reporte-modal" id="nuevo-reporte-modal" role="dialog" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content radius-xl">
-            <div class="modal-header">
-                <h4 class="modal-title fw-500" id="staticBackdropLabel">Nuevo Reporte</h4>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <img src="~/img/svg/x.svg" alt="x" class="svg">
-                </button>
-            </div>
-            <div class="modal-body" id="body-modal">
-                @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "")
+
+
+@section modals
+{
+    <!-- Modal Mapa-->
+    <div class="modal fade new-member mapa-modal" id="mapa-modal" role="dialog" tabindex="-1"
+        aria-labelledby="staticBackdropLabel2"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+    >
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content radius-xl">
+                <div class="modal-header">
+                    <h4 class="modal-title fw-500" id="modaltitle2"></h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <img src="~/img/svg/x.svg" alt="x" class="svg">
+                    </button>
+                </div>
+                <div class="modal-body" id="body-modal2" style="height:75vh;">
+                    <div id="mapa" class="w-100 h-100"></mapa>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!-- Modal -->
+    <!-- Modal -->
+    
+    <!-- Modal Nuevo Det Reporte-->
+    <div class="modal fade new-member nuevo-reporte-modal" id="nuevo-reporte-modal" role="dialog" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content radius-xl">
+                <div class="modal-header">
+                    <h4 class="modal-title fw-500" id="staticBackdropLabel">Nuevo Reporte</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <img src="~/img/svg/x.svg" alt="x" class="svg">
+                    </button>
+                </div>
+                <div class="modal-body" id="body-modal">
+                    @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "")
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+}
 
-<style>
-    .trumbowyg-editor, .trumbowyg-textarea, .trumbowyg-box
-    {
-        min-height: 160px !important;
-    }
-    .modal .modal-body .form-label
-    {
-        margin-top: 4px;
-        margin-bottom: 2px;
-    }
 
-</style>
+@section styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/5.0.5/css/fixedColumns.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.5/css/buttons.dataTables.min.css">
+    <style>
+        .trumbowyg-editor, .trumbowyg-textarea, .trumbowyg-box
+        {
+            min-height: 160px !important;
+        }
+        .modal .modal-body .form-label
+        {
+            margin-top: 4px;
+            margin-bottom: 2px;
+        }
+    </style>
+}
 
 @section scripts
 {
+    <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedcolumns/5.0.5/js/dataTables.fixedColumns.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.5/js/dataTables.buttons.min.js"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?key=@Html.Raw(googleMapsKey)&v=weekly&libraries=marker"></script>
     <script>
         let modal = undefined;
         let currentReportTypeId = undefined;
         let uploadingFile = false;
         let ultimosReportesHash = undefined;
     </script>
-    <script src="~/js/reportes-footable.js"></script>
     <script src="~/js/reportes.min.js"></script>
 }
