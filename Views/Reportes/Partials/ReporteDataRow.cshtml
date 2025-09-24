@@ -1,6 +1,9 @@
 ﻿@using System.Diagnostics
 @using eticket.Data
 @model eticket.ViewModels.ReporteDTO
+@{
+    var _urlName = Model.UsuarioGenero?.FullName.Replace(" ", "+");
+}
 <tr>
     <td>
         <div class="userDatatable-content">@Model.Folio</div>
@@ -15,16 +18,6 @@
     <td>
         <div class="userDatatable-content">
             @Model.Municipio
-        </div>
-    </td>
-    <td>
-        <div class="userDatatable-content">
-            @if(Model.UsuarioGenero != null)
-            {
-                var _urlName = Model.UsuarioGenero?.FullName.Replace(" ", "+");
-                <img src="https://ui-avatars.com/api/?color=333&amp;rounded=true&amp;name=@_urlName" alt="" class="rounded-circle" height="24" />
-                <span>@Model.UsuarioGenero?.FullName</span>
-            }
         </div>
     </td>
     <td>
@@ -71,10 +64,17 @@
         </div>
     </td>
     <td>
-        <div class="userDatatable-content d-inline-block">
-            <span class="bg-opacity-info color-success rounded-pill userDatatable-content-status active">
+        <div class="d-flex flex-column align-items-center gap-1">
+            <div class="bg-opacity-info color-success rounded-pill userDatatable-content-status active">
                 @Model.TipoEntradaDesc
-            </span>
+            </div>
+            @if(Model.UsuarioGenero != null)
+            {
+                <div class="d-flex align-items-center gap-1">
+                    <img src="https://ui-avatars.com/api/?color=28c344&background=d9f2ff&amp;rounded=true&amp;name=@_urlName" alt="" class="rounded-circle" height="20" />
+                    <span style="font-size:12px;">@Model.UsuarioGenero?.FullName</span>
+                </div>
+            }
         </div>
     </td>
     <td>
@@ -85,18 +85,17 @@
     </td>
     <td>
         <ul class="mb-0 d-flex gap-1 justify-content-start">
-            
-                <a asp-action="MostrarReporte" asp-route-folioReporteArg="@Model.Folio" class="btn btn-small btn-squared color-primary btn-outline-primary px-2 py-1">
-                    <i class="uil uil-eye"></i>
-                    <span style="font-size:10px">Mostrar</span>
-                </a>
+            <a asp-action="MostrarReporte" asp-route-folioReporteArg="@Model.Folio" class="btn btn-small btn-squared color-primary btn-outline-primary px-2 py-1">
+                <i class="uil uil-eye"></i>
+                <span style="font-size:10px">Mostrar</span>
+            </a>
 
-                @if(Model.TieneUbicacion)
-                {
-                    <button type="button" class="btn btn-small btn-squared color-secondary btn-outline-secondary pl-1 pe-1 pr-0 pw-0 py-1" onclick="mostrarMapa(@Model.GpsLat, @Model.GpsLon)">
-                        <i class="uil uil-map"></i>
-                    </button>
-                }
+            @if(Model.TieneUbicacion)
+            {
+                <button type="button" class="btn btn-small btn-squared color-secondary btn-outline-secondary pl-1 pe-1 pr-0 pw-0 py-1" onclick="mostrarMapa(@Model.GpsLat, @Model.GpsLon)">
+                    <i class="uil uil-map"></i>
+                </button>
+            }
         </ul>
     </td>
 </tr>
