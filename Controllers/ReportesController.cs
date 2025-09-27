@@ -34,26 +34,20 @@ namespace eticket.Controllers
 
 
         [HttpGet]
-        public IActionResult Index([FromQuery] int te = 0, int tr = 0, int e = 0, string q = "")
+        public IActionResult Index([FromQuery] ReportesFiltroViewModel filtros)
         {
             CargarCatalogos();
-            ViewBag.Filters = new
-            {
-                TipoEntrada = te,
-                TipoReporte = tr,
-                Estatus = e
-            };
+            ViewBag.Filters = filtros;
 
             // save the filters for used after
-            TempData["reportes-filter-tipoEntrada"] = te;
-            TempData["reportes-filter-tipoReporte"] = tr;
-            TempData["reportes-filter-estatus"] = e;
+            GuardarFiltrosEnTempData(filtros);
 
             // * retrive the data
             var reportes = this.reportService.ObtenerReportes(
-                tipoEntrada: te,
-                tipoReporte: tr,
-                estatusId: e
+                tipoEntrada: filtros.TipoEntrada,
+                tipoReporte: filtros.TipoReporte,
+                estatusId: filtros.Estatus,
+                oficina: filtros.Oficina
             );
 
             // * pass the googleMapSettings
@@ -71,7 +65,7 @@ namespace eticket.Controllers
 
             // * pass the googleMapSettings
             ViewBag.GoogleMapsSettings = this.googleMapsSettings;
-            
+
             return View();
         }
 
@@ -152,9 +146,9 @@ namespace eticket.Controllers
             }
 
             ConstruirUrlRegreso();
-            
+
             CargarCatalogos();
-            
+
             // * pass the googleMapSettings
             ViewBag.GoogleMapsSettings = this.googleMapsSettings;
 
@@ -514,6 +508,18 @@ namespace eticket.Controllers
                     Text = e.Descripcion
                 }).ToList();
             ViewBag.EstatusList = estatusList;
+
+            // * obtener catalogo de oficinas
+            var oficinas = this.ticketsDbContext.CatOficinas
+                .Where(e => e.Inactivo != true)
+                .OrderBy(e => e.Oficina)
+                .Select(ofi => new SelectListItem
+                {
+                    Text = ofi.Oficina,
+                    Value = ofi.Id.ToString()
+                })
+                .ToList();
+            ViewBag.OficinasList = oficinas;
         }
 
         private void ConstruirUrlRegreso()
@@ -529,12 +535,37 @@ namespace eticket.Controllers
                 }
             }
 
-            AddParam("te", "reportes-filter-tipoEntrada");
-            AddParam("tr", "reportes-filter-tipoReporte");
-            AddParam("e", "reportes-filter-estatus");
+            var filtros = RecuperarFiltrosDeTempData();
+            if (filtros != null)
+            {
+                AddParam("te", filtros.TipoEntrada.ToString());
+                AddParam("tr", filtros.TipoReporte.ToString());
+                AddParam("e", filtros.Estatus.ToString());
+                AddParam("o", filtros.Oficina.ToString());
+            }
 
             var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
             ViewBag.UrlBack = Url.Action("Index", "Reportes") + queryString;
+        }
+
+        /// <summary>
+        ///  Guarda el filtro en TempData serializado como JSON
+        /// </summary>
+        private void GuardarFiltrosEnTempData(ReportesFiltroViewModel filtros)
+        {
+            TempData["reportes-filters"] = System.Text.Json.JsonSerializer.Serialize(filtros);
+        }
+
+        /// <summary>
+        ///  Recupera el filtro desde TempData deserializando el JSON
+        /// </summary>
+        private ReportesFiltroViewModel? RecuperarFiltrosDeTempData()
+        {
+            var filtrosJson = TempData["reportes-filters"] as string;
+
+            return filtrosJson != null
+                    ? System.Text.Json.JsonSerializer.Deserialize<ReportesFiltroViewModel>(filtrosJson)
+                    : null;
         }
         #endregion
     }

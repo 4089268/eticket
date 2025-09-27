@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Reportes";
     string? googleMapsKey = ViewBag.GoogleMapsSettings.Key.ToString();
+    ReportesFiltroViewModel filtroViewModel = ViewBag.Filters;
 }
 
 <section class="col-12">
@@ -30,7 +31,7 @@
 <section id="table-fiter" class="mt-4 border rounded bg-white shadow-sm px-3">
     <div class="p-2 d-flex gap-2 global-shadow border-light-0 w-100 adv-table">
         <div class='form-group my-xl-2 my-1 me-2'>
-            <label class="d-flex align-items-center mb-sm-0 mb-2">Tipo de Entrada</label>
+            <label for="select-tipoentrada" class="d-flex align-items-center mb-sm-0 mb-2">Tipo de Entrada</label>
             <select id="select-tipoentrada" class="form-control ms-sm-10 ms-0">
                 <option value="0">TODOS</option>
                 @foreach(SelectListItem elem in ViewBag.TipoEntradaList)
@@ -39,8 +40,9 @@
                 }
             </select>
         </div>
+
         <div class='form-group align-items-center my-xl-2 my-1 me-2'>
-            <label class="d-flex mb-sm-0 mb-2">Tipo de Reporte</label>
+            <label for="select-tiporeporte" class="d-flex mb-sm-0 mb-2">Tipo de Reporte</label>
             <select id="select-tiporeporte" class="form-control ms-sm-10 ms-0">
                 <option value="0">TODOS</option>
                 @foreach(SelectListItem elem in ViewBag.TiposReporteList)
@@ -49,14 +51,29 @@
                 }
             </select>
         </div>
+
         <div class='form-group my-xl-2 my-1 me-2'>
-            <label class="d-flex align-items-center mb-sm-0 mb-2">Estatus</label>
+            <label for="select-status" class="d-flex align-items-center mb-sm-0 mb-2">Estatus</label>
             <select id="select-status" class="form-control ms-sm-10 ms-0">
                 <option value="0">TODOS</option>
                 @foreach(SelectListItem elem in ViewBag.EstatusList)
                 {
                     <option value="@elem.Value">@elem.Text</option>
                 }
+            </select>
+        </div>
+
+        <div class='form-group my-xl-2 my-1 me-2'>
+            <label for="select-oficina" class="d-flex align-items-center mb-sm-0 mb-2">Oficina</label>
+            <select id="select-oficina" class="form-control ms-sm-10 ms-0">
+                <option value="0">TODAS</option>
+                <option value="-1">SIN OFICINA</option>
+                <optgroup label="OFICINAS">
+                @foreach(SelectListItem elem in ViewBag.OficinasList)
+                {
+                    <option value="@elem.Value">@elem.Text</option>
+                }
+                </optgroup>
             </select>
         </div>
     </div>
@@ -158,8 +175,9 @@
     <script src="http://maps.googleapis.com/maps/api/js?key=@Html.Raw(googleMapsKey)&v=weekly&libraries=marker"></script>
     <script src="~/js/reportes-index.min.js"></script>
     <script>
-        var currentTipoEntrada = '@Html.Raw(ViewBag.Filters.TipoEntrada)';
-        var currentTipoReporte = '@Html.Raw(ViewBag.Filters.TipoReporte)';
-        var currentEstatus = '@Html.Raw(ViewBag.Filters.Estatus)';
+        var currentTipoEntrada = '@Html.Raw(filtroViewModel.TipoEntrada)';
+        var currentTipoReporte = '@Html.Raw(filtroViewModel.TipoReporte)';
+        var currentEstatus = '@Html.Raw(filtroViewModel.Estatus)';
+        var curtentOficina = '@Html.Raw(filtroViewModel.Oficina)';
     </script>
 }

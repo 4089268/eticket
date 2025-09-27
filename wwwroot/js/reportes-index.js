@@ -39,6 +39,14 @@ function initFilters()
 		filtroTablas.e = parseInt(event.target.value, 10);
 		debouncedFetchData();
 	});
+
+	let selectOficinas = document.getElementById("select-oficina");
+	selectOficinas.value = filtroTablas.o;
+	selectOficinas.addEventListener("change", function(event)
+	{
+		filtroTablas.o = parseInt(event.target.value, 10);
+		debouncedFetchData();
+	});
 }
 
 function mostrarMapa(lat, lon)
@@ -51,7 +59,8 @@ function mostrarMapa(lat, lon)
 var filtroTablas = {
 	te: undefined, // Tipo Entrada
 	tr: undefined, // Tipor Reporte
-	e: undefined // Estatus
+	e: undefined, // Estatus
+	o: undefined //Oficina
 };
 
 const debouncedFetchData = debounce(fetchData, 750);
@@ -150,6 +159,7 @@ jQuery(document).ready(function()
 	filtroTablas.te = currentTipoEntrada;
 	filtroTablas.tr = currentTipoReporte;
 	filtroTablas.e = currentEstatus;
+	filtroTablas.o = curtentOficina;
 
 	// Init filter selections
 	initFilters();

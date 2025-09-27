@@ -16,7 +16,7 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
     private readonly TicketsMediaDBContext mediaDBContext = mediaDBContext;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
 
-    public IEnumerable<ReporteDTO> ObtenerReportes(int tipoEntrada = 0, int tipoReporte = 0, int estatusId = 0)
+    public IEnumerable<ReporteDTO> ObtenerReportes(int tipoEntrada = 0, int tipoReporte = 0, int estatusId = 0, int oficina = 0)
     {
         // * retrive the data
         var reportesQuery = context.OprReportes
@@ -36,6 +36,15 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
         if (estatusId > 0)
         {
             reportesQuery = reportesQuery.Where(el => el.IdEstatus == estatusId);
+        }
+
+        if (oficina == -1)
+        {
+            reportesQuery = reportesQuery.Where(el => el.IdOficinaNavigation == null);
+        }
+        else if (oficina > 0)
+        {
+            reportesQuery = reportesQuery.Where(el => el.IdOficina == oficina);
         }
 
         var reportes = reportesQuery
@@ -106,11 +115,12 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
             .Include(e => e.IdEstatusNavigation)
             .Include(e => e.IdOperadorNavigation)
             .Include(e => e.IdTipoMovimientoNavigation)
-            .Select(e => new EntradaDTO {
+            .Select(e => new EntradaDTO
+            {
                 Id = e.Id,
                 Folio = e.Folio,
                 IdEstatus = e.IdEstatus,
-                Estatus = e.IdEstatusNavigation == null ? "" :e.IdEstatusNavigation.Descripcion,
+                Estatus = e.IdEstatusNavigation == null ? "" : e.IdEstatusNavigation.Descripcion,
                 IdOperador = e.IdOperador,
                 Operador = e.IdOperadorNavigation == null ? "" : e.IdOperadorNavigation.FullName,
                 Fecha = e.Fecha,
