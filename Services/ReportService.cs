@@ -1,6 +1,9 @@
 using System;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using eticket.Adapters;
 using eticket.Data;
 using eticket.Models;
@@ -86,8 +89,7 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
     /// <exception cref="InvalidOperationException">El reporte no existe</exception>
     public async Task<OprReporte> ObtenerReportePorFolio(long folio)
     {
-        var reporte = this.context.OprReportes
-            .FirstOrDefault(r => r.Folio == folio);
+        var reporte = this.context.OprReportes.FirstOrDefault(r => r.Folio == folio);
 
         if (reporte == null)
         {
@@ -100,6 +102,10 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
         reporte.IdReporteNavigation = this.context.CatReportes.FirstOrDefault(item => item.IdReporte == reporte.IdReporte);
         reporte.IdTipoentradaNavigation = this.context.CatTipoEntrada.FirstOrDefault(item => item.IdTipoentrada == reporte.IdTipoentrada);
         reporte.OprDetReportes = this.context.OprDetReportes.Where(dr => dr.Folio == reporte.Folio).ToList();
+        if (reporte.IdOficina != null)
+        {
+            reporte.IdOficinaNavigation = this.context.CatOficinas.Find(reporte.IdOficina);
+        }
 
         await Task.CompletedTask;
         return reporte;
@@ -206,9 +212,15 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
         // * check what are to be changed
         var modificacionEstatus = reporte.IdEstatus != reporteRequest.EstatusId;
         var modificacionGeneral = reporte.IdReporte != reporteRequest.TipoReporte;
+        var modificacionOficina = (reporte.IdOficina ?? 0) != reporteRequest.OficinaId;
+
+        if (modificacionOficina)
+        {
+            await AsignarOficina(folio, reporteRequest.OficinaId, reporteRequest.Comentarios);
+        }
 
         // * start transaction
-        using var transaction = await this.context.Database.BeginTransactionAsync();
+            using var transaction = await this.context.Database.BeginTransactionAsync();
         try
         {
             // * make a status record 
@@ -262,6 +274,80 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
             throw;
         }
     }
+
+    /// <summary>
+    ///  Asigna la oficina al reporte
+    /// </summary>
+    /// <param name="folio">Folio del reporte</param>
+    /// <param name="idOficina">Id de la oficina a asignar</param>
+    /// <param name="comentarios">Comentarios sobre la asignacion</param>
+    /// <returns></returns>
+    /// <exception cref="KeyNotFoundException">El reporte o la Oficina no existen</exception>
+    public async Task AsignarOficina(long folio, int idOficina, string? comentarios)
+    {
+        // recuperar reporte
+        var reporte = this.context.OprReportes.Include(e => e.IdOficinaNavigation).FirstOrDefault(e => e.Folio == folio);
+        if (reporte == null)
+        {
+            throw new KeyNotFoundException($"El reporte con folio {folio} no se encuentra registrado en el sistema.");
+        }
+
+        // recuperar oficina
+        var oficina = await this.context.CatOficinas.FindAsync(idOficina);
+        if (oficina == null)
+        {
+            throw new KeyNotFoundException($"La oficina con id {idOficina} no se encuentra registada en el sistema.");
+        }
+
+        var idOperadorActual = RetriveCurrentUserId();
+
+        using var transaction = await this.context.Database.BeginTransactionAsync();
+        try
+        {
+            var _oficinaAnterior = reporte.IdOficinaNavigation?.Oficina;
+            var _oficinaNueva = oficina.Oficina;
+
+            var observacionesBuilder = new StringBuilder();
+            if (string.IsNullOrEmpty(_oficinaAnterior))
+            {
+                observacionesBuilder.AppendFormat("<strong>Reporte asignado a la oficina '{0}'</strong>", _oficinaNueva);
+            }
+            else
+            {
+                observacionesBuilder.AppendFormat("<strong>Reporte paso de la oficina'{0}' a la oficina '{1}'</strong>", _oficinaAnterior, _oficinaNueva);
+            }
+
+            if (!string.IsNullOrEmpty(comentarios))
+            {
+                observacionesBuilder.Append(comentarios);
+            }
+
+            // actualizar la oficina del reporte
+            reporte.IdOficina = oficina.Id;
+            this.context.OprReportes.Update(reporte);
+            this.context.SaveChanges();
+
+            var oprEntrada = new OprDetReporte
+            {
+                Folio = reporte.Folio,
+                IdEstatus = (int)EstatusReporteEnum.ABIERTO,
+                IdOperador = idOperadorActual,
+                Fecha = DateTime.Now,
+                Observaciones = observacionesBuilder.ToString(),
+                IdTipoMovimiento = (int)TipoMovimientoEnum.Asignacion
+            };
+            this.context.OprDetReportes.Add(oprEntrada);
+            this.context.SaveChanges();
+
+            await transaction.CommitAsync();
+        }
+        catch (System.Exception ex)
+        {
+            this.logger.LogError(ex, "Error al asignar la oficina al reporte: {message}", ex.Message);
+            throw;
+        }
+    }
+
 
     private int RetriveCurrentUserId()
     {

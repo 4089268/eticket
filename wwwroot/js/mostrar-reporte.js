@@ -3,13 +3,16 @@ let modalDocumento = undefined;
 var modificacionReporte = {
     selectTipoReporte: undefined,
     selectEstatus: undefined,
+    selectOficina: undefined,
     buttonSave:undefined,
     buttonDiscard: undefined,
     currentEstatus: undefined,
     currentTipoReporte: undefined,
+    currentOficina: undefined,
     showSaveChangesButton: false,
     _newEstatus: undefined,
     _newTipoReporte: undefined,
+    _newOficina: undefined,
     set newEstatus(value) {
         this._newEstatus = value;
         this.checkChanges();
@@ -24,11 +27,19 @@ var modificacionReporte = {
     get newTipoReporte(){
         return this._newTipoReporte;
     },
+    set newOficina(value) {
+        this._newOficina = value;
+        this.checkChanges();
+    },
+    get newOficina(){
+        return this._newOficina;
+    },
     load: ()=> {
         modificacionReporte.currentEstatus = _currentEstatus;
         modificacionReporte.currentTipoReporte = _currentTipoReporte;
         modificacionReporte._newEstatus = _currentEstatus;
         modificacionReporte._newTipoReporte = _currentTipoReporte;
+        modificacionReporte._newOficina = (_currentOficina) ? _currentOficina : 0;
 
         modificacionReporte.buttonSave = document.getElementById('button-save-changes');
         modificacionReporte.buttonSave.addEventListener('click', function(event){
@@ -60,9 +71,22 @@ var modificacionReporte = {
                 modificacionReporte.newEstatus = selectedValue;
             }
         });
+        
+        modificacionReporte.selectOficina = document.getElementById('select-oficinas');
+        modificacionReporte.selectOficina.value = modificacionReporte.newOficina;
+        modificacionReporte.selectOficina.addEventListener('change', function(event) {
+            const selectedValue = event.target.value;
+            if (selectedValue !== modificacionReporte.newOficina)
+            {
+                modificacionReporte.newOficina = selectedValue;
+            }
+        });
     },
     checkChanges: ()=>{
-        if(modificacionReporte.currentEstatus != modificacionReporte._newEstatus || modificacionReporte.currentTipoReporte != modificacionReporte._newTipoReporte)
+        if( modificacionReporte.currentEstatus != modificacionReporte._newEstatus ||
+            modificacionReporte.currentTipoReporte != modificacionReporte._newTipoReporte ||
+            modificacionReporte.currentOficina != modificacionReporte._newOficina
+        )
         {
             modificacionReporte.showSaveChangesButton = true;
             modificacionReporte.buttonDiscard.classList.remove("d-none");
@@ -85,7 +109,8 @@ var modificacionReporte = {
     saveChanges: ()=>{
         const data = {
             EstatusId: modificacionReporte.newEstatus,
-            TipoReporte: modificacionReporte.newTipoReporte
+            TipoReporte: modificacionReporte.newTipoReporte,
+            OficinaId: modificacionReporte.newOficina
         };
 
         $.ajax({

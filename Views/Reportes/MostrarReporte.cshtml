@@ -273,6 +273,7 @@
         var _lon = @Html.Raw(Model.Reporte?.GpsLon);
         var _currentEstatus = '@Html.Raw(Model.Reporte!.IdEstatus)';
         var _currentTipoReporte = '@Html.Raw(Model.Reporte.IdReporte)';
+        var _currentOficina = '@Html.Raw(Model.Reporte.IdOficina)';
         var _urlFormularioDetEntrada = '@Url.Action("FormularioNuevoDetReporte")';
         var folioReporte = '@Html.Raw(Model.Reporte!.Folio)';
     </script>

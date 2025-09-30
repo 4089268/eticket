@@ -55,6 +55,28 @@
                 </div>
             }
         </div>
+
+        <div class="ml-auto ms-auto" style="width: 14rem;">
+            <label for="select-oficinas" class="fw-bolder">Oficina Asignada</label>
+            @if(allowEdition)
+            {
+                <div class="dm-select border-secondary">
+                    <select id="select-oficinas" class="form-control">
+                        <option value="0">SIN OFICINA</option>
+                        @foreach(var ele in ViewBag.OficinasList)
+                        {
+                            <option value="@ele.Value">@ele.Text</option>
+                        }
+                    </select>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex align-items-center">
+                    <div class="mx-1 text-uppercase">@(Model.Reporte.IdOficinaNavigation?.Oficina ?? "Sin Oficina")</div>
+                </div>
+            }
+        </div>
     </div>
     
     <div class="row p-2 my-1">

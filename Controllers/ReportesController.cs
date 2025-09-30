@@ -137,12 +137,10 @@ namespace eticket.Controllers
         [HttpGet("{folioReporteArg}")]
         public async Task<IActionResult> MostrarReporte([FromRoute] string folioReporteArg)
         {
-            var folioReporte = long.TryParse(folioReporteArg, out long f) ? f : -1;
-            if (folioReporte == -1)
+            var folioReporte = this.ProcesarFolioArgs(folioReporteArg, out IActionResult? actionResult);
+            if (actionResult != null)
             {
-                ViewBag.ErrorTitle = "Folio invalido";
-                ViewBag.ErrorMessage = "El formato del folio no es valido";
-                return View("NotFound");
+                return actionResult;
             }
 
             ConstruirUrlRegreso();
@@ -178,12 +176,10 @@ namespace eticket.Controllers
         [HttpPost("{folioReporteArg}/entrada")]
         public async Task<IActionResult> AlmacenarEntradaReporte([FromRoute] string folioReporteArg, [FromForm] DetReporteRequest request)
         {
-            var folioReporte = long.TryParse(folioReporteArg, out long f) ? f : -1;
-            if (folioReporte == -1)
+            var folioReporte = this.ProcesarFolioArgs(folioReporteArg, out IActionResult? actionResult);
+            if (actionResult != null)
             {
-                ViewBag.ErrorTitle = "Folio invalido";
-                ViewBag.ErrorMessage = "El formato del folio no es valido";
-                return View("NotFound");
+                return actionResult;
             }
 
             try
@@ -299,8 +295,8 @@ namespace eticket.Controllers
         [HttpPatch("/api/reportes/{folioReporteArg}")]
         public async Task<IActionResult> ActualizarReporte([FromRoute] string folioReporteArg, ActualizarReporteRequest request)
         {
-            var folioReporte = long.TryParse(folioReporteArg, out long f) ? f : -1;
-            if (folioReporte == -1)
+            var folioReporte = this.ProcesarFolioArgs(folioReporteArg, out IActionResult? actionResult);
+            if (actionResult != null)
             {
                 this.logger.LogWarning("Error al actualizar el reporte, el formato del folio no es valido");
                 return BadRequest(new
@@ -329,6 +325,44 @@ namespace eticket.Controllers
             }
         }
 
+        [HttpPost("{folioReporteArg}/asignar-oficina")]
+        public async Task<IActionResult> AsignarOficina([FromRoute] string folioReporteArg, [FromForm] int idOficina, [FromForm] string comentarios)
+        {
+            var folioReporte = this.ProcesarFolioArgs(folioReporteArg, out IActionResult? actionResult);
+            if (actionResult != null)
+            {
+                this.logger.LogWarning("Error a asignar oficina al reporte, el formato del folio no es valido.");
+                return BadRequest(new
+                {
+                    Title = "El formato del folio no es valido"
+                });
+            }
+
+            try
+            {
+                await this.reportService.AsignarOficina(folioReporte, idOficina, comentarios);
+                return Ok(new
+                {
+                    Title = $"Oficina asignada al reporte '{folioReporte}'"
+                });
+            }
+            catch (KeyNotFoundException kex)
+            {
+                return BadRequest(new
+                {
+                    Title = "Error al asignar la oficina al reporte",
+                    kex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return Conflict(new
+                {
+                    Title = "Error al asignar la oficina al reporte",
+                    ex.Message
+                });
+            }
+        }
 
         #region PartialViews
         [HttpGet("partial-view/menu")]
@@ -567,6 +601,21 @@ namespace eticket.Controllers
                     ? System.Text.Json.JsonSerializer.Deserialize<ReportesFiltroViewModel>(filtrosJson)
                     : null;
         }
+
+        private long ProcesarFolioArgs(string folioArgs, out IActionResult? actionResult)
+        {
+            actionResult = null;
+
+            var folioReporte = long.TryParse(folioArgs, out long f) ? f : -1;
+            if (folioReporte == -1)
+            {
+                ViewBag.ErrorTitle = "Folio invalido";
+                ViewBag.ErrorMessage = "El formato del folio no es valido";
+                actionResult = View("NotFound");
+            }
+            return folioReporte;
+        }
+
         #endregion
     }
 }
