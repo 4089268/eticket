@@ -37,10 +37,12 @@ var modificacionReporte = {
     load: ()=> {
         modificacionReporte.currentEstatus = _currentEstatus;
         modificacionReporte.currentTipoReporte = _currentTipoReporte;
+        modificacionReporte.currentOficina = (_currentOficina) ? _currentOficina : 0;
         modificacionReporte._newEstatus = _currentEstatus;
         modificacionReporte._newTipoReporte = _currentTipoReporte;
         modificacionReporte._newOficina = (_currentOficina) ? _currentOficina : 0;
 
+        // configure buttons
         modificacionReporte.buttonSave = document.getElementById('button-save-changes');
         modificacionReporte.buttonSave.addEventListener('click', function(event){
             modificacionReporte.saveChanges();
@@ -51,36 +53,43 @@ var modificacionReporte = {
             modificacionReporte.discardChanges();
         })
 
-        
-        modificacionReporte.selectTipoReporte = document.getElementById('select-tiporeporte');
-        modificacionReporte.selectTipoReporte.value = modificacionReporte.newTipoReporte;
-        modificacionReporte.selectTipoReporte.addEventListener('change', function(event) {
-            const selectedValue = event.target.value;
-            if (selectedValue !== modificacionReporte.newTipoReporte)
-            {
-                modificacionReporte.newTipoReporte = selectedValue;
-            }
-        });
 
-        modificacionReporte.selectEstatus = document.getElementById('select-estatus');
-        modificacionReporte.selectEstatus.value = modificacionReporte.newEstatus;
-        modificacionReporte.selectEstatus.addEventListener('change', function(event) {
-            const selectedValue = event.target.value;
-            if (selectedValue !== modificacionReporte.newEstatus)
-            {
-                modificacionReporte.newEstatus = selectedValue;
-            }
-        });
-        
-        modificacionReporte.selectOficina = document.getElementById('select-oficinas');
-        modificacionReporte.selectOficina.value = modificacionReporte.newOficina;
-        modificacionReporte.selectOficina.addEventListener('change', function(event) {
-            const selectedValue = event.target.value;
-            if (selectedValue !== modificacionReporte.newOficina)
-            {
-                modificacionReporte.newOficina = selectedValue;
-            }
-        });
+        // configure select inputs
+        modificacionReporte.selectTipoReporte = $('#select-tiporeporte')
+            .select2()
+            .val(modificacionReporte.newTipoReporte)
+            .trigger('change')
+            .on('select2:select', function (e) {
+                var selectedValue = e.params.data.id;
+                if (selectedValue !== modificacionReporte.newTipoReporte)
+                {
+                    modificacionReporte.newTipoReporte = selectedValue;
+                }
+            });
+
+        modificacionReporte.selectEstatus = $('#select-estatus')
+            .select2()
+            .val(modificacionReporte.newEstatus)
+            .trigger('change')
+            .on('select2:select', function (e) {
+                var selectedValue = e.params.data.id;
+                if (selectedValue !== modificacionReporte.newEstatus)
+                {
+                    modificacionReporte.newEstatus = selectedValue;
+                }
+            });
+
+        modificacionReporte.selectOficina = $('#select-oficinas')
+            .select2()
+            .val(modificacionReporte.newOficina)
+            .trigger('change')
+            .on('select2:select', function (e) {
+                var selectedValue = e.params.data.id;
+                if (selectedValue !== modificacionReporte.newOficina)
+                {
+                    modificacionReporte.newOficina = selectedValue;
+                }
+            });
     },
     checkChanges: ()=>{
         if( modificacionReporte.currentEstatus != modificacionReporte._newEstatus ||
@@ -102,8 +111,12 @@ var modificacionReporte = {
     discardChanges: ()=>{
         modificacionReporte._newEstatus = modificacionReporte.currentEstatus;
         modificacionReporte._newTipoReporte = modificacionReporte.currentTipoReporte;
-        modificacionReporte.selectEstatus.value = modificacionReporte._newEstatus;
-        modificacionReporte.selectTipoReporte.value = modificacionReporte._newTipoReporte;
+        modificacionReporte._newOficina = modificacionReporte.currentOficina;
+
+        modificacionReporte.selectEstatus.val(modificacionReporte._newEstatus).trigger('change');
+        modificacionReporte.selectTipoReporte.val(modificacionReporte._newTipoReporte).trigger('change');
+        modificacionReporte.selectOficina.val(modificacionReporte.currentOficina).trigger('change');
+
         modificacionReporte.checkChanges();
     },
     saveChanges: ()=>{
