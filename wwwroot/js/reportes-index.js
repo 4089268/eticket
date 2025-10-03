@@ -139,7 +139,7 @@ jQuery(document).ready(function()
 
 	$('table.reportes-table').DataTable({
 		paging: true,
-		ordering: true,
+		ordering: false,
 		scrollX: true,
 		scrollY: 420,
 		fixedColumns: {
