@@ -344,15 +344,10 @@ function eliminarReporte()
 {
     const url = `/reportes/${folioReporte}/eliminar`;
     const method = 'DELETE';
-    const form = $(event.target);
-
-    // clear errors messags
-    $("span.text-danger").text("");
 
     $.ajax({
         url: url,
         type: method,
-        data: form.serialize(),
         success: function(response)
         {
             Swal.fire({
@@ -388,8 +383,8 @@ jQuery(document).ready(function()
     {
         modalDocumento = new bootstrap.Modal(document.getElementById("documento-adjunto-modal"));
     }
-
-    document.getElementById("button-delete")?.addEventListener("click", eliminarReporteButonClick);
+    
+    document.getElementById("button-delete").addEventListener("click", eliminarReporteButonClick);
 
     cargarFormularioEntrada();
     
