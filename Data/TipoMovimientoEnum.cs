@@ -6,5 +6,6 @@ public enum TipoMovimientoEnum
     Usuario = 2,
     CambioDeEstatus = 3,
     Asignacion = 4,
-    Edicion = 5
+    Edicion = 5,
+    Eliminacion = 6,
 }

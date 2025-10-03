@@ -363,6 +363,46 @@ namespace eticket.Controllers
             }
         }
 
+        [HttpDelete("{folioReporteArg}/eliminar")]
+        public async Task<IActionResult> EliminarReporte([FromRoute] string folioReporteArg)
+        {
+            var folioReporte = this.ProcesarFolioArgs(folioReporteArg, out IActionResult? actionResult);
+            if (actionResult != null)
+            {
+                this.logger.LogWarning("Error a eliminar el reporte, el formato del folio no es valido.");
+                return BadRequest(new
+                {
+                    Title = "El formato del folio no es valido"
+                });
+            }
+
+            try
+            {
+                await this.reportService.EliminarReporte(folioReporte);
+                return Ok(new
+                {
+                    Title = "Reporte eliminado con exito"
+                });
+            }
+            catch (KeyNotFoundException knfex)
+            {
+                return Conflict(new
+                {
+                    Title = "El reporte que se desea eliminar no existe o no está disponible.",
+                    Message = knfex.Message
+                });
+            }
+            catch (System.Exception ex)
+            {
+                this.logger.LogError(ex, "Error al eliminar el reporte: {message}", ex.Message);
+                return Conflict(new
+                {
+                    Title = "Error no controlado al eliminar el reporte.",
+                    Message = ex.Message
+                });
+            }
+        }
+
         #region PartialViews
         [HttpGet("partial-view/menu")]
         public IActionResult NuevoReporteMenuPartialView()
@@ -616,5 +656,6 @@ namespace eticket.Controllers
         }
 
         #endregion
+
     }
 }

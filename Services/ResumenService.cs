@@ -15,6 +15,7 @@ public class ResumenService(ILogger<ResumenService> logger, TicketsDBContext dbC
     {
         // * get the data
         var reportesRaw = this.dbContext.OprReportes
+            .Where(el => el.FechaEliminacion == null)
             .GroupJoin(
                 dbContext.OprDetReportes,
                 repo => repo.Folio,
@@ -72,6 +73,7 @@ public class ResumenService(ILogger<ResumenService> logger, TicketsDBContext dbC
     public IEnumerable<ReporteResumenTipoReporteDTO> ObtenerResumenPorTipoReporte()
     {
         var reportesRaw = this.dbContext.OprReportes
+            .Where(el => el.FechaEliminacion == null)
             .GroupJoin(
                 dbContext.OprDetReportes,
                 repo => repo.Folio,
@@ -130,6 +132,7 @@ public class ResumenService(ILogger<ResumenService> logger, TicketsDBContext dbC
     public IEnumerable<dynamic> ObtenerResumenPorDias(DateTime fecha1, DateTime fecha2)
     {
         var reportes = this.dbContext.OprReportes
+            .Where(el => el.FechaEliminacion == null)
             .Where(rep => rep.FechaRegistro >= fecha1 && rep.FechaRegistro <= fecha2)
             .GroupJoin(
                 dbContext.OprDetReportes,

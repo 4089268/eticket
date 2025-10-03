@@ -50,17 +50,21 @@
     <div class="support-details">
         <div class="fluid-container">
             <div class="row g-2">
-                <div class="col-12">
-                    <div class="p-2 border rounded bg-white d-flex gap-2 align-items-center justify-content-start">
-                        <button id="button-save-changes" class="btn px-15 btn-success d-none">
-                            <i class="las la-save"></i>
-                            <span>Guardar Cambios</span>
-                        </button>
-                        <button id="button-discard-changes" class="btn px-15 btn-info d-none">
-                            <i class="las la-undo-alt"></i>
-                            <span>Cancelar Cambios</span>
-                        </button>
-                    </div>
+
+                <div class="col-12 p-2 border rounded bg-white d-flex gap-2 align-items-center justify-content-start">
+                    <button id="button-save-changes" class="btn px-15 btn-success d-none">
+                        <i class="las la-save"></i>
+                        <span>Guardar Cambios</span>
+                    </button>
+                    <button id="button-discard-changes" class="btn px-15 btn-info d-none">
+                        <i class="las la-undo-alt"></i>
+                        <span>Cancelar Cambios</span>
+                    </button>
+
+                    <button id="button-delete" class="btn px-15 btn-danger ml-auto ms-auto">
+                        <i class="las la-trash-alt"></i>
+                        <span>Eliminar Reporte</span>
+                    </button>
                 </div>
 
                 <div class="col-12">
@@ -124,6 +128,10 @@
                                                 
                                                 case (int) TipoMovimientoEnum.Edicion:
                                                     <i class="las la-pen bg-info text-white rounded-circle p-1" style="font-size:1.5rem;"></i>
+                                                    break;
+
+                                                case (int) TipoMovimientoEnum.Eliminacion:
+                                                    <i class="las la-trash-alt bg-info text-white rounded-circle p-1" style="font-size:1.5rem;"></i>
                                                     break;
                                                 
                                                 default:

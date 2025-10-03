@@ -19,10 +19,16 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
     private readonly TicketsMediaDBContext mediaDBContext = mediaDBContext;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
 
-    public IEnumerable<ReporteDTO> ObtenerReportes(int tipoEntrada = 0, int tipoReporte = 0, int estatusId = 0, int oficina = 0)
+    public IEnumerable<ReporteDTO> ObtenerReportes(int tipoEntrada = 0, int tipoReporte = 0, int estatusId = 0, int oficina = 0, bool incluirEliminados = false)
     {
+        var reportesQuery = this.context.OprReportes.AsQueryable();
+        if (!incluirEliminados)
+        {
+            reportesQuery = reportesQuery.Where(r => r.FechaEliminacion == null);
+        }
+
         // * retrive the data
-        var reportesQuery = context.OprReportes
+        reportesQuery = reportesQuery
             .OrderByDescending(r => r.FechaRegistro)
             .AsQueryable();
 
@@ -87,10 +93,15 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
     /// <param name="folio"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">El reporte no existe</exception>
-    public async Task<OprReporte> ObtenerReportePorFolio(long folio)
+    public async Task<OprReporte> ObtenerReportePorFolio(long folio, bool incluirEliminados = false)
     {
-        var reporte = this.context.OprReportes.FirstOrDefault(r => r.Folio == folio);
+        var query = this.context.OprReportes.AsQueryable();
+        if (!incluirEliminados)
+        {
+            query = query.Where(r => r.FechaEliminacion == null);
+        }
 
+        OprReporte? reporte = query.FirstOrDefault(r => r.Folio == folio);
         if (reporte == null)
         {
             throw new InvalidOperationException($"No se encontro reporte con folio: {folio}.");
@@ -171,23 +182,26 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
 
     public async Task<OprDetReporte> AlmacenarEntradaReporte(DetReporteRequest detReportRequest)
     {
-        // * validar folio existe
-        var _ = this.context.OprReportes.FirstOrDefault(r => r.Folio == detReportRequest.Folio)
-            ?? throw new InvalidOperationException($"No se encontro reporte con folio: {detReportRequest.Folio}.");
+        // recuperar reporte
+        var reporte = this.context.OprReportes.Where(e => e.FechaEliminacion == null).FirstOrDefault(e => e.Folio == detReportRequest.Folio);
+        if (reporte == null)
+        {
+            throw new KeyNotFoundException($"El reporte con folio {detReportRequest.Folio} no se encuentra registrado en el sistema.");
+        }
 
-        var reporte = this.context.OprDetReportes.Add(detReportRequest.ToEntity());
+        var detReporte = this.context.OprDetReportes.Add(detReportRequest.ToEntity());
         await this.context.SaveChangesAsync();
 
-        return reporte.Entity;
+        return detReporte.Entity;
     }
 
     public async Task ActualizarReporte(long folio, ActualizarReporteRequest reporteRequest)
     {
-        // * attempt to retrive the reporte by folio
-        var reporte = this.context.OprReportes.FirstOrDefault(rep => rep.Folio == folio);
+        // recuperar reporte
+        var reporte = this.context.OprReportes.Where(e => e.FechaEliminacion == null).FirstOrDefault(e => e.Folio == folio);
         if (reporte == null)
         {
-            throw new KeyNotFoundException($"El reporte con folio {folio} no se encuentra registrado");
+            throw new KeyNotFoundException($"El reporte con folio {folio} no se encuentra registrado en el sistema.");
         }
 
         // * retrive the current userId
@@ -270,7 +284,7 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
     public async Task AsignarOficina(long folio, int idOficina, string? comentarios)
     {
         // recuperar reporte
-        var reporte = this.context.OprReportes.Include(e => e.IdOficinaNavigation).FirstOrDefault(e => e.Folio == folio);
+        var reporte = this.context.OprReportes.Include(e => e.IdOficinaNavigation).Where(e => e.FechaEliminacion == null).FirstOrDefault(e => e.Folio == folio);
         if (reporte == null)
         {
             throw new KeyNotFoundException($"El reporte con folio {folio} no se encuentra registrado en el sistema.");
@@ -331,7 +345,54 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
             throw;
         }
     }
+    
+    /// <summary>
+    ///  Eliminar el reporte
+    /// </summary>
+    /// <param name="folio"></param>
+    /// <returns></returns>
+    /// <exception cref="KeyNotFoundException">El reporte no existen</exception>
+    public async Task EliminarReporte(long folio)
+    {
+        // recuperar reporte
+        var reporte = this.context.OprReportes.Include(e => e.IdOficinaNavigation).Where(e => e.FechaEliminacion == null).FirstOrDefault(e => e.Folio == folio);
+        if (reporte == null)
+        {
+            throw new KeyNotFoundException($"El reporte con folio {folio} no se encuentra registrado en el sistema.");
+        }
 
+        // recuperar operador actual
+        var idOperadorActual = RetriveCurrentUserId();
+
+        using var transaction = await this.context.Database.BeginTransactionAsync();
+        try
+        {
+            // markar reporte como eliminado
+            reporte.FechaEliminacion = DateTime.Now;
+            this.context.OprReportes.Update(reporte);
+            this.context.SaveChanges();
+
+            // agregar registro de eliminacion
+            var oprEntrada = new OprDetReporte
+            {
+                Folio = reporte.Folio,
+                IdEstatus = (int)EstatusReporteEnum.ABIERTO,
+                IdOperador = idOperadorActual,
+                Fecha = DateTime.Now,
+                Observaciones = "El reporte se marcó como eliminado.",
+                IdTipoMovimiento = (int)TipoMovimientoEnum.Eliminacion
+            };
+            this.context.OprDetReportes.Add(oprEntrada);
+            this.context.SaveChanges();
+
+            await transaction.CommitAsync();
+        }
+        catch (System.Exception ex)
+        {
+            this.logger.LogError(ex, "Error al asignar la oficina al reporte: {message}", ex.Message);
+            throw;
+        }
+    }
 
     private int RetriveCurrentUserId()
     {

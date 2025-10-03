@@ -308,12 +308,88 @@ function mostrarDocumento(event, nombre, urlArchivo)
     $iframe.attr("src", urlArchivo);
 }
 
+function eliminarReporteButonClick(event)
+{
+    Swal.fire({
+        title: "Confirmar eliminación",
+        text: `Para eliminar escribe el folio del reporte: "${folioReporte}". \nEsta accion no se podrás revertir.`,
+        icon: "warning",
+        input: "text",
+        inputPlaceholder: "Escribe el folio del reporte",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Eliminar",
+        cancelButtonText: "Cancelar",
+        inputValidator: (value) => {
+            if (!value)
+            {
+                return "Debes escribir algo";
+            }
+            if (value !== folioReporte)
+            {
+                return "El folio del reporte no coincide";
+            }
+            return null;
+        }
+    }).then((result) => {
+        if (result.isConfirmed)
+        {
+            eliminarReporte();
+        }
+    });
+}
+
+function eliminarReporte()
+{
+    const url = `/reportes/${folioReporte}/eliminar`;
+    const method = 'DELETE';
+    const form = $(event.target);
+
+    // clear errors messags
+    $("span.text-danger").text("");
+
+    $.ajax({
+        url: url,
+        type: method,
+        data: form.serialize(),
+        success: function(response)
+        {
+            Swal.fire({
+                title: response.title,
+                icon: "success",
+                confirmButtonText: 'Aceptar'
+            }).then((result) => {
+                window.location.href = "/reportes";
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr, error);
+            let titleMessage = "Error no controlado al eliminar el reporte";
+            if(xhr.responseJSON)
+            {
+                const { title } = xhr.responseJSON;
+                if(title)
+                {
+                    titleMessage = title;
+                }
+            }
+            Swal.fire({
+                title: titleMessage,
+                icon: "error"
+            });
+        }
+    });
+}
+
 jQuery(document).ready(function()
 {
     if (document.getElementsByClassName("documento-adjunto-modal").length)
     {
         modalDocumento = new bootstrap.Modal(document.getElementById("documento-adjunto-modal"));
     }
+
+    document.getElementById("button-delete")?.addEventListener("click", eliminarReporteButonClick);
 
     cargarFormularioEntrada();
     
