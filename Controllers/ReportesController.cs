@@ -91,12 +91,11 @@ namespace eticket.Controllers
             request.IdGenero = ObtenerOperadorId();
 
             long folioReporte = 0;
-            long folioDetReporte = 0;
             // * almacenar el reporte
             try
             {
                 // * almacenar reporte
-                (folioReporte, folioDetReporte) = await this.reportService.AlmacenarReporteInicial(request);
+                folioReporte = await this.reportService.AlmacenarReporteInicial(request);
             }
             catch (System.Exception e)
             {
@@ -116,7 +115,7 @@ namespace eticket.Controllers
                 {
                     try
                     {
-                        var documentoId = await documentosService.AlmacenarDocumento(fileMetadata, folioReporte, folioDetReporte, request.IdGenero);
+                        var documentoId = await documentosService.AlmacenarDocumento(fileMetadata, folioReporte, 0, request.IdGenero);
                         _documentosAlmacenados.Add(documentoId);
                     }
                     catch (Exception ex)

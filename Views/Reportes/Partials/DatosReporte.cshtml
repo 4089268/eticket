@@ -157,5 +157,16 @@
                 <div class="mx-1">@(!string.IsNullOrEmpty(Model.Reporte.EntreCalles) ? Model.Reporte.EntreCalles : "*No registrado")</div>
             </div>
         </div>
+
+        @if(!string.IsNullOrEmpty(Model.Reporte.Comentario))
+        {
+            <div class="col-12 mb-2">
+                <span class="fw-bolder">Comentario Inicial:</span>
+                <div class="d-flex align-items-center p-2 border rounded-3 bg-lighter">
+                    <div class="mx-1">@Model.Reporte.Comentario</div>
+                </div>
+            </div>
+        }
+
     </div>
 </div>

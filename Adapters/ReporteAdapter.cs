@@ -25,7 +25,8 @@ public static class ReporteAdapter
             IdTipoentrada = request.IdTipoEntrada,
             IdReporte = request.IdTipoReporte,
             FechaRegistro = DateTime.Now,
-            IdGenero = request.IdGenero
+            IdGenero = request.IdGenero,
+            Comentario = request.Observaciones
         };
     }
 

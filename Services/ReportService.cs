@@ -150,38 +150,22 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
     /// </summary>
     /// <param name="reporteRequest"></param>
     /// <returns>folio del reporte</returns>
-    public async Task<(long, long)> AlmacenarReporteInicial(ReporteRequest reporteRequest)
+    public async Task<long> AlmacenarReporteInicial(ReporteRequest reporteRequest)
     {
         var reporte = reporteRequest.ToEntity();
         reporte.FechaRegistro = DateTime.Now;
 
-        using (var transaction = await this.context.Database.BeginTransactionAsync())
+        try
         {
-            try
-            {
-                this.context.OprReportes.Add(reporte);
-                await this.context.SaveChangesAsync();
-
-                var initialDetail = new OprDetReporte
-                {
-                    Folio = reporte.Folio,
-                    IdEstatus = reporte.IdEstatus!.Value,
-                    IdOperador = reporte.IdGenero!.Value,
-                    Fecha = DateTime.Now,
-                    Observaciones = reporteRequest.Observaciones
-                };
-                this.context.OprDetReportes.Add(initialDetail);
-                await this.context.SaveChangesAsync();
-                await transaction.CommitAsync();
-                logger.LogInformation("Nuevo reporte creado con folio: {folio}", reporte.Folio);
-                return (reporte.Folio, initialDetail.Id);
-            }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync();
-                logger.LogError(ex, "Error storing initial report");
-                throw;
-            }
+            this.context.OprReportes.Add(reporte);
+            await this.context.SaveChangesAsync();
+            logger.LogInformation("Nuevo reporte creado con folio: {folio}", reporte.Folio);
+            return reporte.Folio;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error storing initial report");
+            throw;
         }
     }
 
