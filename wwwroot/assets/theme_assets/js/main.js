@@ -159,7 +159,7 @@
     $('.overlay-dark-sidebar').toggleClass('show');
     document.querySelector(".sidebar").classList.toggle("collapsed");
     document.querySelector(".contents").classList.toggle("expanded");
-    document.querySelector(".footer-wrapper").classList.toggle("expanded");
+    // document.querySelector(".footer-wrapper").classList.toggle("expanded");
   }
   if (sidebarToggle) {
     sidebarToggle.addEventListener("click", sidebarCollapse);
