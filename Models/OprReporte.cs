@@ -41,6 +41,10 @@ public partial class OprReporte
 
     public int? IdOficina { get; set; }
 
+    public string? Comentario { get; set; }
+
+    public DateTime? FechaEliminacion { get; set; }
+
     public virtual CatEstatus? IdEstatusNavigation { get; set; }
 
     public virtual SysUsuario? IdGeneroNavigation { get; set; }

@@ -192,6 +192,9 @@ public partial class TicketsDBContext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValue("")
                 .HasColumnName("colonia");
+            entity.Property(e => e.Comentario)
+                .IsUnicode(false)
+                .HasColumnName("comentario");
             entity.Property(e => e.Correo)
                 .HasMaxLength(65)
                 .IsUnicode(false)
@@ -202,6 +205,7 @@ public partial class TicketsDBContext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValue("")
                 .HasColumnName("entre_calles");
+            entity.Property(e => e.FechaEliminacion).HasColumnName("fecha_eliminacion");
             entity.Property(e => e.FechaRegistro)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
