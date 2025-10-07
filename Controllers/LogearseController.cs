@@ -20,6 +20,7 @@ namespace eticket.Controllers
         [HttpPost("/logearse")]
         public async Task<IActionResult> Logearse(string usuario, string contraseña)
         {
+            // TODO: Mover la logica al un servicio
             var user = context.SysUsuarios.FirstOrDefault(u => u.Usuario == usuario && u.Activo == true);
             
             if (user != null && BCrypt.Net.BCrypt.Verify(contraseña, user.Contraseña))
@@ -35,6 +36,7 @@ namespace eticket.Controllers
                     new(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
                     new(ClaimTypes.Name, user.Usuario),
                     new(ClaimTypes.Role, user.Rol ?? "Usuario"),
+                    new(CustomClaimTypes.NivelUsuario, $"{user.IdNivel ?? 0}")
                 };
 
                 var claimIdentity = new ClaimsIdentity(claims, "NerusTicketCookieAuth");

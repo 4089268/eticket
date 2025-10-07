@@ -22,6 +22,9 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
     public IEnumerable<ReporteDTO> ObtenerReportes(int tipoEntrada = 0, int tipoReporte = 0, int estatusId = 0, int oficina = 0, bool incluirEliminados = false)
     {
         var reportesQuery = this.context.OprReportes.AsQueryable();
+
+        FiltrarReportePorNivelUsuario(ref reportesQuery);
+
         if (!incluirEliminados)
         {
             reportesQuery = reportesQuery.Where(r => r.FechaEliminacion == null);
@@ -96,6 +99,9 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
     public async Task<OprReporte> ObtenerReportePorFolio(long folio, bool incluirEliminados = false)
     {
         var query = this.context.OprReportes.AsQueryable();
+
+        FiltrarReportePorNivelUsuario(ref query);
+
         if (!incluirEliminados)
         {
             query = query.Where(r => r.FechaEliminacion == null);
@@ -182,8 +188,12 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
 
     public async Task<OprDetReporte> AlmacenarEntradaReporte(DetReporteRequest detReportRequest)
     {
+        // Filtrar reportes
+        var reportesQuery = this.context.OprReportes.Where(e => e.FechaEliminacion == null).AsQueryable();
+        FiltrarReportePorNivelUsuario(ref reportesQuery);
+
         // recuperar reporte
-        var reporte = this.context.OprReportes.Where(e => e.FechaEliminacion == null).FirstOrDefault(e => e.Folio == detReportRequest.Folio);
+        var reporte = reportesQuery.FirstOrDefault(e => e.Folio == detReportRequest.Folio);
         if (reporte == null)
         {
             throw new KeyNotFoundException($"El reporte con folio {detReportRequest.Folio} no se encuentra registrado en el sistema.");
@@ -197,8 +207,12 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
 
     public async Task ActualizarReporte(long folio, ActualizarReporteRequest reporteRequest)
     {
+        // Filtrar reportes
+        var reportesQuery = this.context.OprReportes.Where(e => e.FechaEliminacion == null).AsQueryable();
+        FiltrarReportePorNivelUsuario(ref reportesQuery);
+
         // recuperar reporte
-        var reporte = this.context.OprReportes.Where(e => e.FechaEliminacion == null).FirstOrDefault(e => e.Folio == folio);
+        var reporte = reportesQuery.FirstOrDefault(e => e.Folio == folio);
         if (reporte == null)
         {
             throw new KeyNotFoundException($"El reporte con folio {folio} no se encuentra registrado en el sistema.");
@@ -218,7 +232,7 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
         }
 
         // * start transaction
-            using var transaction = await this.context.Database.BeginTransactionAsync();
+        using var transaction = await this.context.Database.BeginTransactionAsync();
         try
         {
             // * make a status record 
@@ -283,8 +297,12 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
     /// <exception cref="KeyNotFoundException">El reporte o la Oficina no existen</exception>
     public async Task AsignarOficina(long folio, int idOficina, string? comentarios)
     {
+        // Filtrar reportes
+        var reportesQuery = this.context.OprReportes.Where(e => e.FechaEliminacion == null).AsQueryable();
+        FiltrarReportePorNivelUsuario(ref reportesQuery);
+
         // recuperar reporte
-        var reporte = this.context.OprReportes.Include(e => e.IdOficinaNavigation).Where(e => e.FechaEliminacion == null).FirstOrDefault(e => e.Folio == folio);
+        var reporte = reportesQuery.Include(e => e.IdOficinaNavigation).FirstOrDefault(e => e.Folio == folio);
         if (reporte == null)
         {
             throw new KeyNotFoundException($"El reporte con folio {folio} no se encuentra registrado en el sistema.");
@@ -345,7 +363,7 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
             throw;
         }
     }
-    
+
     /// <summary>
     ///  Eliminar el reporte
     /// </summary>
@@ -394,6 +412,24 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
         }
     }
 
+
+    /// <summary>
+    ///  Comprueba el nivel de usuario y filtra los reportes que no coincidan con las oficinas asignadas.
+    /// </summary>
+    /// <param name="query"></param>
+    private void FiltrarReportePorNivelUsuario(ref IQueryable<OprReporte> query)
+    {
+        var _nivelUsuario = RetriveCurrentUserLevel();
+        if (_nivelUsuario >= (int)NivelesUsuarioEnum.Director_Oficina)
+        {
+            var _usuarioId = RetriveCurrentUserId();
+            query = query
+                .Where(rep => context.UsuarioOficinas
+                    .Any(uo => uo.IdUsuario == _usuarioId && uo.IdOficina == rep.IdOficina)
+                );
+        }
+    }
+
     private int RetriveCurrentUserId()
     {
         var userIdClaim = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
@@ -403,4 +439,16 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
         }
         return userId;
     }
+
+    private int RetriveCurrentUserLevel()
+    {
+        // * comprobar el nivel del usuario
+        var nivelUsuarioClaim = httpContextAccessor.HttpContext?.User.FindFirstValue(CustomClaimTypes.NivelUsuario);
+        if (nivelUsuarioClaim == null || !int.TryParse(nivelUsuarioClaim, out var nivelUsuario))
+        {
+            throw new InvalidOperationException("No se pudo obtener el IdUsuario del contexto HTTP.");
+        }
+        return nivelUsuario;
+    }
+
 }

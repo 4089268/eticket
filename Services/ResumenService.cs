@@ -1,21 +1,27 @@
 using System;
+using System.Security.Claims;
 using eticket.Core.Interfaces;
 using eticket.Data;
 using eticket.DTO;
-using eticket.ViewModels;
+using eticket.Models;
 
 namespace eticket.Services;
 
-public class ResumenService(ILogger<ResumenService> logger, TicketsDBContext dbContext) : IResumeService
+public class ResumenService(ILogger<ResumenService> logger, TicketsDBContext dbContext, IHttpContextAccessor httpContextAccessor) : IResumeService
 {
     private readonly ILogger<ResumenService> logger = logger;
     private readonly TicketsDBContext dbContext = dbContext;
+    private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
+
 
     public IEnumerable<ReporteResumenEstatusDTO> ObtenerResumenPorEstatus()
     {
+        // Filtrar reportes
+        var reportesQuery = this.dbContext.OprReportes.Where(el => el.FechaEliminacion == null).AsQueryable();
+        FiltrarReportePorNivelUsuario(ref reportesQuery);
+
         // * get the data
-        var reportesRaw = this.dbContext.OprReportes
-            .Where(el => el.FechaEliminacion == null)
+        var reportesRaw = reportesQuery
             .GroupJoin(
                 dbContext.OprDetReportes,
                 repo => repo.Folio,
@@ -72,8 +78,11 @@ public class ResumenService(ILogger<ResumenService> logger, TicketsDBContext dbC
 
     public IEnumerable<ReporteResumenTipoReporteDTO> ObtenerResumenPorTipoReporte()
     {
-        var reportesRaw = this.dbContext.OprReportes
-            .Where(el => el.FechaEliminacion == null)
+        // Filtrar reportes
+        var reportesQuery = this.dbContext.OprReportes.Where(el => el.FechaEliminacion == null).AsQueryable();
+        FiltrarReportePorNivelUsuario(ref reportesQuery);
+
+        var reportesRaw = reportesQuery
             .GroupJoin(
                 dbContext.OprDetReportes,
                 repo => repo.Folio,
@@ -131,8 +140,11 @@ public class ResumenService(ILogger<ResumenService> logger, TicketsDBContext dbC
 
     public IEnumerable<dynamic> ObtenerResumenPorDias(DateTime fecha1, DateTime fecha2)
     {
-        var reportes = this.dbContext.OprReportes
-            .Where(el => el.FechaEliminacion == null)
+        // Filtrar reportes
+        var reportesQuery = this.dbContext.OprReportes.Where(el => el.FechaEliminacion == null).AsQueryable();
+        FiltrarReportePorNivelUsuario(ref reportesQuery);
+
+        var reportes = reportesQuery
             .Where(rep => rep.FechaRegistro >= fecha1 && rep.FechaRegistro <= fecha2)
             .GroupJoin(
                 dbContext.OprDetReportes,
@@ -159,4 +171,44 @@ public class ResumenService(ILogger<ResumenService> logger, TicketsDBContext dbC
             .ToArray();
         return reportes;
     }
+
+
+    /// <summary>
+    ///  Comprueba el nivel de usuario y filtra los reportes que no coincidan con las oficinas asignadas.
+    /// </summary>
+    /// <param name="query"></param>
+    private void FiltrarReportePorNivelUsuario(ref IQueryable<OprReporte> query)
+    {
+        var _nivelUsuario = RetriveCurrentUserLevel();
+        if (_nivelUsuario >= (int)NivelesUsuarioEnum.Director_Oficina)
+        {
+            var _usuarioId = RetriveCurrentUserId();
+            query = query
+                .Where(rep => dbContext.UsuarioOficinas
+                    .Any(uo => uo.IdUsuario == _usuarioId && uo.IdOficina == rep.IdOficina)
+                );
+        }
+    }
+
+    private int RetriveCurrentUserId()
+    {
+        var userIdClaim = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId))
+        {
+            throw new InvalidOperationException("No se pudo obtener el IdUsuario del contexto HTTP.");
+        }
+        return userId;
+    }
+
+    private int RetriveCurrentUserLevel()
+    {
+        // * comprobar el nivel del usuario
+        var nivelUsuarioClaim = httpContextAccessor.HttpContext?.User.FindFirstValue(CustomClaimTypes.NivelUsuario);
+        if (nivelUsuarioClaim == null || !int.TryParse(nivelUsuarioClaim, out var nivelUsuario))
+        {
+            throw new InvalidOperationException("No se pudo obtener el IdUsuario del contexto HTTP.");
+        }
+        return nivelUsuario;
+    }
+
 }
