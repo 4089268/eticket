@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -209,16 +211,19 @@
                             </a>
                         </li>
                         
-                        @* Separador *@
-                        <li class="menu-title mt-30">
-                            <span></span>
-                        </li>
-                        <li>
-                            <a asp-controller="Users" asp-action="Index">
-                                <span class="nav-icon uil uil-user"></span>
-                                <span class="menu-text">Usuarios</span>
-                            </a>
-                        </li>
+
+                        @if (User.HasClaim(ClaimTypes.Role, "Administrador"))
+                        {
+                            <li class="menu-title mt-30">
+                                <span></span>
+                            </li>
+                            <li>
+                                <a asp-controller="Users" asp-action="Index">
+                                    <span class="nav-icon uil uil-user"></span>
+                                    <span class="menu-text">Usuarios</span>
+                                </a>
+                            </li>
+                        }
                         @* <li class="has-child open">
                             <a href="#" class="">
                                 <span class="nav-icon uil uil-window-section"></span>

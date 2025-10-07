@@ -1,0 +1,22 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="min-vh-100 content-center">
+                <div class="error-page text-center">
+                    <img src="~/img/svg/404.svg" alt="403" class="svg">
+                    <div class="h2 m-2">
+                        No cuentas con los permisos para ver este recurso
+                    </div>
+                    <div class="content-center mt-30">
+                        <a href="@Url.Action("Index", "Home")">Regresar a Inicio</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

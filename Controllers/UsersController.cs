@@ -13,6 +13,7 @@ namespace eticket.Controllers
 {
 
     [Authorize]
+    [RoleAuthorize("Administrador")]
     [Route("/{Controller}")]
     public class UsersController(
         ILogger<UsersController> logger,
