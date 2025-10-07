@@ -145,7 +145,7 @@ public class ResumenService(ILogger<ResumenService> logger, TicketsDBContext dbC
         FiltrarReportePorNivelUsuario(ref reportesQuery);
 
         var reportes = reportesQuery
-            .Where(rep => rep.FechaRegistro >= fecha1 && rep.FechaRegistro <= fecha2)
+            .Where(rep => rep.FechaRegistro.Value.Date >= fecha1 && rep.FechaRegistro.Value.Date <= fecha2)
             .GroupJoin(
                 dbContext.OprDetReportes,
                 repo => repo.Folio,

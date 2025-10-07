@@ -4,6 +4,7 @@ namespace eticket.DTO;
 
 public class ResumeDayGraphDTO
 {
+    public DateTime Date { get; set; }
     public string Label { get; set; } = "";
     public int Total { get; set; } = 0;
 }

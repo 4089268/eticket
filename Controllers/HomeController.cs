@@ -36,36 +36,36 @@ public class HomeController(ILogger<HomeController> l, IResumeService rs) : Cont
     {
         try
         {
+            // get range of days
+            var days = new ResumeDayGraphDTO[30];
+            var _targetDay = DateTime.Now.AddDays(-29);
+            for (int i = 0; i < days.Count(); i++)
+            {
+                days[i] = new ResumeDayGraphDTO
+                {
+                    Date = _targetDay
+                };
+                _targetDay = _targetDay.AddDays(1);
+            }
+            
             var now = DateTime.Now.AddMonths(-1);
-            var totalDays = DateTime.DaysInMonth(now.Year, now.Month);
-            var d1 = new DateTime(now.Year, now.Month, 1);
-            var d2 = d1.AddMonths(1).AddDays(-1);
+            var d1 = days[0].Date;
+            var d2 = days[29].Date;
 
             var resumen = this.resumeService.ObtenerResumenPorDias(d1, d2);
 
             // Process the data
-            var days = new ResumeDayGraphDTO[totalDays];
-            for (int i = 0; i < totalDays; i++)
+            foreach (var dayData in days)
             {
-                var resumeDay = resumen.FirstOrDefault(item => item.Dia.Day == (i + 1));
-                ResumeDayGraphDTO resumeDayDTO = new()
-                {
-                    Label = $"{(i + 1)} {now.ToString("MMM")}"
-                };
-
-                if (resumeDay != null)
-                {
-                    resumeDayDTO.Total = resumeDay.TotalEntradas;
-                }
-
-                days[i] = resumeDayDTO;
+                dayData.Label = dayData.Date.ToString("MMM dd");
+                dayData.Total = resumen.FirstOrDefault(a => a.Dia == dayData.Date)?.TotalEntradas ?? 0;
             }
 
             return Ok(days);
         }
         catch (Exception err)
         {
-            this.logger.LogError(err, "Error al obtener el resumen por estatus");
+            this.logger.LogError(err, "Error al obtener el resumen por dias");
             return Conflict();
         }
     }
