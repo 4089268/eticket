@@ -32,7 +32,8 @@ public static class UsersAdapter
             Usuario = sysUsuario.Usuario,
             Correo = sysUsuario.Correo,
             Nombre = sysUsuario.Nombre,
-            Apellido = sysUsuario.Apellido
+            Apellido = sysUsuario.Apellido,
+            Nivel = sysUsuario.IdNivel
         };
         return user;
     }

@@ -39,6 +39,7 @@ builder.Services.Configure<GoogleMapsSettings>(builder.Configuration.GetSection(
 builder.Services.AddValidations();
 
 // Servicios
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ReportService>();
 builder.Services.AddScoped<DocumentosService>();
 builder.Services.AddScoped<IResumeService, ResumenService>();

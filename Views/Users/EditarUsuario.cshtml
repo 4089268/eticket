@@ -27,21 +27,17 @@
 </div>
 
 <div class="container">
+    <form asp-action="ActualizarUsuario" asp-route-userid="@Model.UsuarioId" method="post">
+        <div class="row">
+            <div id="form-error" class="col-12 alert alert-danger d-none">Esto es error</div>
+            @Html.AntiForgeryToken()
+        </div>
 
-    <div class="row">
-
-        <div class="card card-horizontal card-sm mb-4 mt-4">
-            <div class="card-header">
-                <h6 class="m-0">Ediar Datos Generales</h6>
-            </div>
-            <div class="card-body py-md-30">
-                <div class="horizontal-form">
-                    <form asp-action="ActualizarUsuario" asp-route-userid="@Model.UsuarioId" method="post">
-                        <div class="row">
-                            <div id="form-error" class="col-12 alert alert-danger d-none">Esto es error</div>
-                            @Html.AntiForgeryToken()
-                        </div>
-
+        <div class="row">
+            <div class="card card-sm mb-2 mt-4">
+                <div class="card-body py-md-30">
+                    <h6 class="py-2 border-bottom mb-3 h5">Datos Generales</h6>
+                    <div class="horizontal-form">
                         <div class="row g-2">
                             <input asp-for="UsuarioId" type="hidden" />
 
@@ -85,23 +81,59 @@
                                 <input type="password" asp-for="ConfirmarContraseña" class="form-control"/>
                                 <span asp-validation-for="ConfirmarContraseña" class="text-danger"></span>
                             </div>
-                            
-                            <div class="col-12 mt-3 d-flex justify-content-center">
-                                <button type="submit" class="btn btn-lg btn-success px-4" id="submit-button">
-                                    <span class="upload-icon">
-                                        <i class="fa fa-save"></i>
-                                        <span>Guardar</span>
-                                    </span>
-                                    <span class="upload-spinner d-none">
-                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                        <span>Guardando cambios</span>
-                                    </span>
-                                </button>
-                            </div>
+
                         </div>
-                    </form>
+                    </div>
+
+                    <h6 class="py-2 border-bottom mt-4 mb-3 h5">Permisos</h6>
+                    <div class="horizontal-form">
+                        <div class="row g-2">
+                            <div class="col-md-12 col-lg-6">
+                                <label asp-for="Nivel" class="form-label"></label>
+                                <select asp-for="Nivel" asp-items="@ViewBag.NivelesUsuarioSelectList" class="form-control">
+                                    <option>Seleccione un elemento</option>
+                                </select>
+                                <span asp-validation-for="Nivel" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Oficinas" class="form-label"></label>
+                                <select asp-for="Oficinas" asp-items="@ViewBag.OficinaSelectList" class="form-control">
+                                    <option disabled>Seleccione una oficina</option>
+                                </select>
+                                <span asp-validation-for="Oficinas" class="text-danger"></span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    @* Submit button *@
+                    <div class="col-12 mt-3 d-flex justify-content-center">
+                        <button type="submit" class="btn btn-lg btn-success px-4" id="submit-button">
+                            <span class="upload-icon">
+                                <i class="fa fa-save"></i>
+                                <span>Guardar</span>
+                            </span>
+                            <span class="upload-spinner d-none">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span>Guardando cambios</span>
+                            </span>
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 </div>
+
+@section scripts
+{
+    <script>
+    $(document).ready(function()
+    {
+        $("#Oficinas").select2();
+    })
+    </script>
+}

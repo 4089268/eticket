@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using eticket.Data;
 using eticket.ViewModels;
@@ -17,7 +18,7 @@ public class EditUserValidator: AbstractValidator<EditarUsuarioRequest>
         RuleFor(req => req.Usuario)
             .NotEmpty()
             .Length(8, 24)
-            .When( x => x.Usuario != "admin")
+            .When(x => x.Usuario != "admin")
             .MustAsync(async (request, usuario, cancellation) =>
             {
                 // Ignore the record with the same IdUsuario as the one being updated
@@ -49,5 +50,21 @@ public class EditUserValidator: AbstractValidator<EditarUsuarioRequest>
             .Equal(req => req.Contraseña)
             .WithMessage("Las contraseña no coincide.")
             .When(x => !string.IsNullOrWhiteSpace(x.Contraseña));
+
+        RuleFor(req => req.Nivel)
+            .MustAsync(async (request, nivel, cancellation) =>
+            {
+                if (nivel == null)
+                {
+                    return true;
+                }
+                return await _context.CatNivelesUsuarios.AnyAsync(n => n.IdNivel == nivel.Value, cancellation);
+            })
+            .WithMessage("El nivel seleccionado no es valido.");
+
+        RuleFor(req => req.Oficinas)
+            .NotEmpty()
+            .WithMessage("Debe seleccionar al menos una oficina.")
+            .When(req => req.Nivel != null && req.Nivel > 2);
     }
 }

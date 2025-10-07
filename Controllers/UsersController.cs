@@ -1,13 +1,13 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using FluentValidation;
 using eticket.Data;
 using eticket.Adapters;
 using eticket.ViewModels;
-using Microsoft.EntityFrameworkCore;
-using AspNetCoreGeneratedDocument;
-using System.Threading.Tasks;
+using eticket.Services;
 
 namespace eticket.Controllers
 {
@@ -17,12 +17,14 @@ namespace eticket.Controllers
     public class UsersController(
         ILogger<UsersController> logger,
         TicketsDBContext context,
+        UserService us,
         IValidator<UsuarioRequest> validator,
         IValidator<EditarUsuarioRequest> validator2
     ) : Controller
     {
         private readonly ILogger<UsersController> logger = logger;
         private readonly TicketsDBContext ticketsDBContext = context;
+        private readonly UserService userService = us;
         private readonly IValidator<UsuarioRequest> nuevoUsuarioValidator = validator;
         private readonly IValidator<EditarUsuarioRequest> editUsuarioValidator = validator2;
 
@@ -88,11 +90,16 @@ namespace eticket.Controllers
                 });
             }
 
+            // * obtener catalogos
+            CargarCatalogos();
+
             EditarUsuarioRequest editarUsuarioRequest = user.ToUserEditRequest();
+            editarUsuarioRequest.Oficinas = this.ticketsDBContext.UsuarioOficinas.Where(e => e.IdUsuario == user.IdUsuario).Select(o => o.IdOficina).ToList();
             return View(editarUsuarioRequest);
         }
 
         [HttpPost("{userId}/edit")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ActualizarUsuario([FromRoute] int userId, [FromForm] EditarUsuarioRequest request)
         {
             var validationResults = await this.editUsuarioValidator.ValidateAsync(request);
@@ -102,32 +109,31 @@ namespace eticket.Controllers
                 {
                     ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                 }
+                CargarCatalogos();
                 return View("EditarUsuario", request);
             }
 
-
             // update the user
-            var user = this.ticketsDBContext.SysUsuarios.Find(userId);
-            if (user == null)
+            try
+            {
+                await this.userService.ActualizarUsuario(request);
+            }
+            catch (KeyNotFoundException kex)
             {
                 return NotFound(new
                 {
-                    Title = "Usuario no encontrado",
-                    Message = "El usuario no se encuentra registrado en el sistema"
+                    Title = "El usuario no se encontro en el sistema.",
+                    kex.Message
                 });
             }
-
-            user.Usuario = request.Usuario!;
-            user.Correo = request.Correo!;
-            user.Nombre = request.Nombre!;
-            user.Apellido = request.Apellido!;
-            if (!string.IsNullOrEmpty(request.Contraseña))
+            catch (System.Exception ex)
             {
-                user.Contraseña = BCrypt.Net.BCrypt.HashPassword(request.Contraseña);
+                return NotFound(new
+                {
+                    Title = "Error no controlado al actualizar el usuario",
+                    ex.Message
+                });
             }
-            this.ticketsDBContext.SysUsuarios.Update(user);
-            this.ticketsDBContext.SaveChanges();
-            this.logger.LogInformation("Usuario {userId} actualizado", user.IdUsuario);
 
             return RedirectToAction("Index");
         }
@@ -140,5 +146,28 @@ namespace eticket.Controllers
         }
         #endregion
 
+
+        #region Private Functions
+        private void CargarCatalogos()
+        {
+            // * obtener catalogo niveles-usuario
+            var nivelesSelectList = this.ticketsDBContext.CatNivelesUsuarios
+                .Select(n => new SelectListItem
+                {
+                    Text = n.Nombre.ToString(),
+                    Value = n.IdNivel.ToString()
+                });
+            ViewBag.NivelesUsuarioSelectList = nivelesSelectList;
+
+            // * obtener catalogo oficinas
+            var oficinasSelectList = this.ticketsDBContext.CatOficinas
+                .Select(o => new SelectListItem
+                {
+                    Text = o.Oficina.ToString(),
+                    Value = o.Id.ToString()
+                });
+            ViewBag.OficinaSelectList = oficinasSelectList;
+        }
+        #endregion
     }
 }

@@ -17,4 +17,8 @@ public class EditarUsuarioRequest
 
     public string? Contraseña { get; set; }
     public string? ConfirmarContraseña { get; set; }
+
+    public int? Nivel { get; set; }
+
+    public IEnumerable<int>? Oficinas { get; set; }
 }
