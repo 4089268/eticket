@@ -3341,7 +3341,7 @@ ul {
 }
 
 .contents {
-  padding: 74px 15px 72px 295px;
+  padding: 82px 10px 10px 295px;
   transition: var(--transition);
   background-color: var(--contents-bg);
 }
@@ -6522,7 +6522,7 @@ body.top-menu .navbar-left .customizer-trigger + .top-menu {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  margin-top: 33px;
+  margin-top: 15px;
 }
 @media only screen and (max-width: 575px) {
   .breadcrumb-main {

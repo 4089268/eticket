@@ -6,7 +6,8 @@
     ReportesFiltroViewModel filtroViewModel = ViewBag.Filters;
 }
 
-<section class="col-12">
+@section breadcrumb
+{
     <div class="breadcrumb-main">
         @if(string.IsNullOrEmpty(ViewBag.ReturnUrl))
         {
@@ -26,9 +27,9 @@
             </nav>
         </div>
     </div>
-</section>
+}
 
-<section id="table-fiter" class="mt-4 border rounded bg-white shadow-sm px-3">
+<section id="table-fiter" class="mt-4 border rounded bg-white shadow-sm px-3 sticky-top">
     <div class="p-2 d-flex gap-2 global-shadow border-light-0 w-100 adv-table">
         <div class='form-group my-xl-2 my-1 me-2'>
             <label for="select-tipoentrada" class="d-flex align-items-center mb-sm-0 mb-2">Tipo de Entrada</label>
@@ -79,7 +80,7 @@
     </div>
 </section>
 
-<section id="table-section" class="mt-4 border rounded bg-white shadow-sm p-3">
+<section id="table-section" class="mt-4 border rounded bg-white shadow-sm p-3 overflow-auto">
     <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 adv-table">
         <div class="table-responsive">
             <table class="table mb-0 table-borderless adv-table reportes-table stripe row-border order-column w-100"
@@ -127,7 +128,6 @@
         </div>
     </div>
 </section>
-
 
 @section modals
 {

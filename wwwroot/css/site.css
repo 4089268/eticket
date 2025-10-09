@@ -7,8 +7,22 @@
   --color-secondary: #b28955 !important;
   --color-secondary-rgba: 78, 137, 85 !important;
 }
+
+body header
+{
+  height: 72px;
+}
+
+body main.main-content
+{
+  height: 100vh;
+  overflow: hidden;
+}
+
 html {
   font-size: 14px;
+  position: relative;
+  min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -21,14 +35,9 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #4b1424;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
+/* body {
   margin-bottom: 60px;
-}
+} */
 
 a{
   text-decoration: none;

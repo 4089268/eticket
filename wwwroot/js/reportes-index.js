@@ -141,7 +141,7 @@ jQuery(document).ready(function()
 		paging: true,
 		ordering: false,
 		scrollX: true,
-		scrollY: 420,
+		scrollY: ($(".contents").height() - 420),
 		fixedColumns: {
 			right: 1
 		},

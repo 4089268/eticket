@@ -5,23 +5,26 @@
     string? googleMapsKey = ViewBag.GoogleMapsSettings.Key.ToString();
 }
 
-<div class="col-12">
-    <div class="breadcrumb-main">
-        <h4 class="text-capitalize breadcrumb-title">Nuevo Reporte</h4>
-        <div class="breadcrumb-action justify-content-center flex-wrap">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="/">
-                            <i class="uil uil-estate"></i>Inicio
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Nuevo Reporte</li>
-                </ol>
-            </nav>
+@section breadcrumb
+{
+    <div class="col-12">
+        <div class="breadcrumb-main">
+            <h4 class="text-capitalize breadcrumb-title">Nuevo Reporte</h4>
+            <div class="breadcrumb-action justify-content-center flex-wrap">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/">
+                                <i class="uil uil-estate"></i>Inicio
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Nuevo Reporte</li>
+                    </ol>
+                </nav>
+            </div>
         </div>
     </div>
-</div>
+}
 
 <section id="form-section">
     @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "Cargando...")
