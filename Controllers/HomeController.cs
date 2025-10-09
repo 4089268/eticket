@@ -36,14 +36,14 @@ public class HomeController(ILogger<HomeController> l, IResumeService rs) : Cont
     {
         try
         {
-            // get range of days
+            // calculate range of last 30 days
             var days = new ResumeDayGraphDTO[30];
-            var _targetDay = DateTime.Now.AddDays(-29);
+            var _targetDay = DateTime.Now.Date.AddDays(-29);
             for (int i = 0; i < days.Count(); i++)
             {
                 days[i] = new ResumeDayGraphDTO
                 {
-                    Date = _targetDay
+                    Date = _targetDay.Date
                 };
                 _targetDay = _targetDay.AddDays(1);
             }
@@ -58,7 +58,7 @@ public class HomeController(ILogger<HomeController> l, IResumeService rs) : Cont
             foreach (var dayData in days)
             {
                 dayData.Label = dayData.Date.ToString("MMM dd");
-                dayData.Total = resumen.FirstOrDefault(a => a.Dia == dayData.Date)?.TotalEntradas ?? 0;
+                dayData.Total = resumen.FirstOrDefault(a => a.Dia == dayData.Date)?.Total ?? 0;
             }
 
             return Ok(days);
