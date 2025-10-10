@@ -13,44 +13,46 @@
     }
 }
 
-<div class="col-12">
-    <div class="breadcrumb-main">
-        <div class="d-flex aling-items-center">
-            <div>
-                <a href="@ViewBag.UrlBack"  class="text-decoration-none text-black h5">
-                    <i class="las la-undo"></i>
-                    <span>Regresar</span>
-                </a>
+@section breadcrumb
+{
+    <div class="col-12">
+        <div class="breadcrumb-main">
+            <div class="d-flex aling-items-center">
+                <div>
+                    <a href="@ViewBag.UrlBack"  class="text-decoration-none text-black h5">
+                        <i class="las la-undo"></i>
+                        <span>Regresar</span>
+                    </a>
+                </div>
+                <span class="mx-3 vr mb-2 bolder"></span>
+                <h4 class="text-capitalize breadcrumb-title">Reporte @Model.Reporte?.Folio</h4>
             </div>
-            <span class="mx-3 vr mb-2 bolder"></span>
-            <h4 class="text-capitalize breadcrumb-title">Reporte @Model.Reporte?.Folio</h4>
-        </div>
 
-        <div class="breadcrumb-action justify-content-center flex-wrap">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="/">
-                            <i class="uil uil-estate"></i>Inicio
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <a href='@Url.Action("Index", "Reportes")'>
-                            <i class="uil uil-table"></i>Reportes
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Reporte</li>
-                </ol>
-            </nav>
+            <div class="breadcrumb-action justify-content-center flex-wrap">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/">
+                                <i class="uil uil-estate"></i>Inicio
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href='@Url.Action("Index", "Reportes")'>
+                                <i class="uil uil-table"></i>Reportes
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Reporte</li>
+                    </ol>
+                </nav>
+            </div>
         </div>
     </div>
-</div>
+}
 
 <section class="mb-2">
     <div class="support-details">
         <div class="fluid-container">
             <div class="row g-2">
-
                 <div class="col-12 p-2 border rounded bg-white d-flex gap-2 align-items-center justify-content-start">
                     <button id="button-save-changes" class="btn px-15 btn-success d-none">
                         <i class="las la-save"></i>
