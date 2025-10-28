@@ -28,6 +28,10 @@ public partial class TicketsDBContext : DbContext
 
     public virtual DbSet<CatTipoMovimiento> CatTipoMovimientos { get; set; }
 
+    public virtual DbSet<Notificacione> Notificaciones { get; set; }
+
+    public virtual DbSet<NotificacionesUsuario> NotificacionesUsuarios { get; set; }
+
     public virtual DbSet<OprDetReporte> OprDetReportes { get; set; }
 
     public virtual DbSet<OprReporte> OprReportes { get; set; }
@@ -130,6 +134,43 @@ public partial class TicketsDBContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("descripcion");
+        });
+
+        modelBuilder.Entity<Notificacione>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Notifica__3214EC07BCBE308A");
+
+            entity.ToTable("Notificaciones", "NOTI");
+
+            entity.Property(e => e.FechaCreacion).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.LinkUrl).HasMaxLength(250);
+            entity.Property(e => e.Mensaje).HasMaxLength(500);
+            entity.Property(e => e.Tipo).HasMaxLength(50);
+            entity.Property(e => e.Titulo).HasMaxLength(150);
+
+            entity.HasOne(d => d.ReporteFolioNavigation).WithMany()
+                .HasForeignKey(d => d.ReporteFolio)
+                .HasConstraintName("FK_Notifications_Ticket");
+        });
+
+        modelBuilder.Entity<NotificacionesUsuario>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Notifica__3214EC07942EAFE0");
+
+            entity.ToTable("NotificacionesUsuario", "NOTI");
+
+            entity.Property(e => e.FechaEnvio).HasColumnType("datetime");
+            entity.Property(e => e.FechaLectura).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Notificacion).WithMany(p => p.NotificacionesUsuarios)
+                .HasForeignKey(d => d.NotificacionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UserNotifications_Notification");
+
+            entity.HasOne(d => d.Usuario).WithMany(p => p.NotificacionesUsuarios)
+                .HasForeignKey(d => d.UsuarioId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UserNotifications_User");
         });
 
         modelBuilder.Entity<OprDetReporte>(entity =>

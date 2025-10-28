@@ -35,6 +35,8 @@ public partial class SysUsuario
 
     public virtual CatNivelesUsuario? IdNivelNavigation { get; set; }
 
+    public virtual ICollection<NotificacionesUsuario> NotificacionesUsuarios { get; set; } = new List<NotificacionesUsuario>();
+
     public virtual ICollection<OprDetReporte> OprDetReportes { get; set; } = new List<OprDetReporte>();
 
     public virtual ICollection<OprReporte> OprReportes { get; set; } = new List<OprReporte>();
