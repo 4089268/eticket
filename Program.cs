@@ -6,6 +6,7 @@ using eticket.Data;
 using eticket.Services;
 using eticket.Validations;
 using eticket.Core.Interfaces;
+using eticket.Core.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 var cultureInfo = new CultureInfo("es-MX");
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+builder.Services.AddSignalR();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -44,6 +47,14 @@ builder.Services.AddScoped<ReportService>();
 builder.Services.AddScoped<DocumentosService>();
 builder.Services.AddScoped<IResumeService, ResumenService>();
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenLocalhost(5001, listenOptions =>
+    {
+        listenOptions.UseHttps();
+    });
+});
+
 var app = builder.Build();
 
 // Seed the DB
@@ -69,5 +80,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapHub<TicketsHub>("/ticketsHub");
 
 app.Run();

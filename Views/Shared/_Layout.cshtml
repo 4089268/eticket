@@ -4,6 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - eticket</title>
+    <link rel="manifest" href="/manifest.json" />
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/eticket.styles.css" asp-append-version="true" />
@@ -223,6 +225,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
     <script src="~/assets/vendor_assets/js/jquery/jquery-ui.js"></script>
     <script src="~/assets/vendor_assets/js/bootstrap/popper.js"></script>
     <script src="~/assets/vendor_assets/js/moment/moment.min.js"></script>
@@ -241,6 +244,7 @@
     <script src="~/assets/vendor_assets/js/trumbowyg-imagebase64.js"></script>
     <script src="~/assets/vendor_assets/js/trumbowyg.emoji.js"></script>
     <script src="~/assets/theme_assets/js/main.min.js"></script>
+    <script src="~/js/ticketsNotifications.js"></script>
     <script>
         $(document).ready(function()
         {
