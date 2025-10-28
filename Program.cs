@@ -7,6 +7,7 @@ using eticket.Services;
 using eticket.Validations;
 using eticket.Core.Interfaces;
 using eticket.Core.Hubs;
+using eticket.Core.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,13 +48,9 @@ builder.Services.AddScoped<ReportService>();
 builder.Services.AddScoped<DocumentosService>();
 builder.Services.AddScoped<IResumeService, ResumenService>();
 
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenLocalhost(5001, listenOptions =>
-    {
-        listenOptions.UseHttps();
-    });
-});
+// Notificaciones
+builder.Services.AddScoped<NotificacionService>();
+builder.Services.AddHostedService<NotificacionDispatcher>();
 
 var app = builder.Build();
 

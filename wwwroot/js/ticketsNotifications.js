@@ -6,31 +6,32 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await connection.start();
 
-    connection.on("ReceiveNotification", (message, folio) => {
-        showNotification(message, folio);
+    connection.on("ReceiveNotification", (message, actionLink) => {
+        showNotification(message, actionLink);
     });
 
-    function showNotification(message, folio)
+    function showNotification(message, actionLink)
     {
 
-        if (typeof Swal !== "undefined") {
+        if (typeof Swal !== "undefined")
+        {
             Swal.fire({
                 toast: true,
-                position: "top-end",
+                position: "bottom-end",
                 topLayer: true,
                 icon: "info",
                 title: message,
                 showConfirmButton: true,
                 confirmButtonText: 'Mostrar Reporte',
                 backdrop: true,
-                timer: 5000,
+                timer: 7000,
                 timerProgressBar: true,
                 target:"main",
             })
             .then((result)=>{
                 if(result.isConfirmed)
                 {
-                    window.location.href = `/Reportes/${folio}`
+                    window.location.href = actionLink
                 }
             });
         } else {

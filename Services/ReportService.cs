@@ -13,13 +13,14 @@ using eticket.ViewModels;
 
 namespace eticket.Services;
 
-public class ReportService(ILogger<ReportService> logger, TicketsDBContext context, TicketsMediaDBContext mediaDBContext, IHttpContextAccessor httpContextAccessor, IHubContext<TicketsHub> hubContext)
+public class ReportService(ILogger<ReportService> logger, TicketsDBContext context, TicketsMediaDBContext mediaDBContext, IHttpContextAccessor httpContextAccessor, NotificacionService nots)
 {
     private readonly ILogger<ReportService> logger = logger;
     private readonly TicketsDBContext context = context;
     private readonly TicketsMediaDBContext mediaDBContext = mediaDBContext;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
-    private readonly IHubContext<TicketsHub> ticketsHubContext = hubContext;
+    private readonly NotificacionService notificacionService = nots;
+
 
     public IEnumerable<ReporteDTO> ObtenerReportes(int tipoEntrada = 0, int tipoReporte = 0, int estatusId = 0, int oficina = 0, bool incluirEliminados = false)
     {
@@ -180,8 +181,7 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
             await this.context.SaveChangesAsync();
             logger.LogInformation("Nuevo reporte creado con folio: {folio}", reporte.Folio);
 
-            // Notificar nuevo reporte
-            await this.ticketsHubContext.Clients.All.SendAsync("ReceiveNotification", $"Nuevo reportes registrado Folio:{reporte.Folio}", reporte.Folio);
+            // TODO: Notificar nuevo reporte
 
             return reporte.Folio;
         }
@@ -207,9 +207,14 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
 
         var detReporte = this.context.OprDetReportes.Add(detReportRequest.ToEntity());
 
-        // TODO: Notificar a usuarios de la nueva entrada del reportes
-        var usuariosId = this.context.UsuarioOficinas.Where(uo => uo.IdOficina == reporte.IdOficina).Select(e => e.IdUsuario.ToString()).ToArray();
-        await this.ticketsHubContext.Clients.Users(usuariosId).SendAsync("ReceiveNotification", $"Nueva entrada registrada al reporte Folio: {reporte.Folio}", reporte.Folio);
+        // Notificar a usuarios de la nueva entrada del reportes
+        var usuariosId = this.context.UsuarioOficinas.Where(uo => uo.IdOficina == reporte.IdOficina).Select(e => e.IdUsuario).ToArray();
+        await notificacionService.CrearNotificacionReporte(
+            $"Nueva entrada reporte {reporte.Folio}",
+            $"Se registro una nueva entrada en el reporte Folio {reporte.Folio}",
+            reporte.ToDTO(),
+            usuariosId
+        );
 
         await this.context.SaveChangesAsync();
 
@@ -368,7 +373,14 @@ public class ReportService(ILogger<ReportService> logger, TicketsDBContext conte
 
             await transaction.CommitAsync();
 
-            // TODO: Notificar a usuarios de la oficina seleccionada.
+            // Notificar a usuarios de la oficina seleccionada.
+            var usuariosId = this.context.UsuarioOficinas.Where(uo => uo.IdOficina == reporte.IdOficina).Select(e => e.IdUsuario).ToArray();
+            await notificacionService.CrearNotificacionReporte(
+                $"Oficina {_oficinaNueva} asignada al reporte {reporte.Folio}",
+                $"Se asigno el reporte Folio {reporte.Folio} a la oficina {_oficinaNueva}",
+                reporte.ToDTO(),
+                usuariosId
+            );
         }
         catch (System.Exception ex)
         {
