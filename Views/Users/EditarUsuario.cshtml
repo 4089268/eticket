@@ -90,6 +90,9 @@
                         <div class="row g-2">
                             <div class="col-md-12 col-lg-6">
                                 <label asp-for="Nivel" class="form-label"></label>
+                                <button type="button" class="d-inline-block btn px-0 pb-2" onclick="showHelpModal()">
+                                    <i class="las la-question-circle"></i>
+                                </button>
                                 <select asp-for="Nivel" asp-items="@ViewBag.NivelesUsuarioSelectList" class="form-control">
                                     <option>Seleccione un elemento</option>
                                 </select>
@@ -103,9 +106,7 @@
                                 </select>
                                 <span asp-validation-for="Oficinas" class="text-danger"></span>
                             </div>
-
                         </div>
-
                     </div>
 
                     @* Submit button *@
@@ -128,12 +129,99 @@
     </form>
 </div>
 
+@section modals
+{
+    <div class="modal fade"
+        id="tiposNivelesModal"
+        role="dialog"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="true"
+    >
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content radius-xl">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-500" id="staticBackdropLabel">Tipos de niveles de usuarios</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <img src="~/img/svg/x.svg" alt="x" class="svg">
+                    </button>
+                </div>
+                <div class="modal-body" id="body-modal">
+                    <div class="role">
+                        <h5 class="role-title">Director General</h5>
+                        <p class="role-desc">
+                        Tiene acceso a los reportes de todas las oficinas y cuenta con todos los privilegios del sistema,
+                        excepto los reservados para el administrador.
+                        </p>
+                    </div>
+
+                    <div class="role">
+                        <h5 class="role-title">Director de Oficina</h5>
+                        <p class="role-desc">
+                        Puede visualizar los reportes y dispone de todos los privilegios relacionados con las oficinas que tiene asignadas.
+                        </p>
+                    </div>
+
+                    <div class="role">
+                        <h5 class="role-title">Usuario</h5>
+                        <p class="role-desc">
+                        Cuenta con permisos limitados que le permiten acceder únicamente a la información y funciones correspondientes a sus oficinas asignadas.
+                        </p>
+                    </div>
+
+                    <div class="role">
+                        <h5 class="role-title">Capturista</h5>
+                        <p class="role-desc">
+                        Puede generar nuevos reportes y asignarlos a diferentes oficinas.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section styles
+{
+<style>
+
+    .modal-header h5
+    {
+        font-size: 20px;
+    }
+    .role
+    {
+    margin: 2px 1rem 2rem 1rem;
+    }
+
+    .role .role-desc
+    {
+        font-size: 16px;
+    }
+</style>
+}
+
 @section scripts
 {
     <script>
-    $(document).ready(function()
-    {
-        $("#Oficinas").select2();
-    })
+        let modal = undefined;
+        function showHelpModal()
+        {
+            if(modal)
+            {
+                modal.show();
+            }
+        }
+
+        $(document).ready(function()
+        {
+            $("#Oficinas").select2();
+            if(document.getElementById("tiposNivelesModal"))
+            {
+                modal = new bootstrap.Modal(document.getElementById("tiposNivelesModal"));
+            }
+        })
     </script>
 }

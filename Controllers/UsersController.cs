@@ -152,7 +152,7 @@ namespace eticket.Controllers
         private void CargarCatalogos()
         {
             // * obtener catalogo niveles-usuario
-            var nivelesSelectList = this.ticketsDBContext.CatNivelesUsuarios
+            var nivelesSelectList = this.ticketsDBContext.CatNivelesUsuarios.Where(e => e.IdNivel > 1)
                 .Select(n => new SelectListItem
                 {
                     Text = n.Nombre.ToString(),

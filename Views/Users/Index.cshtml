@@ -85,38 +85,42 @@
 </div>
 
 
-<!-- Modal Nuevo Usuario-->
-<div class="modal fade nuevo-usuario-modal"
-    id="nuevo-usuario-modal"
-    role="dialog"
-    tabindex="-1"
-    aria-labelledby="staticBackdropLabel"
-    aria-hidden="true"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
->
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content radius-xl">
-            <div class="modal-header">
-                <h5 class="modal-title fw-500" id="staticBackdropLabel">Agregar Usuario</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <img src="~/img/svg/x.svg" alt="x" class="svg">
-                </button>
-            </div>
-            <div class="modal-body" id="body-modal">
-                @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "")
+@section modals
+{
+    <div class="modal fade nuevo-usuario-modal"
+        id="nuevo-usuario-modal"
+        role="dialog"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+    >
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content radius-xl">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-500" id="staticBackdropLabel">Agregar Usuario</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <img src="~/img/svg/x.svg" alt="x" class="svg">
+                    </button>
+                </div>
+                <div class="modal-body" id="body-modal">
+                    @await Html.PartialAsync("~/Views/Shared/_LoadingSpinner.cshtml", "")
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!-- Modal -->
+}
 
-<style>
-    .form-group.footable-filtering-search
-    {
-        margin: 0px 0px 5px 0px !important;
-    }
-</style>
+@section styles
+{
+    <style>
+        .form-group.footable-filtering-search
+        {
+            margin: 0px 0px 5px 0px !important;
+        }
+    </style>
+}
 
 @section scripts
 {
